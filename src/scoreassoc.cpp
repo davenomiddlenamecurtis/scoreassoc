@@ -78,8 +78,8 @@ void usage()
 "--triofile file\n"
 "--ldthreshold x (to discard variants in LD for recessive analysis, default 0.9)\n"
 "--minweight x (to include in recessive analysis, default 0, i.e. all variants)\n"
-"--dorecessive 1 or 0\n"
-"--usehaps 1 or 0\n"
+"--dorecessive\n"
+"--usehaps\n"
 "--numloci x (needed with --gcdatafile)\n"
 "--argfile file (additional arguments)\n"
 );
