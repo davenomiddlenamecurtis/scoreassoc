@@ -1,7 +1,7 @@
 # Makefile for all programs relating to scoreassoc
 
 # Destination for executables, change this if you want
-DCBIN=../bin
+DCBIN = ../bin
 
 C = gcc
 CC = g++
