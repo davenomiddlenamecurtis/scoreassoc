@@ -62,15 +62,19 @@ option opt[]=
 
 void usage()
 {
-	printf("scoreassoc --psdatafile file || --gcdatafile file || --gendatafile file     [options]\n\nOptions:\n"
+	printf("scoreassoc --psdatafile file || --gendatafile file || --gcdatafile file     [options]\n\nOptions:\n"
+"--samplefile file (sample file to match IMPUTE2 datafile)\n"
 "--weightfactor x (weight for very rare variants, default 10)\n"
 "--outfile file\n"
+"--scorefile file (optionallly output scores for each subject)"
 "--weightfile file (specify functional weights)\n"
 "--annotfile file (annotations from plink/seq)\n"
 "--filterfile file\n"
 "--locusweightfile file (specify functional weight for each locus)\n"
-"--locusnamefile file\n"
+"--locusnamefile file (provide name for each locus)\n"
 "--locusfilterfile file (exclude specific loci)\n"
+"--casefreqfile file (provide allele frequency for each locus in cases)\n"
+"--contfreqfile file (provide allele frequency for each locus in controls)\n"
 "--triofile file\n"
 "--ldthreshold x (to discard variants in LD for recessive analysis, default 0.9)\n"
 "--minweight x (to include in recessive analysis, default 0, i.e. all variants)\n"
