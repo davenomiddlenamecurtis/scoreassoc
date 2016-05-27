@@ -80,7 +80,7 @@ void usage()
 "--minweight x (to include in recessive analysis, default 0, i.e. all variants)\n"
 "--dorecessive\n"
 "--usehaps\n"
-"--numloci x (needed with --gcdatafile)\n"
+"--numloci x (needed with --gcdatafile or --gendatafile)\n"
 "--argfile file (additional arguments)\n"
 );
 }
