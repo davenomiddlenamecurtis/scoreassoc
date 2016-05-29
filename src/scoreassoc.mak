@@ -16,14 +16,14 @@ HEADERS = cdflib.h  dcerror.hpp  dcexpr.hpp  fisher.h  sagcutils.h  safilterfunc
 # cheat and just assume all code dependent on all of these
 
 ifdef INOBJ
-all: scoreassoc pscoreassoc pathwayAssoc permPathwayAssoc 
+all: scoreassoc pathwayAssoc permPathwayAssoc 
 else
 all:
 	if [ ! -e ../obj ] ; then mkdir ../obj ; fi ; \
 	if [ ! -e ${DCBIN} ] ; then mkdir ${DCBIN} ; fi ; \
 	cd ../obj; \
 	make -f ../scoreassocCode/scoreassoc.mak INOBJ=INOBJ ; \
-	cp scoreassoc pscoreassoc pathwayAssoc permPathwayAssoc ${DCBIN} ; \
+	cp scoreassoc pathwayAssoc permPathwayAssoc ${DCBIN} ; \
 	echo copied executables to ${DCBIN} ; \
 	cd ../src
 endif
@@ -33,10 +33,10 @@ clean:
 
 VPATH=../src
 	
-%.o: ../scoreassocCode/%.cpp $(HEADERS)
+%.o: ../src/%.cpp $(HEADERS)
 	$(CC) $(OURFLAGS) -c $< -o ../obj/$@
 	
-%.o: ../scoreassocCode/%.c $(HEADERS)
+%.o: ../src/%.c $(HEADERS)
 	$(C) $(OURFLAGS) -c $< -o ../obj/$@
 
 scoreassoc: scoreassoc.o saglobals.o scoreassocfuncs.o sarecfuncs.o sahaprecfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o 
