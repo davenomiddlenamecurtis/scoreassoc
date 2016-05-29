@@ -500,7 +500,12 @@ fprintf(fi,"\n");
 output_genotypes(fi,s,nsub,cc,group,pi);
 fclose(fi);
 sprintf(line,"%s.gco",root);
+#ifdef MSDOS
 _unlink(line);
+// MSVC insists on this
+#else
+unlink(line);
+#endif
 /*
 I could insert here:
 sprintf(line,"gc %s.gci %s.gco > gc.log",root,root);
