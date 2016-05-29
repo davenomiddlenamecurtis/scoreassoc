@@ -33,10 +33,10 @@ clean:
 
 VPATH=../src
 	
-%.o: ../scoreassocCode/%.cpp $(HEADERS)
+%.o: ../src/%.cpp $(HEADERS)
 	$(CC) $(OURFLAGS) -c $< -o ../obj/$@
 	
-%.o: ../scoreassocCode/%.c $(HEADERS)
+%.o: ../src/%.c $(HEADERS)
 	$(C) $(OURFLAGS) -c $< -o ../obj/$@
 
 scoreassoc: scoreassoc.o saglobals.o scoreassocfuncs.o sarecfuncs.o sahaprecfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o 
