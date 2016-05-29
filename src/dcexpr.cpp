@@ -11,9 +11,9 @@
 #include <assert.h>
 
 #ifndef MSDOS
-#define stricmp strcasecmp
-#define strnicmp strncasecmp
-#define strupr mystrupr
+#define _stricmp strcasecmp
+#define _strnicmp strncasecmp
+#define _strupr mystrupr
 #include <ctype.h>
 char *mystrupr(char *s)
 {
