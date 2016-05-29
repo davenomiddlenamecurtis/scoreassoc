@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{6735E007-F33E-497E-A265-C4D2D6C59CF4}</ProjectGuid>
-    <RootNamespace>scoreassoc</RootNamespace>
+    <ProjectGuid>{8459AB64-0722-4D8D-8955-99246E03BC4A}</ProjectGuid>
+    <RootNamespace>permPathwayAssoc</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -69,8 +69,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\exe</OutDir>
-    <IntDir>..\..\obj</IntDir>
+    <OutDir>..\..\..\exe</OutDir>
+    <IntDir>..\..\..\obj</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -121,29 +121,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\cdflib.h" />
-    <ClInclude Include="..\..\src\dcerror.hpp" />
-    <ClInclude Include="..\..\src\dcexpr.hpp" />
-    <ClInclude Include="..\..\src\fisher.h" />
-    <ClInclude Include="..\..\src\safilterfuncs.hpp" />
-    <ClInclude Include="..\..\src\sagcutils.h" />
-    <ClInclude Include="..\..\src\scoreassoc.hpp" />
+    <ClInclude Include="..\..\..\src\cdflib.h" />
+    <ClInclude Include="..\..\..\src\dcerror.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\dcdflib.c" />
-    <ClCompile Include="..\..\src\dcerror.cpp" />
-    <ClCompile Include="..\..\src\dcexpr.cpp" />
-    <ClCompile Include="..\..\src\fisher.c" />
-    <ClCompile Include="..\..\src\ipmpar.c" />
-    <ClCompile Include="..\..\src\permPathwayAssoc.cpp" />
-    <ClCompile Include="..\..\src\saFilterFuncs.cpp" />
-    <ClCompile Include="..\..\src\sagcutils.c" />
-    <ClCompile Include="..\..\src\saglobals.cpp" />
-    <ClCompile Include="..\..\src\sahaprecfuncs.cpp" />
-    <ClCompile Include="..\..\src\sarecfuncs.cpp" />
-    <ClCompile Include="..\..\src\satriofuncs.cpp" />
-    <ClCompile Include="..\..\src\scoreassoc.cpp" />
-    <ClCompile Include="..\..\src\scoreassocfuncs.cpp" />
+    <ClCompile Include="..\..\..\src\dcdflib.c" />
+    <ClCompile Include="..\..\..\src\dcerror.cpp" />
+    <ClCompile Include="..\..\..\src\ipmpar.c" />
+    <ClCompile Include="..\..\..\src\permPathwayAssoc.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

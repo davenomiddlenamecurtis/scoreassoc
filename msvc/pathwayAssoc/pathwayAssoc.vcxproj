@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{6735E007-F33E-497E-A265-C4D2D6C59CF4}</ProjectGuid>
-    <RootNamespace>scoreassoc</RootNamespace>
+    <ProjectGuid>{7196C603-7DFF-43D2-8826-5CC306C44270}</ProjectGuid>
+    <RootNamespace>pathwayAssoc</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -123,27 +123,12 @@
   <ItemGroup>
     <ClInclude Include="..\..\src\cdflib.h" />
     <ClInclude Include="..\..\src\dcerror.hpp" />
-    <ClInclude Include="..\..\src\dcexpr.hpp" />
-    <ClInclude Include="..\..\src\fisher.h" />
-    <ClInclude Include="..\..\src\safilterfuncs.hpp" />
-    <ClInclude Include="..\..\src\sagcutils.h" />
-    <ClInclude Include="..\..\src\scoreassoc.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\dcdflib.c" />
     <ClCompile Include="..\..\src\dcerror.cpp" />
-    <ClCompile Include="..\..\src\dcexpr.cpp" />
-    <ClCompile Include="..\..\src\fisher.c" />
     <ClCompile Include="..\..\src\ipmpar.c" />
-    <ClCompile Include="..\..\src\permPathwayAssoc.cpp" />
-    <ClCompile Include="..\..\src\saFilterFuncs.cpp" />
-    <ClCompile Include="..\..\src\sagcutils.c" />
-    <ClCompile Include="..\..\src\saglobals.cpp" />
-    <ClCompile Include="..\..\src\sahaprecfuncs.cpp" />
-    <ClCompile Include="..\..\src\sarecfuncs.cpp" />
-    <ClCompile Include="..\..\src\satriofuncs.cpp" />
-    <ClCompile Include="..\..\src\scoreassoc.cpp" />
-    <ClCompile Include="..\..\src\scoreassocfuncs.cpp" />
+    <ClCompile Include="..\..\src\pathwayAssoc.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
