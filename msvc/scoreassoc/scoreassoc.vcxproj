@@ -135,7 +135,6 @@
     <ClCompile Include="..\..\src\dcexpr.cpp" />
     <ClCompile Include="..\..\src\fisher.c" />
     <ClCompile Include="..\..\src\ipmpar.c" />
-    <ClCompile Include="..\..\src\permPathwayAssoc.cpp" />
     <ClCompile Include="..\..\src\saFilterFuncs.cpp" />
     <ClCompile Include="..\..\src\sagcutils.c" />
     <ClCompile Include="..\..\src\saglobals.cpp" />

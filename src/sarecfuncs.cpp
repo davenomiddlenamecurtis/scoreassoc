@@ -117,6 +117,7 @@ void do_recessive_HWE_test(FILE *fo,float *score,subject **sub,int nsub,par_info
 			fprintf(fo,"\n");
 		}
 	}
+	fprintf(fo, "\n");
 	// now do the exclusions based on LD
 	for (l=0;l<rec_pi.n_loci_to_use;++l)
 	{
@@ -176,6 +177,7 @@ void do_recessive_HWE_test(FILE *fo,float *score,subject **sub,int nsub,par_info
 		col_tot[c]=0;
     for (l=0;l<rec_pi.n_loci_to_use;++l)
 		all_count[l]=0;
+	fprintf(fo, "\nSubjects with two or more minor alleles:\n");
 	for (s=0;s<nsub;++s)
 	{
 		genotype=0;
@@ -205,7 +207,7 @@ void do_recessive_HWE_test(FILE *fo,float *score,subject **sub,int nsub,par_info
 			fprintf(fo,"%-10s %d   ",sub[s]->id,sub[s]->cc);
 			for (l=0;l<rec_pi.n_loci_to_use;++l)
 				for (a=0;a<2;++a)
-					if (sub[s]->all[rec_pi.loci_to_use[l]][a]==rec_rarer[rec_pi.loci_to_use[l]])
+					if (sub[s]->all[rec_pi.loci_to_use[l]][a]== rarer[l])
 					{
 						fprintf(fo,"%s%d",first?"":"-",l+1);
 						first=0;

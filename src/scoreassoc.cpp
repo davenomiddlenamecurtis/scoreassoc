@@ -541,7 +541,7 @@ if (spi.use_trios)
 		assert(non_mendelian_report=(char*)malloc(strlen(long_line)+1));
 		strcpy(non_mendelian_report,long_line);
 	}
-	fprintf(spi.df[OUTFILE].fp,"pscoreassoc output\n"
+	fprintf(spi.df[OUTFILE].fp,"scoreassoc output\n"
 "Locus                   controls     frequency        cases          frequency   frequency allele  weight\n"
 "                     AA  :   AB  :  BB                  AA  :   AB  :  BB                     \n");
 get_freqs(sub,nsub,&pi,&spi,cc_freq,cc_count,cc_genocount);
