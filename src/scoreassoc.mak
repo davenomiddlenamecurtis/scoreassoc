@@ -22,7 +22,7 @@ all:
 	if [ ! -e ../obj ] ; then mkdir ../obj ; fi ; \
 	if [ ! -e ${DCBIN} ] ; then mkdir ${DCBIN} ; fi ; \
 	cd ../obj; \
-	make -f ../scoreassocCode/scoreassoc.mak INOBJ=INOBJ ; \
+	make -f ../src/scoreassoc.mak INOBJ=INOBJ ; \
 	cp scoreassoc pathwayAssoc permPathwayAssoc ${DCBIN} ; \
 	echo copied executables to ${DCBIN} ; \
 	cd ../src
