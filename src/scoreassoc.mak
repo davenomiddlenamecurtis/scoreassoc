@@ -20,10 +20,10 @@ all: scoreassoc pathwayAssoc permPathwayAssoc
 else
 all:
 	if [ ! -e ../obj ] ; then mkdir ../obj ; fi ; \
-	if [ ! -e ../bin ] ; then mkdir ../bin ; fi ; \
+	if [ ! -e ${DCBIN} ] ; then mkdir ${DCBIN} ; fi ; \
 	cd ../obj; \
 	make -f ../src/scoreassoc.mak INOBJ=INOBJ ; \
-	cp scoreassoc pathwayAssoc permPathwayAssoc ../bin ; \
+	cp scoreassoc pathwayAssoc permPathwayAssoc ${DCBIN} ; \
 	echo copied executables to ../bin ; \
 	cd ../src
 endif
