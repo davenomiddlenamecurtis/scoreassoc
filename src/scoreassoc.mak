@@ -24,7 +24,7 @@ all:
 	cd ../obj; \
 	make -f ../src/scoreassoc.mak INOBJ=INOBJ ; \
 	cp scoreassoc pathwayAssoc permPathwayAssoc ${DCBIN} ; \
-	echo copied executables to ../bin ; \
+	echo copied executables to ${DCBIN} ; \
 	cd ../src
 endif
 
