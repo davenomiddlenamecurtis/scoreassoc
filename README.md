@@ -1,2 +1,2 @@
 # scoreassoc
-Distribution for scoreassoc, including source, example files, Windows executables and MSVC files
+Distribution for scoreassoc, including source, example files and MSVC files
