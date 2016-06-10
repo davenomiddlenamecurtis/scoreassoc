@@ -199,6 +199,7 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 		case CONTFREQFILE:
 		case OUTFILE:
 		case SCOREFILE:
+		case TRIOFILE:
 			if (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num) == 0 || arg[0]=='-' || sscanf(arg, "%s",spi->df[opt[a].o].fn) != 1)
 				error=1;
 			break;
