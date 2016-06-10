@@ -1,7 +1,7 @@
 #include "scoreassoc.hpp"
 
 
-int sort_trios(subject **sub, int nsub, par_info *pi, subject **new_sub, non_mendelian *non_mendelians,int *n_non_mendelian,char *non_mendelian_report)
+int sort_trios(subject **sub, int nsub, par_info *pi, sa_par_info *spi,subject **new_sub, non_mendelian *non_mendelians,int *n_non_mendelian,char *non_mendelian_report)
 {
 	FILE *ft,*flog;
 	char line[201],f_id[MAX_ID_LENGTH],c_id[MAX_ID_LENGTH],m_id[MAX_ID_LENGTH];
@@ -9,10 +9,11 @@ int sort_trios(subject **sub, int nsub, par_info *pi, subject **new_sub, non_men
 	int s,n_new_sub,pl,l,d,p,a,n_in_parents,n_in_this_parent,has_allele[2],test_allele,assigned_parent[2],is_non_mendelian[2],child_num,is_de_novo;
 	*non_mendelian_report='\0';
 	*n_non_mendelian=0;
-	ft=fopen(trios_fn,"r");
+	ft=spi->df[TRIOFILE].fp;
+	// ft=fopen(trios_fn,"r");
 	if (ft == NULL)
 	{
-		error("Could not open file giving pedigree information about trios: ",trios_fn);
+		error("Could not open file giving pedigree information about trios: ", spi->df[TRIOFILE].fn);
 		return 0;
 	}
 	flog=fopen("trios.log","w");
@@ -275,7 +276,7 @@ int sort_trios(subject **sub, int nsub, par_info *pi, subject **new_sub, non_men
 			case_ptr->all[l][0],case_ptr->all[l][1],
 			cont_ptr->all[l][0],cont_ptr->all[l][1]);
 	}
-	fclose(ft);
+	// fclose(ft);
 	fclose(flog);
 	return n_new_sub;
 }

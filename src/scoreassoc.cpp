@@ -532,7 +532,7 @@ if (spi.use_trios)
 		for (s=0;s<nsub;++s)
 			assert(new_sub[s]=(subject *)calloc(1,sizeof(subject)));
 		assert(non_mendelians=(non_mendelian *)calloc(MAX_SUB,sizeof(non_mendelian)));
-		if ((n_new_sub=sort_trios(sub,nsub,&pi,new_sub,non_mendelians,&n_non_mendelian,long_line))==0)
+		if ((n_new_sub=sort_trios(sub,nsub,&pi,&spi,new_sub,non_mendelians,&n_non_mendelian,long_line))==0)
 			exit(1);
 		real_sub=sub;
 		sub=new_sub;

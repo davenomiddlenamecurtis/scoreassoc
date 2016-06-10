@@ -16,17 +16,17 @@ xmlns="http://www.w3.org/TR/REC-html40">
   <o:Author>David Curtis</o:Author>
   <o:Template>B436C3BA.dotm</o:Template>
   <o:LastAuthor>Dave Curtis</o:LastAuthor>
-  <o:Revision>20</o:Revision>
-  <o:TotalTime>1324</o:TotalTime>
+  <o:Revision>21</o:Revision>
+  <o:TotalTime>1329</o:TotalTime>
   <o:Created>2016-05-26T16:44:00Z</o:Created>
-  <o:LastSaved>2016-06-06T10:34:00Z</o:LastSaved>
+  <o:LastSaved>2016-06-09T16:09:00Z</o:LastSaved>
   <o:Pages>27</o:Pages>
-  <o:Words>5024</o:Words>
-  <o:Characters>28638</o:Characters>
+  <o:Words>5072</o:Words>
+  <o:Characters>28913</o:Characters>
   <o:Company>UCL</o:Company>
-  <o:Lines>238</o:Lines>
+  <o:Lines>240</o:Lines>
   <o:Paragraphs>67</o:Paragraphs>
-  <o:CharactersWithSpaces>33595</o:CharactersWithSpaces>
+  <o:CharactersWithSpaces>33918</o:CharactersWithSpaces>
   <o:Version>16.00</o:Version>
  </o:DocumentProperties>
  <o:OfficeDocumentSettings>
@@ -652,10 +652,10 @@ xmlns="http://www.w3.org/TR/REC-html40">
  @font-face
 	{font-family:"Cambria Math";
 	panose-1:2 4 5 3 5 4 6 3 2 4;
-	mso-font-charset:0;
+	mso-font-charset:1;
 	mso-generic-font-family:roman;
 	mso-font-pitch:variable;
-	mso-font-signature:-536870145 1107305727 0 0 415 0;}
+	mso-font-signature:0 0 0 0 0 0;}
 @font-face
 	{font-family:Calibri;
 	panose-1:2 15 5 2 2 2 4 3 2 4;
@@ -761,8 +761,7 @@ h3
 	mso-bidi-theme-font:major-bidi;
 	font-weight:bold;}
 a:link, span.MsoHyperlink
-	{mso-style-noshow:yes;
-	mso-style-priority:99;
+	{mso-style-priority:99;
 	color:blue;
 	text-decoration:underline;
 	text-underline:single;}
@@ -1065,11 +1064,20 @@ by default called <i style='mso-bidi-font-style:normal'>bin</i>.<o:p></o:p></spa
 
 <p><span style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:
 minor-fareast'>The second zip file contains the precompiled executables for
-Windows (to be run from the <i style='mso-bidi-font-style:normal'>Command
-Prompt</i>) and also contains <i style='mso-bidi-font-style:normal'>.<span
-class=SpellE>sln</span></i> and <i style='mso-bidi-font-style:normal'>.<span
-class=SpellE>vproj</span></i> files to allow compilation with <i
-style='mso-bidi-font-style:normal'>Microsoft Visual Studio for Desktop</i>. <o:p></o:p></span></p>
+Windows (to be run from the <i style='mso-bidi-font-style:normal'>Command Prompt</i>)
+and also contains <i style='mso-bidi-font-style:normal'>.<span class=SpellE>sln</span></i>
+and <i style='mso-bidi-font-style:normal'>.<span class=SpellE>vproj</span></i>
+files to allow compilation with <i style='mso-bidi-font-style:normal'>Microsoft
+Visual Studio for Desktop</i>. <o:p></o:p></span></p>
+
+<p><span style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:
+minor-fareast'>The most convenient way to run <span class=SpellE><i
+style='mso-bidi-font-style:normal'>scoreassoc</i></span> if you have sequence
+data in <span class=SpellE><i style='mso-bidi-font-style:normal'>vcf</i></span>
+files is by using a utility called <span class=SpellE><i style='mso-bidi-font-style:
+normal'>geneVarAssoc</i></span>, and you are strongly advised to refer to this.
+It is distributed here: <a
+href="https://github.com/davenomiddlenamecurtis/geneVarAssoc">https://github.com/davenomiddlenamecurtis/geneVarAssoc</a><o:p></o:p></span></p>
 
 <p><span style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:
 minor-fareast'>A script called <i style='mso-bidi-font-style:normal'>runpa.sh</i>
@@ -1110,8 +1118,8 @@ minor-fareast'>Method<o:p></o:p></span></h2>
 
 <p><span style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:
 minor-fareast'>Variants are weighted according to their rarity and predicted
-effect. A weighting factor can be specified to provide an arbitrary weight for a
-very rare variant compared with a common one. The default value for this
+effect. A weighting factor can be specified to provide an arbitrary weight for
+a very rare variant compared with a common one. The default value for this
 weighting factor is 10. The weight according to effect means that, for example,
 an intergenic variant can be given a weight of 1 whereas a stop (nonsense)
 variant can be given a weight of 20. The weight according to frequency and the
@@ -1142,9 +1150,9 @@ exceeding the weight threshold.</p>
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'>Most
-of the arguments to the program are given in pairs. The first member of the
-pair, beginning --, specifies a parameter and the second member provides the
-value for that parameter. One pair of arguments provides a <span class=SpellE>datafile</span>
+of the arguments to the program are given in pairs. The first member of the pair,
+beginning --, specifies a parameter and the second member provides the value
+for that parameter. One pair of arguments provides a <span class=SpellE>datafile</span>
 and other optional arguments specify other aspects of the analysis. For <span
 style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>PLINK/SEQ
 <span class=SpellE>datafiles</span> the parameter is <i style='mso-bidi-font-style:
@@ -1208,8 +1216,8 @@ of trios)</p>
 <p class=MsoQuote>--<span class=SpellE>ldthreshold</span> x (to discard
 variants in LD for recessive analysis, default 0.9)</p>
 
-<p class=MsoQuote>--<span class=SpellE>minweight</span> x (to include in recessive
-analysis)</p>
+<p class=MsoQuote>--<span class=SpellE>minweight</span> x (to include in
+recessive analysis)</p>
 
 <p class=MsoQuote>--<span class=SpellE>dorecessive</span> </p>
 
@@ -1254,8 +1262,8 @@ run with gene as argument, e.g. bash runpsa.sh DRD2</p>
 <p class=MsoQuote>GENE=$1</p>
 
 <p class=MsoQuote><span class=SpellE>pseq</span> $PROJECT v-view --<span
-class=SpellE>geno</span><span style='mso-spacerun:yes'>&nbsp;
-</span>--phenotype $PHENO --gene $GENE &gt; $GENE.dat</p>
+class=SpellE>geno</span><span style='mso-spacerun:yes'>&nbsp; </span>--phenotype
+$PHENO --gene $GENE &gt; $GENE.dat</p>
 
 <p class=MsoQuote><span class=SpellE>pseq</span> $PROJECT counts --annotate <span
 class=SpellE>refseq</span> --gene $GENE --phenotype $PHENO &gt; $<span
@@ -1613,8 +1621,8 @@ class=SpellE>minweight</span> x</h3>
 is the minimum overall weight a variant must have, obtained by multiplying the
 frequency weight by the functional weight, in order to be included in analyses
 for recessive effects. The default value is 0, meaning that all variants would
-be included. To include relatively rare variants producing changes in amino
-acid sequence one can use a value of 80.</p>
+be included. To include relatively rare variants producing changes in amino acid
+sequence one can use a value of 80.</p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 

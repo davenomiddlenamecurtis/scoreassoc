@@ -56,7 +56,7 @@ void get_freqs(subject **sub,int nsub,par_info *pi,sa_par_info *spi,float cc_fre
 void write_scores(FILE *fs,subject **sub,int nsub,float *score);
 void do_recessive_HWE_test(FILE *fo,float *score,subject **sub,int nsub,par_info *pi,sa_par_info *spi,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],float *weight,float *missing,int *old_rarer,char names[MAX_LOCI][20]);
 void do_recessive_HWE_test_with_haplotypes(FILE *fo, float *score, subject **sub, int nsub, par_info *pi,sa_par_info *spi, float cc_freq[2][MAX_LOCI], float cc_count[2][MAX_LOCI], int max_cc[2], float *weight, float *missing, int *old_rarer, char names[MAX_LOCI][20]);
-extern int sort_trios(subject **sub,int nsub,par_info *pi,subject **new_sub,non_mendelian *nm,int *n_non_mendelian,char *non_mendelian_report);
+extern int sort_trios(subject **sub,int nsub,par_info *pi, sa_par_info *spi, subject **new_sub,non_mendelian *nm,int *n_non_mendelian,char *non_mendelian_report);
 int read_all_gen_subjects(FILE *fi,subject **s,int *nsub,par_info *pi);
 
 extern double cumulBinom(int N,int k,double p);
