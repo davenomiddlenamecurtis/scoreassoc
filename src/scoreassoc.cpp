@@ -554,8 +554,9 @@ if (spi.df[SCOREFILE].fp)
 	write_scores(spi.df[SCOREFILE].fp,sub,nsub,score);
 if (spi.do_recessive_test)
 {
-if (atoi(comments[0]+3)>22 || toupper(comments[0][4])=='X' || toupper(comments[0][4])=='Y')
-// simple trick for now to avoid X and Y genes
+if (atoi(comments[0])>22 || toupper(comments[0][0]) == 'X' || toupper(comments[0][0]) == 'Y' ||
+		toupper(comments[0][0]) == 'C'&&toupper(comments[0][1]) == 'H'&&toupper(comments[0][2]) == 'R' && (atoi(comments[0] + 3) > 22 || toupper(comments[0][3]) == 'X' || toupper(comments[0][3]) == 'Y'))
+		// simple trick for now to avoid X and Y genes
 	fprintf(spi.df[OUTFILE].fp,"\nCannot do recessive test for genes on X or Y chromosome.\n");
 else if (spi.use_haplotypes)
 	do_recessive_HWE_test_with_haplotypes(spi.df[OUTFILE].fp,score,sub,nsub,&pi,&spi,cc_freq,cc_count,max_cc,weight,missing_score,rarer,names);
