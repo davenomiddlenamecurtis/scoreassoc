@@ -280,7 +280,7 @@ int getSLPs(pathway **allPathways, float **geneScores, float **pathwayScores, in
 			pp->topPathways[pp->nTopPathways++]=p;
 			path->nOver=0;
 		}
-		// keep scores, get top pathways, output row of pathways then row of real SLPs, set nOvers to 0
+		// keep scores, get top pathways, output row of pathways then row of real SLPs, set nOver to 0
 	}
 	else
 	{
