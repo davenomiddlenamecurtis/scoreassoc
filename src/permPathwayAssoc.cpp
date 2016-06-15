@@ -16,7 +16,7 @@ typedef std::pair<std::string,int> TStrIntPair;
 typedef std::map<std::string,int> TStrIntMap;
 
 #define PROGRAM "permPathwayAssoc"
-#define PPAVERSION "1.0"
+#define PPAVERSION "1.1"
 
 #ifndef MAX_LOCI
 #define MAX_LOCI 12000
@@ -209,9 +209,12 @@ public:
 	float SLP;
 };
 
-int getSLPs(pathway **allPathways, float **geneScores, float **pathwayScores, int *cc, ppaParams *pp, int realData)
+#define NTHRESHOLD 5
+float threshold[NTHRESHOLD] = { 1,2,3,4,5 };
+
+int getSLPs(pathway **allPathways, float **geneScores, float **pathwayScores, int *cc, ppaParams *pp, int realData, float analysisWiseResults[NTHRESHOLD + 1],int nOverAnalysisWise[NTHRESHOLD + 1])
 {
-	int nGene,missing[MAX_LOCI],s,nSub,g,gg,n[2],i,p;
+	int nGene,missing[MAX_LOCI],s,nSub,g,gg,n[2],i,p,t,nOverThreshold[NTHRESHOLD];
 	float sigma_x[2],sigma_x2[2],mean[2],var[2],SLP,SE,tval,s2,score[MAX_SUB],maxSLP;
 	pathway *path;
 	double pVal;
@@ -222,33 +225,42 @@ int getSLPs(pathway **allPathways, float **geneScores, float **pathwayScores, in
 	{
 		for (p = 0; p < pp->nPathways; ++p)
 			fprintf(pp->SLPFile,"%s\t",allPathways[p]->name);
-		fprintf(pp->SLPFile,"maxSLP\n");
+		fprintf(pp->SLPFile,"maxSLP");
+		for (t = 0; t < NTHRESHOLD; ++t)
+			fprintf(pp->SLPFile, "%.1f\t", threshold[t]);
+		fprintf(pp->SLPFile, "\n");
 		for (p = 0; p < pp->nPathways; ++p)
 		{
 			strncpy(shortName,allPathways[p]->name,10);
 			fprintf(pp->SLPFile, "%s\t", shortName);
 		}
-		fprintf(pp->SLPFile,"maxSLP\n");
+		fprintf(pp->SLPFile,"maxSLP");
+		for (t = 0; t < NTHRESHOLD; ++t)
+			fprintf(pp->SLPFile, "SLP>%.1f\t", threshold[t]);
+		fprintf(pp->SLPFile, "\n");
 	}
+	for (t = 0; t < NTHRESHOLD; ++t)
+		nOverThreshold[t] = 0;
 	for (p = 0; p < pp->nPathways; ++p)
 	{
+		path = allPathways[p];
 		if (realData)
-			assert((pathwayScores[p]=(float *)calloc(pp->nSub,sizeof(float)))!=0);
-		path=allPathways[p];
-		for (s=0;s<pp->nSub;++s)
-			score[s]=0;
-		for (g = 0; g < path->nGenes; ++g)
 		{
-			gg=path->geneList[g];
-			for (s = 0; s < pp->nSub; ++s)
+			assert((pathwayScores[p] = (float *)calloc(pp->nSub, sizeof(float))) != 0);
+			for (s = 0; s<pp->nSub; ++s)
+				score[s] = 0;
+			for (g = 0; g < path->nGenes; ++g)
 			{
-				score[s] += geneScores[gg][s]; // I might not need to keep the geneScores at all 
-				if (realData)
-					pathwayScores[p][s]+=geneScores[gg][s];
+				gg = path->geneList[g];
+				for (s = 0; s < pp->nSub; ++s)
+				{
+					score[s] += geneScores[gg][s];
+					pathwayScores[p][s] += geneScores[gg][s];
+				}
 			}
 		}
-			for (i=0;i<2;++i)
-		sigma_x[i]=sigma_x2[i]=n[i]=0;
+		for (i=0;i<2;++i)
+			sigma_x[i]=sigma_x2[i]=n[i]=0;
 	for (s=0;s<pp->nSub;++s)
     {
 		 ++n[cc[s]];
@@ -275,23 +287,37 @@ int getSLPs(pathway **allPathways, float **geneScores, float **pathwayScores, in
 	if (realData)
 	{
 		path->SLP=SLP;
+		path->nOver = 0;
 		if (SLP>pp->pathwayThreshold)
-		{
 			pp->topPathways[pp->nTopPathways++]=p;
-			path->nOver=0;
-		}
-		// keep scores, get top pathways, output row of pathways then row of real SLPs, set nOver to 0
 	}
 	else
 	{
-		for (i=0;i<pp->nTopPathways;++i)
-			if (SLP>allPathways[pp->topPathways[i]]->SLP)
-				++allPathways[pp->topPathways[i]]->nOver;
+		if (SLP > path->SLP)
+			++path->nOver;
 	}
-
+	for (t = 0; t < NTHRESHOLD; ++t)
+		if (SLP>threshold[t])
+			++nOverThreshold[t];
 	}
-
-	fprintf(pp->SLPFile,"%10.2f\n",maxSLP);
+	if (realData)
+	{
+		analysisWiseResults[0] = maxSLP;
+		for (t = 0; t < NTHRESHOLD; ++t)
+			analysisWiseResults[t + 1] = nOverThreshold[t];
+	}
+	else
+	{
+		if (maxSLP > analysisWiseResults[0])
+			++nOverAnalysisWise[0];
+		for (t = 0; t < NTHRESHOLD; ++t)
+			if (nOverThreshold[t] > analysisWiseResults[t + 1])
+				++nOverAnalysisWise[t + 1];
+	}
+	fprintf(pp->SLPFile, "%10.2f\t", maxSLP);
+	for (t = 0; t < NTHRESHOLD; ++t)
+		fprintf(pp->SLPFile, "%d\t", nOverThreshold[t]);
+	fprintf(pp->SLPFile, "\n");
 	return 1;
 }
 
