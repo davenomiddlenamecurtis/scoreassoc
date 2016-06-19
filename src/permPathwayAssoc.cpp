@@ -227,7 +227,7 @@ int getSLPs(pathway **allPathways, float **geneScores, float **pathwayScores, in
 			fprintf(pp->SLPFile,"%s\t",allPathways[p]->name);
 		fprintf(pp->SLPFile,"maxSLP");
 		for (t = 0; t < NTHRESHOLD; ++t)
-			fprintf(pp->SLPFile, "%.1f\t", threshold[t]);
+			fprintf(pp->SLPFile, "nSLP>%.1f\t", threshold[t]);
 		fprintf(pp->SLPFile, "\n");
 		for (p = 0; p < pp->nPathways; ++p)
 		{
@@ -236,7 +236,7 @@ int getSLPs(pathway **allPathways, float **geneScores, float **pathwayScores, in
 		}
 		fprintf(pp->SLPFile,"maxSLP");
 		for (t = 0; t < NTHRESHOLD; ++t)
-			fprintf(pp->SLPFile, "SLP>%.1f\t", threshold[t]);
+			fprintf(pp->SLPFile, "nSLP>%.1f\t", threshold[t]);
 		fprintf(pp->SLPFile, "\n");
 	}
 	for (t = 0; t < NTHRESHOLD; ++t)
@@ -314,7 +314,7 @@ int getSLPs(pathway **allPathways, float **geneScores, float **pathwayScores, in
 			if (nOverThreshold[t] > analysisWiseResults[t + 1])
 				++nOverAnalysisWise[t + 1];
 	}
-	fprintf(pp->SLPFile, "%10.2f\t", maxSLP);
+	fprintf(pp->SLPFile, "%.2f\t", maxSLP);
 	for (t = 0; t < NTHRESHOLD; ++t)
 		fprintf(pp->SLPFile, "%d\t", nOverThreshold[t]);
 	fprintf(pp->SLPFile, "\n");
@@ -392,8 +392,8 @@ int main(int argc, char *argv[])
 {
 	ppaParams pp;
 	FILE *fp;
-	int s,i;
-	float **geneScores,**pathwayScores;
+	int s,i,nOverAnalysisWise[NTHRESHOLD + 1];
+	float **geneScores,**pathwayScores,analysisWiseResults[NTHRESHOLD + 1];
 	pathway **allPathways;
 	TStrIntMap geneIndex;
 	printf("%s v%s\n",PROGRAM,PPAVERSION);
@@ -414,16 +414,29 @@ int main(int argc, char *argv[])
 		fillGeneScores(line,allPathways,geneScores,cc,geneIndex,&pp);
 	}
 	assert((pathwayScores=(float**)calloc(pp.nPathways,sizeof(float *)))!=0);
-	getSLPs(allPathways,geneScores,pathwayScores,cc,&pp,1);
+	getSLPs(allPathways,geneScores,pathwayScores,cc,&pp,1,analysisWiseResults,nOverAnalysisWise);
 	for (i = 0; i < pp.nPerms; ++i)
 	{
 		perm(cc,pp.nSub);
-		getSLPs(allPathways, geneScores, pathwayScores, cc, &pp, 0);
+		getSLPs(allPathways, geneScores, pathwayScores, cc, &pp, 0,analysisWiseResults,nOverAnalysisWise);
 	}
-	for (i=0;i<pp.nTopPathways;++i)
-		fprintf(pp.summaryOutputFile,"%s\t%10.2f\t%10.6f\n",
+	fprintf(pp.SLPFile,"\n");
+	for(i=0;i<pp.nPathways;++i)
+		fprintf(pp.SLPFile,"%d\t",allPathways[i]->nOver);
+	for(i=0;i<NTHRESHOLD+1;++i)
+		fprintf(pp.SLPFile,"%d\t",nOverAnalysisWise[i]);
+	fprintf(pp.SLPFile,"\n");
+	for(i=0;i<pp.nPathways;++i)
+		fprintf(pp.SLPFile,"%.6f\t",(allPathways[i]->nOver+1.0)/(pp.nPerms+1.0));
+	for(i=0;i<NTHRESHOLD+1;++i)
+	fprintf(pp.SLPFile,"%.6f\t",(nOverAnalysisWise[i]+1.0)/(pp.nPerms+1.0));
+	fprintf(pp.SLPFile,"\n");
+	fprintf(pp.summaryOutputFile,"Pathway\tSLP\tt_test_p\tempirical_p\n");
+	for (i = 0; i < pp.nTopPathways; ++i)
+		fprintf(pp.summaryOutputFile, "%s\t%.2f\t%.6f%.6f\n",
 			allPathways[pp.topPathways[i]]->name,
 			allPathways[pp.topPathways[i]]->SLP,
+			(allPathways[pp.topPathways[i]]->SLP>0 ? pow(10.0, allPathways[pp.topPathways[i]]->SLP)/2 : 1-pow(10.0, allPathways[pp.topPathways[i]]->SLP)/2),
 			(allPathways[pp.topPathways[i]]->nOver+1.0)/(pp.nPerms+1.0));
 	fclose(pp.summaryOutputFile);
 	fclose(pp.SLPFile);
