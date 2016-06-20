@@ -107,6 +107,7 @@ void do_recessive_HWE_test_with_haplotypes(FILE *fo, float *score, subject **sub
 		p=1-p;
 	fprintf(fo,"\n\nRecessive chi-squared = %f, 1 df, p = %f\n",dchi,p);	
 	fprintf(fo,"-log(p) = %.2f\n",-log10(p));
+	fprintf(fo,"SLP = %.2f\n",log10(p<0.5?2*p:2*(1-p))*(p<0.5?-1:1));
 
 	hapMAF=(counts[0][1]*0.5+counts[0][2]+counts[1][1]*0.5+counts[1][2])/nsub;
 	geno_prob[0]=(1-hapMAF)*(1-hapMAF);
