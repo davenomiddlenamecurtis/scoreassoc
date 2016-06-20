@@ -550,6 +550,10 @@ applyExclusions(&pi);
 set_weights(spi.df[OUTFILE].fp,weight,missing_score,rarer,sub,nsub,&pi,&spi,func_weight,cc_freq,cc_count,max_cc,names,comments);
 get_scores(score,weight,missing_score,rarer,sub,nsub,&pi,&spi);
 p=do_score_onetailed_ttest(spi.df[OUTFILE].fp,score,sub,nsub,&pi,&spi,cc_freq,cc_count,max_cc,weight,missing_score,rarer);
+
+if (spi.use_trios)
+	fprintf(spi.df[OUTFILE].fp, "\nDe novo and non-Mendelian transmission list:\n%s\n", non_mendelian_report);
+
 if (spi.df[SCOREFILE].fp)
 	write_scores(spi.df[SCOREFILE].fp,sub,nsub,score);
 if (spi.do_recessive_test)
