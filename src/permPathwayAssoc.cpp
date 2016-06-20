@@ -444,7 +444,7 @@ int main(int argc, char *argv[])
 		fprintf(pp.summaryOutputFile, "%s\t%.2f\t%.6f\t%.6f\n",
 			allPathways[pp.topPathways[i]]->name,
 			allPathways[pp.topPathways[i]]->SLP,
-			(allPathways[pp.topPathways[i]]->SLP>0 ? log10(allPathways[pp.topPathways[i]]->SLP)/2 : 1-log10(allPathways[pp.topPathways[i]]->SLP)/2),
+			(allPathways[pp.topPathways[i]]->SLP>0 ? pow(10.0,-allPathways[pp.topPathways[i]]->SLP)/2 : 1-pow(10.0,allPathways[pp.topPathways[i]]->SLP)/2),
 			(allPathways[pp.topPathways[i]]->nOver+1.0)/(pp.nPerms+1.0));
 	fclose(pp.summaryOutputFile);
 	fclose(pp.SLPFile);
