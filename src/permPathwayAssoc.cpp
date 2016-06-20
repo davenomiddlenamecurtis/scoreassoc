@@ -299,11 +299,11 @@ int getSLPs(pathway **allPathways, float **geneScores, float **pathwayScores, in
 	}
 	else
 	{
-		if (SLP > path->SLP)
+		if (SLP >= path->SLP)
 			++path->nOver;
 	}
 	for (t = 0; t < NTHRESHOLD; ++t)
-		if (SLP>threshold[t])
+		if (SLP>=threshold[t])
 			++nOverThreshold[t];
 	}
 	if (realData)
@@ -314,10 +314,10 @@ int getSLPs(pathway **allPathways, float **geneScores, float **pathwayScores, in
 	}
 	else
 	{
-		if (maxSLP > analysisWiseResults[0])
+		if (maxSLP >= analysisWiseResults[0])
 			++nOverAnalysisWise[0];
 		for (t = 0; t < NTHRESHOLD; ++t)
-			if (nOverThreshold[t] > analysisWiseResults[t + 1])
+			if (nOverThreshold[t] >= analysisWiseResults[t + 1])
 				++nOverAnalysisWise[t + 1];
 	}
 	fprintf(pp->SLPFile, "%.2f\t", maxSLP);
@@ -441,10 +441,10 @@ int main(int argc, char *argv[])
 	fprintf(pp.fullOutputFile,"\n");
 	fprintf(pp.summaryOutputFile,"Pathway\tSLP\tt_test_p\tempirical_p\n");
 	for (i = 0; i < pp.nTopPathways; ++i)
-		fprintf(pp.summaryOutputFile, "%s\t%.2f\t%.6f%.6f\n",
+		fprintf(pp.summaryOutputFile, "%s\t%.2f\t%.6f\t%.6f\n",
 			allPathways[pp.topPathways[i]]->name,
 			allPathways[pp.topPathways[i]]->SLP,
-			(allPathways[pp.topPathways[i]]->SLP>0 ? pow(10.0, allPathways[pp.topPathways[i]]->SLP)/2 : 1-pow(10.0, allPathways[pp.topPathways[i]]->SLP)/2),
+			(allPathways[pp.topPathways[i]]->SLP>0 ? log10(allPathways[pp.topPathways[i]]->SLP)/2 : 1-log10(allPathways[pp.topPathways[i]]->SLP)/2),
 			(allPathways[pp.topPathways[i]]->nOver+1.0)/(pp.nPerms+1.0));
 	fclose(pp.summaryOutputFile);
 	fclose(pp.SLPFile);
