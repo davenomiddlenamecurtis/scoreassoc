@@ -150,9 +150,9 @@ int ppaParams::readParms(int argc, char *argv[])
 		else if (FILLARG("--output-file"))
 		{
 			fullOutputFile = fopen(arg, "w");
-			if (summaryOutputFile == 0)
+			if (fullOutputFile == 0)
 			{
-				dcerror(1, "Could not open summary file %s\n", arg);
+				dcerror(1, "Could not open output file %s\n", arg);
 				return 0;
 			}
 		}
