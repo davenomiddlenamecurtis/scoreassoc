@@ -16,7 +16,7 @@ typedef std::pair<std::string,int> TStrIntPair;
 typedef std::map<std::string,int> TStrIntMap;
 
 #define PROGRAM "permPathwayAssoc"
-#define PPAVERSION "1.1"
+#define PPAVERSION "1.2"
 
 #ifndef MAX_LOCI
 #define MAX_LOCI 12000
@@ -371,7 +371,8 @@ int fillGeneScores(char *line, pathway **allPathways, float **geneScores, int *c
 		else
 		{
 			g=it->second;
-			p->geneList[p->nGenes++]=g;
+			if (g!=-1)
+				p->geneList[p->nGenes++]=g;
 		}
 	}
 	allPathways[pp->nPathways++]=p;
