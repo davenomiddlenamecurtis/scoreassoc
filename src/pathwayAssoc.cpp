@@ -239,7 +239,7 @@ float runOnePathway(char *line,pathwaySubject **sub,paParams *pp, int writeFile)
 					fprintf(pp->summaryOutputFile,"%s\t%s\t%f\n",pathwayName,pathwayURL,SLP);
 		if (SLP > pp->geneLevelOutputThreshold)
 		{
-			fprintf(fo,"\n\nSLPs for individual genes:\n");
+			fprintf(fo,"\n\nSLPs for individual genes above threshold:\n");
 			for (g=0;g<nGene;++g)
 			{
 				if (missing[g]==1)
@@ -268,7 +268,9 @@ float runOnePathway(char *line,pathwaySubject **sub,paParams *pp, int writeFile)
 		tval=(mean[1]-mean[0])/SE;
     p=tstat(tval,n[0]+n[1]-2.0)/2; // one-tailed
 	SLP=log10(2*p)*(mean[0]>=mean[1]?1:-1);
-			fprintf(fo,"%s %8.2f\n",gene[g],SLP);
+	
+			if (SLP > pp->geneLevelOutputThreshold)
+				fprintf(fo,"%s %8.2f\n",gene[g],SLP);
 			}
 			fprintf(fo,"\n\nList of genes for which no score file was found:\n");
 			for (g=0;g<nGene;++g)
