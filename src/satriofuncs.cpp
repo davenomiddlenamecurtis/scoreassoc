@@ -1,5 +1,29 @@
 #include "scoreassoc.hpp"
 
+int output_nm_report(FILE *fp, par_info *pi, char *non_mendelian_report)
+{
+	char *ptr,*sptr;
+	int l, pl;
+	fprintf(fp, "\nDe novo and non-Mendelian transmission list:\n%s\n");
+	sptr = non_mendelian_report;
+	while ((ptr=strchr(sptr,'\n'))!=0 && sscanf(sptr,"Locus %d",&l)==1)
+	{
+		*ptr='\0';
+		for (pl = 0; pl < pi->n_loci_to_use; ++pl)
+		{
+			if (l==pi->loci_to_use[pl])
+			{
+				fprintf(fp,"%s\n",strchr(sptr,':')+2);
+				break;
+			}
+		}
+		sptr=ptr+1;
+	}
+	fprintf(fp,"\n");
+	return 1;
+}
+
+
 
 int sort_trios(subject **sub, int nsub, par_info *pi, sa_par_info *spi,subject **new_sub, non_mendelian *non_mendelians,int *n_non_mendelian,char *non_mendelian_report)
 {
@@ -240,8 +264,8 @@ int sort_trios(subject **sub, int nsub, par_info *pi, sa_par_info *spi,subject *
 			}
 			if (is_de_novo)
 			{
-				sprintf(strchr(non_mendelian_report, '\0'),"De novo mutation detected in transmissions from %s and %s to %s, genotypes: %s:%d%d %s:%d%d %s:%d%d  %s\n",
-					parent_ptr[0]->id, parent_ptr[1]->id, child_ptr->id,
+				sprintf(strchr(non_mendelian_report, '\0'),"Locus %d: De novo mutation detected in transmissions from %s and %s to %s, genotypes: %s:%d%d %s:%d%d %s:%d%d  %s\n",
+					l,parent_ptr[0]->id, parent_ptr[1]->id, child_ptr->id,
 					child_ptr->id,child_ptr->all[l][0],child_ptr->all[l][1],
 					parent_ptr[0]->id,parent_ptr[0]->all[l][0],parent_ptr[0]->all[l][1],
 					parent_ptr[1]->id,parent_ptr[1]->all[l][0],parent_ptr[1]->all[l][1],
@@ -255,8 +279,8 @@ int sort_trios(subject **sub, int nsub, par_info *pi, sa_par_info *spi,subject *
 			{
 				if (is_non_mendelian[p])
 				{
-					sprintf(strchr(non_mendelian_report, '\0'),"Non-mendelian transmission from %s to %s, genotypes: %s:%d%d %s:%d%d %s:%d%d  %s\n",
-						parent_ptr[p]->id, child_ptr->id,
+					sprintf(strchr(non_mendelian_report, '\0'),"Locus %d: Non-mendelian transmission from %s to %s, genotypes: %s:%d%d %s:%d%d %s:%d%d  %s\n",
+						l,parent_ptr[p]->id, child_ptr->id,
 						child_ptr->id,child_ptr->all[l][0],child_ptr->all[l][1],
 						parent_ptr[0]->id,parent_ptr[0]->all[l][0],parent_ptr[0]->all[l][1],
 						parent_ptr[1]->id,parent_ptr[1]->all[l][0],parent_ptr[1]->all[l][1],
