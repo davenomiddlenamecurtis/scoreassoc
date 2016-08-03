@@ -4,7 +4,7 @@ int output_nm_report(FILE *fp, par_info *pi, char *non_mendelian_report)
 {
 	char *ptr,*sptr;
 	int l, pl;
-	fprintf(fp, "\nDe novo and non-Mendelian transmission list:\n%s\n");
+	fprintf(fp, "\nDe novo and non-Mendelian transmission list:\n");
 	sptr = non_mendelian_report;
 	while ((ptr=strchr(sptr,'\n'))!=0 && sscanf(sptr,"Locus %d",&l)==1)
 	{
