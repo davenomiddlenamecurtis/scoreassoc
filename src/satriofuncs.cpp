@@ -23,8 +23,6 @@ int output_nm_report(FILE *fp, par_info *pi, char *non_mendelian_report)
 	return 1;
 }
 
-
-
 int sort_trios(subject **sub, int nsub, par_info *pi, sa_par_info *spi,subject **new_sub, non_mendelian *non_mendelians,int *n_non_mendelian,char *non_mendelian_report)
 {
 	FILE *ft,*flog;
@@ -269,7 +267,7 @@ int sort_trios(subject **sub, int nsub, par_info *pi, sa_par_info *spi,subject *
 					child_ptr->id,child_ptr->all[l][0],child_ptr->all[l][1],
 					parent_ptr[0]->id,parent_ptr[0]->all[l][0],parent_ptr[0]->all[l][1],
 					parent_ptr[1]->id,parent_ptr[1]->all[l][0],parent_ptr[1]->all[l][1],
-					names[l]);
+					spi->use_comments?comments[l]:names[l]);
 				non_mendelians[*n_non_mendelian].sub=child_num;
 				non_mendelians[*n_non_mendelian].loc=l;
 				non_mendelians[*n_non_mendelian].nd=DE_NOVO;
@@ -284,7 +282,7 @@ int sort_trios(subject **sub, int nsub, par_info *pi, sa_par_info *spi,subject *
 						child_ptr->id,child_ptr->all[l][0],child_ptr->all[l][1],
 						parent_ptr[0]->id,parent_ptr[0]->all[l][0],parent_ptr[0]->all[l][1],
 						parent_ptr[1]->id,parent_ptr[1]->all[l][0],parent_ptr[1]->all[l][1],
-						names[l]);
+						spi->use_comments?comments[l]:names[l]);
 					non_mendelians[*n_non_mendelian].sub=child_num;
 					non_mendelians[*n_non_mendelian].loc=l;
 					non_mendelians[*n_non_mendelian].nd=NON_MENDELIAN;
