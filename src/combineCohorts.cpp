@@ -64,12 +64,12 @@ int ccParams::readParms(int argc,char *argv[])
 		{
 			if ((ptr = strstr(arg,"GENE")) == 0)
 			{
-				dcerror(1,"--score-file-spec does not contain the string GENE");
+				dcerror(1,"--score-file-spec does not contain the string GENE\n");
 				return 0;
 			}
 			else if ((ptr = strstr(arg,"COHORT")) == 0)
 			{
-				dcerror(1,"--score-file-spec does not contain the string GENE");
+				dcerror(1,"--score-file-spec does not contain the string GENE\n");
 				return 0;
 			}
 			else
@@ -90,7 +90,7 @@ int ccParams::readParms(int argc,char *argv[])
 			strcpy(cohortListFileName,arg);
 		}
 		else
-			dcerror(1,"Did not recognise argument specifier %s",arg);
+			dcerror(1,"Did not recognise argument specifier %s\n",arg);
 	}
 	// do checks
 	return 1;
@@ -180,6 +180,7 @@ int writeSLPs(char *scoreFileSpec,char cohorts[MAX_COHORTS][MAX_COHORT_LENGTH],i
 	{
 		*ptr='\0';
 		strcat(specBuff2,sptr);
+		strcat(specBuff2,geneName);
 	}
 	strcat(specBuff2,sptr);
 	strcpy(specBuff1,specBuff2);
@@ -190,6 +191,7 @@ int writeSLPs(char *scoreFileSpec,char cohorts[MAX_COHORTS][MAX_COHORT_LENGTH],i
 		{
 			*ptr='\0';
 			strcat(fn,sptr);
+			strcat(fn,cohorts[c]);
 		}
 		strcat(fn,sptr);
 		fs=fopen(fn,"r"); // not an error if this fails
@@ -202,10 +204,10 @@ int writeSLPs(char *scoreFileSpec,char cohorts[MAX_COHORTS][MAX_COHORT_LENGTH],i
 				totalSC.addScore(cc,score);
 			}
 			fprintf(fo,"%.2f\t",cohortSC.getSLP());
+			fclose(fs);
 		}
 		else
 			fprintf(fo,"0\t");
-		fclose(fs);
 	}
 	fprintf(fo,"%.2f\t",totalSC.getSLP());
 	for (cc=0;cc<2;++cc)
