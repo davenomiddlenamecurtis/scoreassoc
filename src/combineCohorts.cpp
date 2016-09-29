@@ -194,6 +194,7 @@ int writeSLPs(char *scoreFileSpec,char cohorts[MAX_COHORTS][MAX_COHORT_LENGTH],i
 			strcat(fn,cohorts[c]);
 		}
 		strcat(fn,sptr);
+puts(fn);
 		fs=fopen(fn,"r"); // not an error if this fails
 		if (fs)
 		{
