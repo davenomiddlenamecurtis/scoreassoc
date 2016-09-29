@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 14 for Windows Desktop
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "scoreassoc", "scoreassoc.vcxproj", "{6735E007-F33E-497E-A265-C4D2D6C59CF4}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pathwayAssoc", "..\pathwayAssoc\pathwayAssoc.vcxproj", "{7196C603-7DFF-43D2-8826-5CC306C44270}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "permPathwayAssoc", "permPathwayAssoc\permPathwayAssoc.vcxproj", "{8459AB64-0722-4D8D-8955-99246E03BC4A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "combineCohorts", "..\combineCohorts\combineCohorts.vcxproj", "{7870998D-4E54-4647-9686-2358CEFDDE46}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,14 @@ Global
 		{8459AB64-0722-4D8D-8955-99246E03BC4A}.Release|x64.Build.0 = Release|x64
 		{8459AB64-0722-4D8D-8955-99246E03BC4A}.Release|x86.ActiveCfg = Release|Win32
 		{8459AB64-0722-4D8D-8955-99246E03BC4A}.Release|x86.Build.0 = Release|Win32
+		{7870998D-4E54-4647-9686-2358CEFDDE46}.Debug|x64.ActiveCfg = Debug|x64
+		{7870998D-4E54-4647-9686-2358CEFDDE46}.Debug|x64.Build.0 = Debug|x64
+		{7870998D-4E54-4647-9686-2358CEFDDE46}.Debug|x86.ActiveCfg = Debug|Win32
+		{7870998D-4E54-4647-9686-2358CEFDDE46}.Debug|x86.Build.0 = Debug|Win32
+		{7870998D-4E54-4647-9686-2358CEFDDE46}.Release|x64.ActiveCfg = Release|x64
+		{7870998D-4E54-4647-9686-2358CEFDDE46}.Release|x64.Build.0 = Release|x64
+		{7870998D-4E54-4647-9686-2358CEFDDE46}.Release|x86.ActiveCfg = Release|Win32
+		{7870998D-4E54-4647-9686-2358CEFDDE46}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
