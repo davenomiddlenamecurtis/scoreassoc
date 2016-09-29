@@ -89,6 +89,8 @@ int ccParams::readParms(int argc,char *argv[])
 		{
 			strcpy(cohortListFileName,arg);
 		}
+		else
+			dcerror(1,"Did not recognise argument specifier %s",arg);
 	}
 	// do checks
 	return 1;
