@@ -11,6 +11,7 @@ MAX_ALL_MAK = 40
 MAX_SUB_MAK = 10000
 
 OURFLAGS = $(CFLAGS) -DMAX_LOCI=$(MAX_LOCI_MAK) -DMAX_ALL=$(MAX_ALL_MAK) -DMAX_SUB=$(MAX_SUB_MAK) 
+# DEBUGFLAG = -g
 
 HEADERS = cdflib.h  dcerror.hpp  dcexpr.hpp  fisher.h  sagcutils.h  safilterfuncs.hpp  scoreassoc.hpp
 # cheat and just assume all code dependent on all of these
@@ -34,20 +35,20 @@ clean:
 VPATH=../src
 	
 %.o: ../src/%.cpp $(HEADERS)
-	$(CC) $(OURFLAGS) -c $< -o ../obj/$@
+	$(CC) $(OURFLAGS) ${DEBUGFLAG} -c $< -o ../obj/$@
 	
 %.o: ../src/%.c $(HEADERS)
-	$(C) $(OURFLAGS) -c $< -o ../obj/$@
+	$(C) $(OURFLAGS) ${DEBUGFLAG} -c $< -o ../obj/$@
 
 scoreassoc: scoreassoc.o saglobals.o scoreassocfuncs.o sarecfuncs.o sahaprecfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o 
-	$(CC) -o scoreassoc scoreassoc.o saglobals.o scoreassocfuncs.o sarecfuncs.o sahaprecfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o -lm
+	$(CC) ${DEBUGFLAG} -o scoreassoc scoreassoc.o saglobals.o scoreassocfuncs.o sarecfuncs.o sahaprecfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o -lm
 
 combineCohorts: combineCohorts.o dcdflib.o ipmpar.o dcerror.o 
-	$(CC) -o combineCohorts combineCohorts.o dcdflib.o ipmpar.o dcerror.o -lm
+	$(CC) ${DEBUGFLAG} -o combineCohorts combineCohorts.o dcdflib.o ipmpar.o dcerror.o -lm
 
 pathwayAssoc: pathwayAssoc.o dcdflib.o ipmpar.o dcerror.o 
-	$(CC) -o pathwayAssoc pathwayAssoc.o dcdflib.o ipmpar.o dcerror.o -lm
+	$(CC) ${DEBUGFLAG} -o pathwayAssoc pathwayAssoc.o dcdflib.o ipmpar.o dcerror.o -lm
 
 permPathwayAssoc: permPathwayAssoc.o dcdflib.o ipmpar.o dcerror.o 
-	$(CC) -o permPathwayAssoc permPathwayAssoc.o dcdflib.o ipmpar.o dcerror.o -lm
+	$(CC) ${DEBUGFLAG} -o permPathwayAssoc permPathwayAssoc.o dcdflib.o ipmpar.o dcerror.o -lm
 
