@@ -151,9 +151,11 @@ void SLPcalculator::clear()
 void SLPcalculator::augment(SLPcalculator &source)
 {
 	int cc;
+	float sourceMean;
+	sourceMean=(source.sigmaX[0]+source.sigmaX[1])/(source.nSub[0]+source.nSub[1]);
 	for (cc=0;cc<2;++cc)
 	{
-		sigmaX[cc]+=source.sigmaX[cc];
+		sigmaX[cc]+=source.sigmaX[cc]-sourceMean*source.nSub[cc];
 		SSQ[cc]+=source.SSQ[cc];
 		nSub[cc]+=source.nSub[cc];
 	}
