@@ -134,6 +134,8 @@ int paParams::readParms(int argc, char *argv[])
 		{
 			geneLevelOutputThreshold=atof(arg);
 		}
+		else
+			dcerror(1,"Did not recognise argument specifier %s\n",arg);
 	}
 	// do checks
 	return 1;

@@ -125,11 +125,12 @@ int ccParams::getNextArg(char *nextArg,int argc,char *argv[],FILE **fpp,int *arg
 class SLPcalculator {
 public:
 	int nSub[2];
-	float mean[2],var[2],sd[2],sigmaX[2],sigmaX2[2],tval,SLP;
+	float mean[2],var[2],sd[2],sigmaX[2],sigmaX2[2],SSQ[2],tval,SLP;
 	double p;
 	void addScore(int cc,float score);
 	void clear();
-	float getSLP();
+	float getSLP(int useSSQs=0);
+	void augment(SLPcalculator &source);
 	SLPcalculator() { clear(); }
 };
 
@@ -144,17 +145,30 @@ void SLPcalculator::clear()
 {
 	int cc;
 	for (cc=0;cc<2;++cc)
-		sigmaX[cc]=sigmaX2[cc]=nSub[cc]=0;
+		SSQ[cc]=sigmaX[cc]=sigmaX2[cc]=nSub[cc]=0;
 }
 
-float SLPcalculator::getSLP()
+void SLPcalculator::augment(SLPcalculator &source)
+{
+	int cc;
+	for (cc=0;cc<2;++cc)
+	{
+		sigmaX[cc]+=source.sigmaX[cc];
+		SSQ[cc]+=source.SSQ[cc];
+		nSub[cc]+=source.nSub[cc];
+	}
+}
+
+float SLPcalculator::getSLP(int useSSQs)
 {
 	int cc;
 	float SE,s2;
 	for (cc=0;cc<2;++cc)
 	{
-		mean[cc] = sigmaX[cc]/nSub[cc];
-		var[cc] = (sigmaX2[cc]-sigmaX[cc]*sigmaX[cc]/nSub[cc])/(nSub[cc]-1);
+		mean[cc]=sigmaX[cc]/nSub[cc];
+		if (!useSSQs)
+			SSQ[cc]=(sigmaX2[cc]-sigmaX[cc]*sigmaX[cc]/nSub[cc]);
+		var[cc]=SSQ[cc]/(nSub[cc]-1);
 		sd[cc]=sqrt(var[cc]);
 	}
 	s2=((nSub[0]-1)*var[0]+(nSub[1]-1)*var[1])/(nSub[0]+nSub[1]-2);
@@ -194,7 +208,6 @@ int writeSLPs(char *scoreFileSpec,char cohorts[MAX_COHORTS][MAX_COHORT_LENGTH],i
 			strcat(fn,cohorts[c]);
 		}
 		strcat(fn,sptr);
-puts(fn);
 		fs=fopen(fn,"r"); // not an error if this fails
 		if (fs)
 		{
@@ -202,15 +215,15 @@ puts(fn);
 			while (fgets(line,1000,fs) && sscanf(line,"%*s %d %f",&cc,&score)==2)
 			{
 				cohortSC.addScore(cc,score);
-				totalSC.addScore(cc,score);
 			}
 			fprintf(fo,"%.2f\t",cohortSC.getSLP());
+			totalSC.augment(cohortSC); // must be after have called getSLP()
 			fclose(fs);
 		}
 		else
 			fprintf(fo,"0\t");
 	}
-	fprintf(fo,"%.2f\t",totalSC.getSLP());
+	fprintf(fo,"%.2f\t",totalSC.getSLP(1));
 	for (cc=0;cc<2;++cc)
 		fprintf(fo,"%d\t",totalSC.nSub[cc]);
 	for (cc=0;cc<2;++cc)
@@ -248,6 +261,7 @@ int main(int argc,char *argv[])
 	fg=fopen(cp.geneListFileName,"r");
 	if (fg==0)
 		dcerror(1,"Could not open gene list file %s",cp.geneListFileName);
+	nCohorts=0;
 	while (fgets(line,1000,fc) && sscanf(line,"%s",cohorts[nCohorts])==1)
 		++nCohorts;
 	fclose(fc);

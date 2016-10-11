@@ -181,6 +181,8 @@ int ppaParams::readParms(int argc, char *argv[])
 		{
 			pathwayThreshold=atof(arg);
 		}
+		else
+			dcerror(1,"Did not recognise argument specifier %s\n",arg);
 	}
 	// need to do checks here at some point
 	return 1;
