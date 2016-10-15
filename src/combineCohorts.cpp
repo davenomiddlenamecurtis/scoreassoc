@@ -174,12 +174,18 @@ float SLPcalculator::getSLP(int useSSQs)
 		sd[cc]=sqrt(var[cc]);
 	}
 	s2=((nSub[0]-1)*var[0]+(nSub[1]-1)*var[1])/(nSub[0]+nSub[1]-2);
-	SE=sqrt(s2*(1/(float)nSub[0]+1/(float)nSub[1]));
-	if (SE==0)
+	if (s2==0)
+	{
+		SE=0;
 		tval=0;
+		p=0.5;
+	}
 	else
+	{
+		SE=sqrt(s2*(1/(float)nSub[0]+1/(float)nSub[1]));
 		tval=(mean[1]-mean[0])/SE;
-	p=tstat(tval,nSub[0]+nSub[1]-2.0)/2; // one-tailed
+		p=tstat(tval,nSub[0]+nSub[1]-2.0)/2; // one-tailed
+	}
 	SLP=log10(2*p)*(mean[0]>=mean[1]?1:-1);
 	return SLP;
 }
@@ -200,6 +206,7 @@ int writeSLPs(char *scoreFileSpec,char cohorts[MAX_COHORTS][MAX_COHORT_LENGTH],i
 	}
 	strcat(specBuff2,sptr);
 	strcpy(specBuff1,specBuff2);
+	fprintf(fo,"%s\t",geneName);
 	for (c=0;c<nCohorts;++c)
 	{
 		strcpy(specBuff2,specBuff1);
@@ -269,7 +276,7 @@ int main(int argc,char *argv[])
 	fclose(fc);
 	for (c=0;c<nCohorts;++c)
 		fprintf(fo,"%s\t",cohorts[c]);
-	fprintf(fo,"SLP\tnCont\tnCase\tmCont\tmCase\tsdCont\tsdCase\tt\n");
+	fprintf(fo,"gene\tSLP\tnCont\tnCase\tmCont\tmCase\tsdCont\tsdCase\tt\n");
 	while (fgets(line,1000,fg) && sscanf(line,"%s",geneName)==1)
 	{
 		writeSLPs(cp.scoreFileSpec,cohorts,nCohorts,geneName,fo);
