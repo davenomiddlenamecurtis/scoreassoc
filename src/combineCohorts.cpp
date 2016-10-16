@@ -274,9 +274,10 @@ int main(int argc,char *argv[])
 	while (fgets(line,1000,fc) && sscanf(line,"%s",cohorts[nCohorts])==1)
 		++nCohorts;
 	fclose(fc);
+	fprintf(fo, "Gene\t");
 	for (c=0;c<nCohorts;++c)
 		fprintf(fo,"%s\t",cohorts[c]);
-	fprintf(fo,"Gene\tSLP\tnCont\tnCase\tmCont\tmCase\tsdCont\tsdCase\tt\n");
+	fprintf(fo,"SLP\tnCont\tnCase\tmCont\tmCase\tsdCont\tsdCase\tt\n");
 	while (fgets(line,1000,fg) && sscanf(line,"%s",geneName)==1)
 	{
 		writeSLPs(cp.scoreFileSpec,cohorts,nCohorts,geneName,fo);
