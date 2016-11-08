@@ -16,18 +16,18 @@ xmlns="http://www.w3.org/TR/REC-html40">
   <o:Author>David Curtis</o:Author>
   <o:Template>B436C3BA.dotm</o:Template>
   <o:LastAuthor>Dave Curtis</o:LastAuthor>
-  <o:Revision>3</o:Revision>
-  <o:TotalTime>3225</o:TotalTime>
+  <o:Revision>4</o:Revision>
+  <o:TotalTime>3234</o:TotalTime>
   <o:LastPrinted>2016-06-20T14:51:00Z</o:LastPrinted>
   <o:Created>2016-05-26T16:44:00Z</o:Created>
-  <o:LastSaved>2016-09-27T09:12:00Z</o:LastSaved>
+  <o:LastSaved>2016-11-08T11:43:00Z</o:LastSaved>
   <o:Pages>38</o:Pages>
-  <o:Words>6934</o:Words>
-  <o:Characters>39526</o:Characters>
+  <o:Words>6981</o:Words>
+  <o:Characters>39797</o:Characters>
   <o:Company>UCL</o:Company>
-  <o:Lines>329</o:Lines>
-  <o:Paragraphs>92</o:Paragraphs>
-  <o:CharactersWithSpaces>46368</o:CharactersWithSpaces>
+  <o:Lines>331</o:Lines>
+  <o:Paragraphs>93</o:Paragraphs>
+  <o:CharactersWithSpaces>46685</o:CharactersWithSpaces>
   <o:Version>16.00</o:Version>
  </o:DocumentProperties>
  <o:OfficeDocumentSettings>
@@ -1034,7 +1034,7 @@ style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fa
 style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>
 is a program which performs a weighted burden analysis to test if there is an
 excess of rare, functional variants in cases compared with controls, as
-described in this paper:<o:p></o:p></span></p>
+described in these papers:<o:p></o:p></span></p>
 
 <p><span style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:
 minor-fareast'><a
@@ -1042,6 +1042,12 @@ href="http://www.dovepress.com/a-rapid-method-for-combined-analysis-of-common-an
 rapid method for combined analysis of common and rare variants at the level of
 a region, gene, or pathway. D Curtis. <i style='mso-bidi-font-style:normal'>Advances
 and applications in bioinformatics and chemistry</i>: AABC 5, 1. 2012.</a><o:p></o:p></span></p>
+
+<p><span style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:
+minor-fareast'><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4833177/">Practical
+experience of the application of a weighted burden test to whole exome sequence
+data for obesity and schizophrenia. Curtis D, UK10K Consortium. <i
+style='mso-bidi-font-style:normal'>Ann Hum Genet</i> 2016.</a><o:p></o:p></span></p>
 
 <p><span style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:
 minor-fareast'>It also implements analyses aimed to detect recessive effects by
@@ -1155,15 +1161,16 @@ minor-fareast'>Method<o:p></o:p></span></h2>
 
 <p><span style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:
 minor-fareast'>Variants are weighted according to their rarity and predicted
-effect. A weighting factor can be specified to provide an arbitrary weight for
-a very rare variant compared with a common one. The default value for this
-weighting factor is 10. The weight according to effect means that, for example,
-an intergenic variant can be given a weight of 1 whereas a stop (nonsense)
-variant can be given a weight of 20. The weight according to frequency and the
-weight according to effect are multiplied together to produce an overall weight
-for each variant. Within a subject, the weights for all variants are added to
-produce an overall score. The average scores for cases and controls are
-compared using a t test.<o:p></o:p></span></p>
+effect. The weight for rarity is calculated according to a quadratic function
+such that a common variant has weight 1 and a very rare variant has a weight
+equal to a weighting factor whose default value is 10. The weight according to predicted
+effect means that, for example, an intergenic variant can be given a weight of
+1 whereas a stop (nonsense) variant can be given a weight of 20. The weight
+according to frequency and the weight according to effect are multiplied
+together to produce an overall weight for each variant. Within a subject, the
+weights for all variants which are seen in that subject are added to produce an
+overall score. The average scores for cases and controls are compared using a t
+test.<o:p></o:p></span></p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'>To
 carry out tests for recessive effects, the programs test whether there is an
@@ -1387,9 +1394,9 @@ minor-fareast'>IMPUTE2 <span class=SpellE>datafile</span> format<o:p></o:p></spa
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
 <p class=MsoNormal>The <i style='mso-bidi-font-style:normal'>--<span
-class=SpellE>gendatafile</span></i> file format is produced by the IMPUTE2
-software and consists of a <i style='mso-bidi-font-style:normal'>gen</i> file
-containing sets of genotype probabilities. See <a
+class=SpellE>gendatafile</span></i> file format is produced by the IMPUTE2 software
+and consists of a <i style='mso-bidi-font-style:normal'>gen</i> file containing
+sets of genotype probabilities. See <a
 href="https://mathgen.stats.ox.ac.uk/impute/impute_v2.html%23output_options">https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#output_options</a>.
 </p>
 
@@ -1417,8 +1424,8 @@ format may be easier to produce from some programs. The data consists of one
 row per subject with entries separated by spaces. The first entry is an
 arbitrary ID. This is followed by an affection status code consisting of 0 for
 controls and 1 for cases. Subsequent entries consist of pairs of alleles for
-each marker, numbered 1 or 2, with 0 0 denoting a missing genotype. The reference
-allele is 1 and any other allele must be coded as 2.<o:p></o:p></span></p>
+each marker, numbered 1 or 2, with 0 0 denoting a missing genotype. The
+reference allele is 1 and any other allele must be coded as 2.<o:p></o:p></span></p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
 style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'><o:p>&nbsp;</o:p></span></p>
@@ -1505,7 +1512,8 @@ class=SpellE>scorefile</span> file</h3>
 
 <p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
 style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>This
-option produces an additional output file containing the scores for each subject.<o:p></o:p></span></p>
+option produces an additional output file containing the scores for each
+subject.<o:p></o:p></span></p>
 
 <h3 style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'>--<span
 class=SpellE>weightfile</span> file</h3>
@@ -1513,12 +1521,11 @@ class=SpellE>weightfile</span> file</h3>
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'>This
-reads the weights for the function of each variant from the specified file.
-There must be a value for each possible function produced by the <i
-style='mso-bidi-font-style:normal'>--annotate</i> option of <span class=SpellE><i
-style='mso-bidi-font-style:normal'>pseq</i></span>. The file <i
-style='mso-bidi-font-style:normal'>funcWeights.txt</i> has the following
-values:</p>
+reads the weights for the function of each variant from the specified file. There
+must be a value for each possible function produced by the <i style='mso-bidi-font-style:
+normal'>--annotate</i> option of <span class=SpellE><i style='mso-bidi-font-style:
+normal'>pseq</i></span>. The file <i style='mso-bidi-font-style:normal'>funcWeights.txt</i>
+has the following values:</p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
@@ -1720,9 +1727,9 @@ class=SpellE>locusfilterfile</span> file</h3>
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'>This
-allows one to specify which loci are to be included in the analysis. It consists
-of 0s and 1s separated by white space (space, tab, new line) equal to the
-number of loci. Only the loci corresponding to the 1s will be used.</p>
+allows one to specify which loci are to be included in the analysis. It
+consists of 0s and 1s separated by white space (space, tab, new line) equal to
+the number of loci. Only the loci corresponding to the 1s will be used.</p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
@@ -1761,8 +1768,8 @@ line, which are evaluated for each variant and which eliminate the variant from
 all analyses if true. One can build up complex logical and arithmetic
 expressions and precedence rules mean that in the examples below the
 parentheses are optional. The symbols &amp;, | and = mean AND, OR and IS EQUAL
-TO. For example, to keep only variants with MAF&lt;=0.1 in cases or controls,
-one can have the following line:</p>
+TO. For example, to keep only variants with MAF&lt;=0.1 in cases or controls, one
+can have the following line:</p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
@@ -1778,8 +1785,8 @@ cases.</p>
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'>The
-following filter will remove variants which are not typed in more than 100 out
-of 2545 cases or controls:</p>
+following filter will remove variants which are not typed in more than 100 out of
+2545 cases or controls:</p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
@@ -1932,12 +1939,15 @@ style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&
 style='mso-spacerun:yes'>&nbsp;&nbsp; </span>AB<span
 style='mso-spacerun:yes'>&nbsp; </span>:<span style='mso-spacerun:yes'>&nbsp;
 </span>BB<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span>AA<span style='mso-spacerun:yes'>&nbsp; </span>:<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>AA<span
+style='mso-spacerun:yes'>&nbsp; </span>:<span
 style='mso-spacerun:yes'>&nbsp;&nbsp; </span>AB<span
 style='mso-spacerun:yes'>&nbsp; </span>:<span style='mso-spacerun:yes'>&nbsp;
-</span>BB<span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><o:p></o:p></span></p>
+</span>BB<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><o:p></o:p></span></p>
 
 <p style='margin:0cm;margin-bottom:.0001pt;mso-add-space:auto;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
 style='font-size:14.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";
@@ -1963,7 +1973,8 @@ style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>3 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000589<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>2544 :<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1 :<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='mso-spacerun:yes'>&nbsp;</span>1 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000196<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000393<span
@@ -1992,10 +2003,11 @@ style='font-size:14.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";
 mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>chr11:113281524_sil<span
 style='mso-spacerun:yes'>&nbsp;&nbsp; </span>2545 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0 :<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
+style='mso-spacerun:yes'>&nbsp; </span><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;</span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000000<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>2544 : <span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>1 :<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>2544 :<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000196<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000098<span
@@ -2106,7 +2118,8 @@ style='mso-spacerun:yes'>&nbsp;&nbsp; </span>2545 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000000<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>2544 :<span
+style='mso-spacerun:yes'>&nbsp; </span><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;</span>2544 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000196<span
@@ -2165,8 +2178,8 @@ style='mso-spacerun:yes'>&nbsp; </span>chr11:113283459_silent_G/A<o:p></o:p></sp
 
 <p style='margin:0cm;margin-bottom:.0001pt;mso-add-space:auto;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
 style='font-size:14.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";
-mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>chr11:113283476_mis
-<span style='mso-spacerun:yes'>&nbsp;&nbsp;</span>2544 :<span
+mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>chr11:113283476_mis<span
+style='mso-spacerun:yes'>&nbsp;&nbsp; </span>2544 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000196<span
@@ -2191,8 +2204,8 @@ style='mso-spacerun:yes'>&nbsp;&nbsp; </span>1104 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp; </span>1221<span
 style='mso-spacerun:yes'>&nbsp; </span>0.696660<span
 style='mso-spacerun:yes'>&nbsp; </span>0.307073<span
-style='mso-spacerun:yes'>&nbsp; </span>1<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>11.70<span
+style='mso-spacerun:yes'>&nbsp; </span>1<span style='mso-spacerun:yes'>&nbsp;
+</span><span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;</span>11.70<span
 style='mso-spacerun:yes'>&nbsp; </span>chr11:113283477_silent_A/G<o:p></o:p></span></p>
 
 <p style='margin:0cm;margin-bottom:.0001pt;mso-add-space:auto;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
@@ -2248,10 +2261,11 @@ style='font-size:14.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";
 mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>chr11:113283639_int<span
 style='mso-spacerun:yes'>&nbsp;&nbsp; </span>2516 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp; </span>14 :<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
+style='mso-spacerun:yes'>&nbsp; </span><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;</span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.002767<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>2526 : <span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>8 :<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>2526 :<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>8 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.001579<span
 style='mso-spacerun:yes'>&nbsp; </span>0.002172<span
@@ -2279,8 +2293,7 @@ style='mso-spacerun:yes'>&nbsp; </span>chr11:113284066_intronic_C/A<o:p></o:p></
 style='font-size:14.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";
 mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>chr11:113284075_int<span
 style='mso-spacerun:yes'>&nbsp;&nbsp; </span>2513 :<span
-style='mso-spacerun:yes'>&nbsp;&nbsp; </span><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;</span>1 :<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000199<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>2512 :<span
@@ -2337,8 +2350,7 @@ style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000786<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000688<span
 style='mso-spacerun:yes'>&nbsp; </span>2<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-spacerun:yes'>&nbsp;</span>49.88<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>49.88<span
 style='mso-spacerun:yes'>&nbsp; </span>chr11:113285166_silent_G/A,C<o:p></o:p></span></p>
 
 <p style='margin:0cm;margin-bottom:.0001pt;mso-add-space:auto;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
@@ -2362,11 +2374,11 @@ style='font-size:14.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";
 mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>chr11:113286189_mis<span
 style='mso-spacerun:yes'>&nbsp;&nbsp; </span>2544 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1 :<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;</span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000196<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>2545 :<span
-style='mso-spacerun:yes'>&nbsp;&nbsp; </span><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;</span>0 :<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000000<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000098<span
@@ -2479,9 +2491,9 @@ style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000393<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>2545 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0 :<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-spacerun:yes'>&nbsp;</span>0<span style='mso-spacerun:yes'>&nbsp;
-</span>0.000000<span style='mso-spacerun:yes'>&nbsp; </span>0.000196<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
+style='mso-spacerun:yes'>&nbsp; </span>0.000000<span
+style='mso-spacerun:yes'>&nbsp; </span>0.000196<span
 style='mso-spacerun:yes'>&nbsp; </span>2<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>99.93<span
 style='mso-spacerun:yes'>&nbsp; </span>chr11:113287668_missense_C/T<o:p></o:p></span></p>
@@ -2504,8 +2516,8 @@ style='mso-spacerun:yes'>&nbsp; </span>chr11:113287691_silent_G/A<o:p></o:p></sp
 
 <p style='margin:0cm;margin-bottom:.0001pt;mso-add-space:auto;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
 style='font-size:14.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";
-mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>chr11:113287694_sil<span
-style='mso-spacerun:yes'>&nbsp;&nbsp; </span>2367 :<span
+mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>chr11:113287694_sil
+<span style='mso-spacerun:yes'>&nbsp;&nbsp;</span>2367 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>175 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>3<span
 style='mso-spacerun:yes'>&nbsp; </span>0.035560<span
@@ -2618,7 +2630,8 @@ style='mso-spacerun:yes'>&nbsp; </span>chr11:113295218_silent_G/A<o:p></o:p></sp
 style='font-size:14.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";
 mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>chr11:113295221_sil<span
 style='mso-spacerun:yes'>&nbsp;&nbsp; </span>2539 :<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>6 :<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;</span>6 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.001179<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>2537 :<span
@@ -2707,8 +2720,8 @@ style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>2 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000393<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000393<span
-style='mso-spacerun:yes'>&nbsp; </span>2<span style='mso-spacerun:yes'>&nbsp;
-</span><span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;</span>99.86<span
+style='mso-spacerun:yes'>&nbsp; </span>2<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>99.86<span
 style='mso-spacerun:yes'>&nbsp; </span>chr11:113295363_missense_A/C<o:p></o:p></span></p>
 
 <p style='margin:0cm;margin-bottom:.0001pt;mso-add-space:auto;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
@@ -3480,8 +3493,7 @@ style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fa
 <p class=MsoQuote><span style='mso-spacerun:yes'>&nbsp; </span>1
 113281616-NON_SYNON</p>
 
-<p class=MsoQuote><span style='mso-spacerun:yes'>&nbsp; </span>2
-113283337-NON_SYNON</p>
+<p class=MsoQuote><span style='mso-spacerun:yes'>&nbsp; </span>2 113283337-NON_SYNON</p>
 
 <p class=MsoQuote><span style='mso-spacerun:yes'>&nbsp; </span>3
 113283362-NON_SYNON</p>
@@ -3513,8 +3525,7 @@ style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fa
 <p class=MsoQuote><span style='mso-spacerun:yes'>&nbsp;</span>12
 113287668-NON_SYNON</p>
 
-<p class=MsoQuote><span style='mso-spacerun:yes'>&nbsp;</span>13
-113295145-NON_SYNON</p>
+<p class=MsoQuote><span style='mso-spacerun:yes'>&nbsp;</span>13 113295145-NON_SYNON</p>
 
 <p class=MsoQuote><span style='mso-spacerun:yes'>&nbsp;</span>14
 113295304-NON_SYNON</p>
@@ -3522,7 +3533,8 @@ style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fa
 <p class=MsoQuote><span style='mso-spacerun:yes'>&nbsp;</span>15
 113295316-NON_SYNON</p>
 
-<p class=MsoQuote><span style='mso-spacerun:yes'>&nbsp;</span>16 113295346-NON_SYNON</p>
+<p class=MsoQuote><span style='mso-spacerun:yes'>&nbsp;</span>16
+113295346-NON_SYNON</p>
 
 <p class=MsoQuote><span style='mso-spacerun:yes'>&nbsp;</span>17
 113295363-NON_SYNON</p>
@@ -3563,11 +3575,10 @@ controls</p>
 minor alleles on both haplotypes)</p>
 
 <p class=MsoQuote><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span><span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;</span>AA<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>AB<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>BB<span
-style='mso-spacerun:yes'>&nbsp;&nbsp; </span></p>
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>AA<span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>AB<span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>BB<span style='mso-spacerun:yes'>&nbsp;&nbsp; </span></p>
 
 <p class=MsoQuote>Controls 2416.00<span style='mso-spacerun:yes'>&nbsp;
 </span>128.00<span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>1.00 </p>
@@ -3695,10 +3706,10 @@ style='mso-bidi-font-style:normal'><o:p></o:p></i></h1>
 style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>pathwayAssoc</span></i></span><span
 style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>
 is a program which performs the same weighted burden analysis as <span
-class=SpellE><i style='mso-bidi-font-style:normal'>scoreassoc</i></span> but
-which is designed to be applied to groups of genes. It tests whether a group of
-genes has an excess of rare, functional variants in cases compared with
-controls, using the same approach as described in this paper:<o:p></o:p></span></p>
+class=SpellE><i style='mso-bidi-font-style:normal'>scoreassoc</i></span> but which
+is designed to be applied to groups of genes. It tests whether a group of genes
+has an excess of rare, functional variants in cases compared with controls,
+using the same approach as described in this paper:<o:p></o:p></span></p>
 
 <p><span style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:
 minor-fareast'><a
@@ -3738,8 +3749,8 @@ style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fa
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
 style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>It
 should be noted that <span class=SpellE><i style='mso-bidi-font-style:normal'>pathwayAssoc</i></span>
-tests whether there is an excess of rare, functional variants among cases
-rather than controls within a group of genes. It does not test for
+tests whether there is an excess of rare, functional variants among cases rather
+than controls within a group of genes. It does not test for
 &#8220;clustering&#8221; of the effect into this group, in that it does not
 test that the observed excess is higher than would be expected given that there
 may be an overall excess of genes which have more rare, functional variants in
@@ -3761,9 +3772,9 @@ subjects. If a gene has no usable variants then a score file will not be output
 and <span class=SpellE><i style='mso-bidi-font-style:normal'>pathwayAssoc</i></span>
 will report that it was missing. If something goes wrong with the system then <span
 class=SpellE><i style='mso-bidi-font-style:normal'>scoreassoc</i></span> may
-write an incomplete file. The sizes for all the score files should be
-identical, so you can check if there are any small files. Under Unix you can do
-this by entering:<o:p></o:p></span></p>
+write an incomplete file. The sizes for all the score files should be identical,
+so you can check if there are any small files. Under Unix you can do this by
+entering:<o:p></o:p></span></p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
 style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'><o:p>&nbsp;</o:p></span></p>
@@ -4207,8 +4218,8 @@ mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>
 style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'><o:p>&nbsp;</o:p></span></p>
 
 <p class=MsoNormal><span style='mso-fareast-font-family:"Times New Roman";
-mso-fareast-theme-font:minor-fareast'>The first two lines consist of the first
-two words of the input pathway file. <o:p></o:p></span></p>
+mso-fareast-theme-font:minor-fareast'>The first two lines consist of the first two
+words of the input pathway file. <o:p></o:p></span></p>
 
 <p class=MsoNormal><span style='mso-fareast-font-family:"Times New Roman";
 mso-fareast-theme-font:minor-fareast'><o:p>&nbsp;</o:p></span></p>
@@ -4264,8 +4275,8 @@ style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fa
 
 <p class=MsoNormal><span style='mso-fareast-font-family:"Times New Roman";
 mso-fareast-theme-font:minor-fareast'><a
-href="http://www.ncbi.nlm.nih.gov/pubmed/26981879">Pathway analysis of whole
-exome sequence data provides further support for the involvement of histone
+href="http://www.ncbi.nlm.nih.gov/pubmed/26981879">Pathway analysis of whole exome
+sequence data provides further support for the involvement of histone
 modification in the aetiology of schizophrenia. D Curtis. <span class=SpellE><i
 style='mso-bidi-font-style:normal'>Psychiatr</i></span><i style='mso-bidi-font-style:
 normal'> Genet</i>. 2016.</a><o:p></o:p></span></p>
