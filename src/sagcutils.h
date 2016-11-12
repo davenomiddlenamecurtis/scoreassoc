@@ -15,7 +15,7 @@
 #define MAX_ALL 2
 #endif
 #ifndef MAX_SUB
-#define MAX_SUB 10000
+#define MAX_SUB 15000
 #endif
 #ifndef MAX_LINE
 #define MAX_LINE 5000
