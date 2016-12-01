@@ -11,24 +11,7 @@
 #include "safilterfuncs.hpp"
 
 #define PROGRAM "scoreassoc"
-#define SAVERSION "4.0"
-
-/*
-Use same formats as pseq
- - same phenotype files
- - output of locus files with annotations and genotypes
- Use -- for all options
- Filters in their own text file
- Other options on command line
- Maintain compatibility with scoreassoc
- http://atgu.mgh.harvard.edu/plinkseq/dist/version-0.08/plinkseq-0.08-x86_64.tar.gz
-
- pseq SSS v-view --geno  --phenotype scz --gene $GENE > ${GENE}.dat
- pseq SSS counts --mask --annotate refseq --gene $GENE > ${GENE}.annot
-
-
- */
-
+#define SAVERSION "4.1"
 
 option opt[]=
 {
@@ -410,6 +393,7 @@ int read_freqs_datafile(par_info *pi,sa_par_info *spi,int cc,float cc_freq[2][MA
 	f=cc?CASEFREQFILE:CONTFREQFILE;
 	fn=spi->df[f].fn;
 	fp=spi->df[f].fp;
+	spi->use_cc_freqs[cc]=1;
 	if (!fgets(long_line,LONG_LINE_LENGTH,fp))
 	{
 		error("Could not read supplied frequencies in ",fn);
