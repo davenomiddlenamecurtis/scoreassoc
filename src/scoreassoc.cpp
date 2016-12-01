@@ -312,7 +312,7 @@ return 1;
 // code relies on fact that sub is allocated with calloc, which will have set all alleles to 0
 // NB the annot file MUST have two sets of counts - for cases and controls
 
-int read_ps_datafile(par_info*pi, sa_par_info *spi, subject **sub, int *nsubptr, char names[MAX_LOCI][20], char comments[MAX_LOCI][MAX_COMMENT_LENGTH], float func_weight[MAX_LOCI],	
+int read_ps_datafile(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr, char names[MAX_LOCI][20], char comments[MAX_LOCI][MAX_COMMENT_LENGTH], float func_weight[MAX_LOCI],	
 	std::map<std::string,float> weightMap,	std::map<std::string,std::string> effectMap)
 {
 	int nsub,first,s,a,l,f;
@@ -402,6 +402,50 @@ int read_ps_datafile(par_info*pi, sa_par_info *spi, subject **sub, int *nsubptr,
 	return 1;
 }
 
+int read_freqs_datafile(par_info *pi,sa_par_info *spi,int cc,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2])
+{
+	int f,l;
+	FILE *fp;
+	char *fn,*ptr;
+	f=cc?CASEFREQFILE:CONTFREQFILE;
+	fn=spi->df[f].fn;
+	fp=spi->df[f].fp;
+	if (!fgets(long_line,LONG_LINE_LENGTH,fp))
+	{
+		error("Could not read supplied frequencies in ",fn);
+		return 0;
+	}
+	for (l=0, ptr=long_line;l<pi->nloci;++l)
+	{
+		if (sscanf(ptr,"%f",&cc_freq[cc][l])<1)
+		{
+			error("Could not read all supplied frequencies:\n",long_line);
+			return 0;
+		}
+		while(isspace(*ptr++)) ;
+		while(!isspace(*ptr++)) ;
+	}
+	if(!fgets(long_line,LONG_LINE_LENGTH,fp))
+	{
+		error("Could not read subject counts in ",fn);
+		return 0;
+	}
+	max_cc[cc]=0;
+	for(l=0,ptr=long_line;l<pi->nloci;++l)
+	{
+		if(sscanf(ptr,"%f",&cc_count[cc][l])<1)
+		{
+			error("Could not read all subject counts:\n",long_line);
+			return 0;
+		}
+		if(max_cc[cc]<cc_count[cc][l])
+			max_cc[cc]=cc_count[cc][l];
+		while(isspace(*ptr++)) ;
+		while(!isspace(*ptr++)) ;
+	}
+	return 1;
+}
+
 int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char names[MAX_LOCI][20],char comments[MAX_LOCI][MAX_COMMENT_LENGTH],float func_weight[MAX_LOCI])
 {
 	char aline[1000],pos[100],effect[100],*ptr;
@@ -481,6 +525,14 @@ int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char 
 				dcerror(1, "Not enough values in locusnamefile %s\n", spi->df[LOCUSNAMEFILE].fn); exit(1);
 			}
 	}
+	if(spi->df[CONTFREQFILE].fp)
+	{
+		read_freqs_datafile(pi,spi,0,cc_freq,cc_count,max_cc);
+	}
+	if(spi->df[CASEFREQFILE].fp)
+	{
+		read_freqs_datafile(pi,spi,1,cc_freq,cc_count,max_cc);
+	}
 	for (l = 0; l < pi->nloci; ++l)
 	{
 		strncpy(names[l],comments[l],NAME_LENGTH-1);
@@ -495,7 +547,7 @@ int main(int argc, char *argv[])
 	char arg_string[2000];
 	int nsub,n_new_sub,real_nsub;
 	float *score,p;
-	int max_cc[2],s,n_non_mendelian;
+	int s,n_non_mendelian;
 	non_mendelian *non_mendelians;
 	char *non_mendelian_report;
 	par_info pi;
@@ -542,7 +594,10 @@ if (spi.use_trios)
 		assert(non_mendelian_report=(char*)malloc(strlen(long_line)+1));
 		strcpy(non_mendelian_report,long_line);
 	}
-	fprintf(spi.df[OUTFILE].fp,"scoreassoc output\n"
+else
+	non_mendelian_report=0;
+	// not used, compiler error otherwise
+fprintf(spi.df[OUTFILE].fp,"scoreassoc output\n"
 "Locus                   controls     frequency        cases          frequency   frequency allele  weight\n"
 "                     AA  :   AB  :  BB                  AA  :   AB  :  BB                     \n");
 get_freqs(sub,nsub,&pi,&spi,cc_freq,cc_count,cc_genocount);

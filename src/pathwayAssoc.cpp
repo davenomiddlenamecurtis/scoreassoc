@@ -170,7 +170,7 @@ float runOnePathway(char *line,pathwaySubject **sub,paParams *pp, int writeFile)
 	FILE *fs,*fo;
 	int nGene,missing[MAX_LOCI],s,nSub,g,n[2],i,cc;
 	float sigma_x[2],sigma_x2[2],mean[2],var[2],SLP,SE,tval,s2,score;
-	double p;
+	double p,pathway_p;
 	if (sscanf(line,"%s %s %[^\n]",pathwayName,pathwayURL,rest)!=3)
 		return 0;
 	for (nGene=0;strcpy(line,rest),*rest='\0',sscanf(line,"%s %[^\n]",gene[nGene],rest)>=1;++nGene)
@@ -215,8 +215,8 @@ float runOnePathway(char *line,pathwaySubject **sub,paParams *pp, int writeFile)
 		tval=0;
 	else
 		tval=(mean[1]-mean[0])/SE;
-    p=tstat(tval,n[0]+n[1]-2.0)/2; // one-tailed
-	SLP=log10(2*p)*(mean[0]>=mean[1]?1:-1);
+	pathway_p=tstat(tval,n[0]+n[1]-2.0)/2; // one-tailed
+	SLP=log10(2*pathway_p)*(mean[0]>=mean[1]?1:-1);
 	if (writeFile)
 	{
 		sprintf(line,"%s%s%s",pp->outputFilePrefix,pathwayName,pp->outputFileSuffix);
@@ -236,7 +236,7 @@ float runOnePathway(char *line,pathwaySubject **sub,paParams *pp, int writeFile)
 			"t (%d df) = %6.3f\n"
 			"p = %10.8f\n"
 			"SLP = %8.2f (signed log10(p), positive if cases score higher than controls)\n",
-			n[0], n[1], mean[0], mean[1], n[0] + n[1] - 2, tval, 2 * p, SLP);
+			n[0], n[1], mean[0], mean[1], n[0] + n[1] - 2, tval, 2 * pathway_p, SLP);
 		if (pp->summaryOutputFile!=0)
 					fprintf(pp->summaryOutputFile,"%s\t%s\t%f\n",pathwayName,pathwayURL,SLP);
 		if (SLP > pp->geneLevelOutputThreshold)
@@ -283,8 +283,8 @@ float runOnePathway(char *line,pathwaySubject **sub,paParams *pp, int writeFile)
 		fclose(fo);
 	}
 	if (mean[0]>mean[1])
-		p=1.0-p;
-	return p;
+		pathway_p=1.0-pathway_p;
+	return pathway_p;
 }
 
 int main(int argc, char *argv[])

@@ -59,11 +59,12 @@ void do_recessive_HWE_test_with_haplotypes(FILE *fo, float *score, subject **sub
 extern int sort_trios(subject **sub,int nsub,par_info *pi, sa_par_info *spi, subject **new_sub,non_mendelian *nm,int *n_non_mendelian,char *non_mendelian_report);
 extern int output_nm_report(FILE *fp, par_info *pi, char *non_mendelian_report);
 int read_all_gen_subjects(FILE *fi,subject **s,int *nsub,par_info *pi);
+int read_freqs_datafile(par_info *pi,sa_par_info *spi,int cc,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2]);
 
 extern double cumulBinom(int N,int k,double p);
 
 extern float weight[MAX_LOCI],missing_score[MAX_LOCI],func_weight[MAX_LOCI],cc_freq[2][MAX_LOCI],cc_count[2][MAX_LOCI],cc_genocount[2][3][MAX_LOCI];
-extern int rarer[MAX_LOCI];
+extern int rarer[MAX_LOCI],max_cc[2];
 extern char names[MAX_LOCI][NAME_LENGTH],comments[MAX_LOCI][MAX_COMMENT_LENGTH],trios_fn[500];
 
 #define USEFILTERS 1
