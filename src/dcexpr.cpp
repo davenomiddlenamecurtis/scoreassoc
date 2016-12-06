@@ -670,7 +670,7 @@ add_bin_op_next("!=",neq_op);
 add_bin_op_same("=",equ_op);
 add_bin_op_same("IS",equ_op);
 add_bin_op_next("<=",lte_op); //  these pairs must be in this order
-add_bin_op_same("<",lt_op);   // otherwise ie.g. > will be found before >=
+add_bin_op_same("<",lt_op);   // otherwise e.g. > will be found before >=
 add_bin_op_same(">=",gte_op);
 add_bin_op_same(">",gt_op);
 add_bin_op_next("-",sub_op);

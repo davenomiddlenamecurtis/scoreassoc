@@ -39,7 +39,7 @@ double do_score_onetailed_ttest(FILE *fo, float *score, subject **sub, int nsub,
 				l = pi->loci_to_use[pl];
 				sigma_x2[i] = 0;
 				sigma_x[i] = 0;
-				if (rarer[l] == 2)
+				if (rarer[pl] == 2)
 					rfreq = cc_freq[i][l];
 				// assume supplied frequency is of alt allele, i.e. allele 2
 				// but score will be added to by rarer allele, even if this is allele 1
@@ -49,7 +49,7 @@ double do_score_onetailed_ttest(FILE *fo, float *score, subject **sub, int nsub,
 				ngen[0] = (1 - rfreq)*(1 - rfreq)*cc_count[i][l];
 				ngen[1] = 2 * rfreq*(1 - rfreq)*cc_count[i][l];
 				ngen[2] = rfreq*rfreq*cc_count[i][l];
-				fscore = weight[l]; // average score for each subject for this locus
+				fscore = weight[pl]; // average score for each subject for this locus
 				sigma_x[i] += ngen[1] * fscore; // AB
 				sigma_x2[i] += ngen[1] * fscore*fscore;
 				sigma_x[i] += ngen[2] * 2 * fscore; // BB
