@@ -608,6 +608,7 @@ else
 }
 
 stateExclusions(spi.df[OUTFILE].fp);
+fclose(spi.df[OUTFILE].fp);
 printf("\nProgram run completed OK\n");
 return 0;
 

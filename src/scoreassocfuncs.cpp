@@ -65,12 +65,22 @@ double do_score_onetailed_ttest(FILE *fo, float *score, subject **sub, int nsub,
 		}
 		else
 		{
-			var[i] = (sigma_x2[i] - sigma_x[i] * sigma_x[i] / n[i]) / (n[i] - 1);
-			mean[i] = sigma_x[i] / n[i];
+			if (n[i]<2)
+				{ mean[i]=var[i]=0; }
+			else
+			{
+				var[i] = (sigma_x2[i] - sigma_x[i] * sigma_x[i] / n[i]) / (n[i] - 1);
+				mean[i] = sigma_x[i] / n[i];
+			}
 		}
 	}
-	s2 = ((n[0] - 1)*var[0] + (n[1] - 1)*var[1]) / (n[0] + n[1] - 2);
-	SE = sqrt(s2*(1 / (float)n[0] + 1 / (float)n[1]));
+	if (n[0]+n[1]<2)
+		s2=SE=0;
+	else
+	{
+		s2 = ((n[0] - 1)*var[0] + (n[1] - 1)*var[1]) / (n[0] + n[1] - 2);
+		SE = sqrt(s2*(1 / (float)n[0] + 1 / (float)n[1]));
+	}
 	if (SE == 0)
 		tval = 0;
 	else
