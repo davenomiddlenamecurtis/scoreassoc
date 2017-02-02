@@ -609,6 +609,7 @@ else
 
 stateExclusions(spi.df[OUTFILE].fp);
 fclose(spi.df[OUTFILE].fp);
+spi.df[OUTFILE].fp=0; //  because otherwise the destructor will try to fclose it
 printf("\nProgram run completed OK\n");
 return 0;
 
