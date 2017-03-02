@@ -17,14 +17,14 @@ HEADERS = cdflib.h  dcerror.hpp  dcexpr.hpp  fisher.h  sagcutils.h  safilterfunc
 # cheat and just assume all code dependent on all of these
 
 ifdef INOBJ
-all: scoreassoc pathwayAssoc permPathwayAssoc combineCohorts
+all: scoreassoc pathwayAssoc permPathwayAssoc combineCohorts makeScoreTable
 else
 all:
 	if [ ! -e ../obj ] ; then mkdir ../obj ; fi ; \
 	if [ ! -e ${DCBIN} ] ; then mkdir ${DCBIN} ; fi ; \
 	cd ../obj; \
 	make -f ../src/scoreassoc.mak INOBJ=INOBJ ; \
-	cp scoreassoc pathwayAssoc permPathwayAssoc combineCohorts ${DCBIN} ; \
+	cp scoreassoc pathwayAssoc permPathwayAssoc combineCohorts makeScoreTable ${DCBIN} ; \
 	echo copied executables to ${DCBIN} ; \
 	cd ../src
 endif
@@ -45,6 +45,9 @@ scoreassoc: scoreassoc.o saglobals.o scoreassocfuncs.o sarecfuncs.o sahaprecfunc
 
 combineCohorts: combineCohorts.o dcdflib.o ipmpar.o dcerror.o 
 	$(CC) ${DEBUGFLAG} -o combineCohorts combineCohorts.o dcdflib.o ipmpar.o dcerror.o -lm
+
+makeScoreTable: makeScoreTable.o dcerror.o 
+	$(CC) ${DEBUGFLAG} -o makeScoreTable makeScoreTable.o dcerror.o -lm
 
 pathwayAssoc: pathwayAssoc.o dcdflib.o ipmpar.o dcerror.o 
 	$(CC) ${DEBUGFLAG} -o pathwayAssoc pathwayAssoc.o dcdflib.o ipmpar.o dcerror.o -lm
