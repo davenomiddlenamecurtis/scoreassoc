@@ -4,12 +4,23 @@
 #include <string.h>
 #include "dcerror.hpp"
 
+#define PROGRAM "makeScoreTable"
+#define MSTVERSION "1.1"
+
+void usage()
+{
+	printf("Usage:\nmakeScoreTable tableName.txt *.sco\n");
+}
+
 int main(int argc,char *argv[])
 {
 	FILE *fi,*fo;
 	char geneName[100],*ptr,fn[400],ID[100],line[400];
 	int a,first,cc;
 	float score;
+	printf("%s v%s\n",PROGRAM,SAVERSION);
+	if (argc<3)
+		usage();
 	fo=fopen(argv[1],"w");
 	if (!fo)
 	{

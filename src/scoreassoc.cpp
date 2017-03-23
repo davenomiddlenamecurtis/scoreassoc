@@ -594,7 +594,10 @@ if (spi.use_trios)
 	output_nm_report(spi.df[OUTFILE].fp,&pi,non_mendelian_report);
 
 if (spi.df[SCOREFILE].fp)
+{
 	write_scores(spi.df[SCOREFILE].fp,sub,nsub,score);
+	fclose(spi.df[SCOREFILE].fp);
+}
 if (spi.do_recessive_test)
 {
 if (atoi(comments[0])>22 || toupper(comments[0][0]) == 'X' || toupper(comments[0][0]) == 'Y' ||
