@@ -16,13 +16,13 @@ typedef std::pair<std::string,int> TStrIntPair;
 typedef std::map<std::string,int> TStrIntMap;
 
 #define PROGRAM "permPathwayAssoc"
-#define PPAVERSION "1.2"
+#define PPAVERSION "1.3"
 
 #ifndef MAX_LOCI
 #define MAX_LOCI 12000
 #endif
 #ifndef MAX_SUB
-#define MAX_SUB 10000
+#define MAX_SUB 15000
 #endif
 #ifndef MAX_ID_LENGTH 
 #define MAX_ID_LENGTH 35
@@ -32,6 +32,20 @@ typedef std::map<std::string,int> TStrIntMap;
 #define MAX_PATHWAYS 2000
 #define MAX_GENES_IN_PATHWAY 2000
 #define MAX_GENES 25000
+
+#if 0
+MSVC implements long with 32 bits but unix is 64 bits so use __int64
+#endif
+#include <inttypes.h>
+// http://stackoverflow.com/questions/9225567/how-to-print-a-int64-t-type-in-c
+#ifdef MSDOS
+// i.e. MSVC
+#define FILEOFFSET __int64
+#define fseek _fseeki64
+#define ftell _ftelli64
+#else
+#define FILEOFFSET long
+#endif
 
 //#define USEDCASSERT 1
 #ifdef USEDCASSERT
@@ -52,16 +66,15 @@ exit(1);
 
 #endif
 
-
-
 class ppaParams {
 public:
-	char scoreFilePrefix[1000],scoreFileSuffix[1000],outputFilePrefix[1000],outputFileSuffix[1000],pathwayFileName[1000];
+	char scoreFilePrefix[1000],scoreFileSuffix[1000],outputFilePrefix[1000],outputFileSuffix[1000],pathwayFileName[1000],scoreTableFileName[1000];
+	std::map<std::string,FILEOFFSET> geneIndex;
 	int nSub,nPathways,nGenes,nTopPathways,topPathways[MAX_PATHWAYS],nPerms,nOver[MAX_PATHWAYS];
 	float geneLevelOutputThreshold,pathwayThreshold;
 	int readParms(int argc,char *argv[]);
 	int getNextArg(char *nextArg,int argc,char *argv[],FILE **fpp,int *argNum);
-	FILE *summaryOutputFile,*SLPFile,*fullOutputFile;
+	FILE *summaryOutputFile,*SLPFile,*fullOutputFile,*scoreTableFile;
 };
 
 char line[LONGLINELENGTH+1],rest[LONGLINELENGTH+1];
@@ -180,6 +193,10 @@ int ppaParams::readParms(int argc, char *argv[])
 		else if (FILLARG("--pathway-threshold"))
 		{
 			pathwayThreshold=atof(arg);
+		}
+		else if (FILLARG("--score-table-file"))
+		{
+			strcpy(scoreTableFileName,arg);
 		}
 		else
 			dcerror(1,"Did not recognise argument specifier %s\n",arg);
@@ -333,10 +350,10 @@ int getSLPs(pathway **allPathways, float **geneScores, float **pathwayScores, in
 int fillGeneScores(char *line, pathway **allPathways, float **geneScores, int *cc, TStrIntMap &geneIndex, ppaParams *pp)
 {
 	pathway *p;
-	char geneName[200],scoreFileName[1000],localLine[200];
+	char geneName[200],scoreFileName[1000],localLine[200],thisGene[50];
 	TStrIntMap::iterator it;
 	FILE *fs;
-	int g,s;
+	int g,s,c;
 	p=new pathway;
 	if (sscanf(line,"%s %*s %[^\n]",p->name,rest)!=2)
 		return 0;
@@ -345,29 +362,74 @@ int fillGeneScores(char *line, pathway **allPathways, float **geneScores, int *c
 		it=geneIndex.find(geneName);
 		if (it == geneIndex.end())
 		{
-			sprintf(scoreFileName, "%s%s%s", pp->scoreFilePrefix, geneName, pp->scoreFileSuffix);
-			fs = fopen(scoreFileName, "r");
-			if (fs == 0)
+			if (pp->scoreTableFile)
 			{
-				geneIndex.insert(TStrIntPair(geneName, -1));
+				std::map<std::string,FILEOFFSET>::const_iterator geneIter=pp->geneIndex.find(geneName);
+				if (geneIter==pp->geneIndex.end())
+					geneIndex.insert(TStrIntPair(geneName,-1));
+				else
+				{
+					if (pp->nSub==-1)
+					{
+						s=0;
+						fseek(pp->scoreTableFile,0L,SEEK_SET);
+						fscanf(pp->scoreTableFile,"%*s"); // ID
+						while (1)
+						{
+							do {
+								c=fgetc(pp->scoreTableFile);
+							} while (c!=EOF && c!='\n' && isspace(c));
+							if (c=='\n')
+								break;
+							ungetc(c,pp->scoreTableFile);
+							fscanf(pp->scoreTableFile,"%*s");
+						}
+						fscanf(pp->scoreTableFile,"%*s"); // CC
+						for (s=0;s<pp->nSub;++s)
+							assert(fscanf(pp->scoreTableFile,"%d",cc[s])==1);
+					}
+
+					fseek(pp->scoreTableFile,geneIter->second,SEEK_SET);
+					assert(fscanf(pp->scoreTableFile,"%s",thisGene)==1);
+					if (strcmp(thisGene,geneName))
+					{
+						dcerror(1,"Problem finding %s in %s. Tried to seek to position %" PRId64 " but got this: %s\n",
+							pp->scoreTableFileName,geneName,geneIter->second,thisGene);
+						exit(1);
+					}
+					for (s=0;s<pp->nSub;++s)
+						assert(fscanf(pp->scoreTableFile,"%f",&geneScores[g][s])==1);
+					geneIndex.insert(TStrIntPair(geneName,g));
+					++pp->nGenes;
+					p->geneList[p->nGenes++]=g;
+				}
 			}
 			else
 			{
-				if (pp->nSub == -1)
+				sprintf(scoreFileName,"%s%s%s",pp->scoreFilePrefix,geneName,pp->scoreFileSuffix);
+				fs = fopen(scoreFileName,"r");
+				if (fs == 0)
 				{
-					for (s=0;fgets(localLine,199,fs) && sscanf(localLine,"%*s %d",&cc[s])==1;++s)
-						;
-					pp->nSub=s;
-					fseek(fs,0L,SEEK_SET);
+					geneIndex.insert(TStrIntPair(geneName,-1));
 				}
-				g=pp->nGenes;
-				assert((geneScores[g]=(float *)calloc(pp->nSub,sizeof(float)))!=0);
-				for (s=0;s<pp->nSub;++s)
-					assert(fgets(localLine,199,fs) && sscanf(localLine,"%*s %*d %f",&geneScores[g][s])==1);
-				fclose(fs);
-				geneIndex.insert(TStrIntPair(geneName,g));
-				++pp->nGenes;
-				p->geneList[p->nGenes++]=g;
+				else
+				{
+					if (pp->nSub == -1)
+					{
+						for (s=0;fgets(localLine,199,fs) && sscanf(localLine,"%*s %d",&cc[s])==1;++s)
+							;
+						pp->nSub=s;
+						fseek(fs,0L,SEEK_SET);
+					}
+					g=pp->nGenes;
+					assert((geneScores[g]=(float *)calloc(pp->nSub,sizeof(float)))!=0);
+					for (s=0;s<pp->nSub;++s)
+						assert(fgets(localLine,199,fs) && sscanf(localLine,"%*s %*d %f",&geneScores[g][s])==1);
+					fclose(fs);
+					geneIndex.insert(TStrIntPair(geneName,g));
+					++pp->nGenes;
+					p->geneList[p->nGenes++]=g;
+				}
 			}
 		}
 		else
@@ -395,6 +457,31 @@ for (i=nSub-1;i>=1;--i)
 return 1;
 }
 
+
+int indexGenes(ppaParams *pp)
+{
+	int ch,i;
+	FILEOFFSET pos;
+	char gene[50];
+	pp->geneIndex.clear();
+	fseek(pp->scoreTableFile,0L,SEEK_SET);
+	for (i=0;i<2;++i)
+		while ((ch=fgetc(pp->scoreTableFile))!='\n' && ch!=EOF)
+			;
+	while (1)
+	{
+		pos=ftell(pp->scoreTableFile);
+		if (fscanf(pp->scoreTableFile,"%s",gene)!=1)
+			break;
+		pp->geneIndex[gene]=pos;
+		while ((ch=fgetc(pp->scoreTableFile))!='\n' && ch!=EOF)
+			;
+		if (ch==EOF)
+			break;
+	}
+	return 1;
+}
+
 int cc[MAX_SUB];
 
 int main(int argc, char *argv[])
@@ -415,6 +502,16 @@ int main(int argc, char *argv[])
 	{
 		dcerror(2,"Could not open pathway file %s\n",pp.pathwayFileName);
 		return 1;
+	}
+	if (pp.scoreTableFileName[0])
+	{
+		pp.scoreTableFile=fopen(pp.scoreTableFileName,"rb"); //  see if fseek() works OK with binary mode
+		if (pp.scoreTableFile==0)
+		{
+			dcerror(1,"Could not open score table file %s\n",pp.scoreTableFileName);
+			return 1;
+		}
+		indexGenes(&pp);
 	}
 	pp.nSub=-1; // first time
 	pp.nPathways=pp.nGenes=0;

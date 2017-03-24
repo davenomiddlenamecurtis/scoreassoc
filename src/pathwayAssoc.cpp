@@ -12,13 +12,10 @@ extern "C"
 #include <map>
 
 #define PROGRAM "pathwayAssoc"
-#define PAVERSION "1.0"
+#define PAVERSION "1.1"
 
 #ifndef MAX_LOCI
 #define MAX_LOCI 12000
-#endif
-#ifndef MAX_ALL
-#define MAX_ALL 40
 #endif
 #ifndef MAX_SUB
 #define MAX_SUB 15000
@@ -199,7 +196,7 @@ float runOnePathway(char *line,pathwaySubject **sub,paParams *pp, int writeFile)
 		;
 	for (s=0;s<(pp->nSub==-1?MAX_SUB:pp->nSub);++s)
 		sub[s]->totScore=0;
-	if (pp->scoreTableFile)
+	if (pp->scoreTableFile && pp->nSub==-1)
 	{
 		s=0;
 		fseek(pp->scoreTableFile,0L,SEEK_SET); 
@@ -214,9 +211,6 @@ float runOnePathway(char *line,pathwaySubject **sub,paParams *pp, int writeFile)
 			ungetc(c,pp->scoreTableFile);
 			assert(fscanf(pp->scoreTableFile,"%s",sub[s++]->id)==1);
 		}
-		if (pp->nSub==-1)
-			pp->nSub=s;
-		assert(pp->nSub==s);
 		fscanf(pp->scoreTableFile,"%*s"); // CC
 		for (s=0;s<pp->nSub;++s)
 			assert(fscanf(pp->scoreTableFile,"%d",&sub[s]->cc)==1);

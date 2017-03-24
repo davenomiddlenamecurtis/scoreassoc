@@ -12,13 +12,14 @@ void usage()
 	printf("Usage:\nmakeScoreTable tableName.txt *.sco\n");
 }
 
+// for MSDOS need to link setargv.obj to expand wildcards
 int main(int argc,char *argv[])
 {
 	FILE *fi,*fo;
 	char geneName[100],*ptr,fn[400],ID[100],line[400];
 	int a,first,cc;
 	float score;
-	printf("%s v%s\n",PROGRAM,SAVERSION);
+	printf("%s v%s\n",PROGRAM,MSTVERSION);
 	if (argc<3)
 		usage();
 	fo=fopen(argv[1],"w");
