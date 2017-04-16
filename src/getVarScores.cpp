@@ -13,6 +13,13 @@
 #define PROGRAM "getVarScores"
 #define GVSVERSION "1.0"
 
+#define MAXVARTYPES 100
+#define MAXVARNAMELENGTH 100
+struct varType_t { char name[MAXVARNAMELENGTH]; int flag; };
+typedef struct varType_t varType;
+varType varFlagTable[MAXVARTYPES];
+float **varScore;
+
 option opt[]=
 {
 	{ "flagfile", FLAGFILE },
@@ -61,6 +68,15 @@ void usage()
 }
 
 #define MAXDEPTH 5
+
+int readFlagTable(varType *vt,sa_par_info *spi)
+{
+	int nVarTypes;
+	char line[1000];
+	for (nVarTypes=0;fgets(line,999,spi->df[FLAGFILE].fp)&&sscanf(line,"%s %d",vt[nVarTypes].name,&vt[nVarTypes].flag)==2;++nVarTypes)
+		;
+	return nVarTypes;
+}
 
 int getNextArg(char *nextArg, int argc,char *argv[], FILE *fp[MAXDEPTH],int *depth, int *argNum)
 {
@@ -146,17 +162,6 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 			if (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num) == 0 || sscanf(arg, "%f", &spi->wfactor) != 1)
 				error=1;
 			break;
-		case LDTHRESHOLD:
-			if (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num) == 0 || sscanf(arg,"%f",&spi->LD_threshold)!=1)
-				error=1;
-			break;
-		case WEIGHTTHRESHOLD:
-			if (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num) == 0 || sscanf(arg,"%f",&spi->weight_threshold)!=1)
-				error=1;
-			break;
-		case DORECESSIVE:
-			spi->do_recessive_test=1;
-			break;
 		case USEHAPS:
 			spi->use_haplotypes=1;
 			break;
@@ -170,8 +175,6 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 		case LOCUSWEIGHTFILE:
 		case LOCUSNAMEFILE:
 		case SAMPLEFILE:
-		case CASEFREQFILE:
-		case CONTFREQFILE:
 		case OUTFILE:
 		case SCOREFILE:
 		case TRIOFILE:
@@ -190,20 +193,25 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 int process_options(par_info *pi, sa_par_info *spi)
 {
 	int a,l;
+	if (spi->df[SCOREFILE].fn[0])
+	{
+		dcerror(1,"Must specify only one of --scorefile"); exit(1);
+	}
+	if (spi->df[FLAGFILE].fn[0])
+	{
+		dcerror(1,"Must specify only one of --flagfile"); exit(1);
+	}
 	if ((spi->df[PSDATAFILE].fn[0]==0)+(spi->df[GCDATAFILE].fn[0]==0)+(spi->df[GENDATAFILE].fn[0]==0) < 2)
 	{
 		dcerror(1,"Must specify only one of --psdatafile, --gcdatafile or --gendatafile"); exit(1);
 	}
-	if ((spi->df[GCDATAFILE].fn[0]!='\0' || spi->df[GENDATAFILE].fn[0]!='\0' ) && pi->nloci==0)
+	// put below into scoreassoc
+	if ((spi->df[GCDATAFILE].fn[0]!='\0' || spi->df[GENDATAFILE].fn[0]!='\0' ) && spi->df[LOCUSFILTERFILE].fn[0]  && pi->nloci==0)
 	{
-		dcerror(1,"Need to specify --nloci when using --gcdatafile or --gendatafile"); exit(1);
+		dcerror(1,"Need to specify --nloci or --locusfilterfile when using --gcdatafile or --gendatafile"); exit(1);
 	}
 	if (spi->df[GENDATAFILE].fn[0] != '\0')
 	{
-		if (spi->do_recessive_test)
-		{
-			dcerror(1, "Cannot do recessive test with --gendatafile"); exit(1);
-		}
 		if (spi->use_trios)
 		{
 			dcerror(1, "Cannot use trios with --gendatafile"); exit(1);
@@ -211,8 +219,6 @@ int process_options(par_info *pi, sa_par_info *spi)
 		spi->use_probs = 1;
 	}
 
-	for (l = 0; l < pi->nloci; ++l)
-		pi->n_alls[l]=2;
 	for (a=0;a<OUTFILE;++a)
 		if (spi->df[a].fn[0] && (spi->df[a].fp = fopen(spi->df[a].fn, "r")) == 0)
 		{
@@ -377,51 +383,6 @@ int read_ps_datafile(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr
 	return 1;
 }
 
-int read_freqs_datafile(par_info *pi,sa_par_info *spi,int cc,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2])
-{
-	int f,l;
-	FILE *fp;
-	char *fn,*ptr;
-	f=cc?CASEFREQFILE:CONTFREQFILE;
-	fn=spi->df[f].fn;
-	fp=spi->df[f].fp;
-	spi->use_cc_freqs[cc]=1;
-	if (!fgets(long_line,LONG_LINE_LENGTH,fp))
-	{
-		error("Could not read supplied frequencies in ",fn);
-		return 0;
-	}
-	for (l=0, ptr=long_line;l<pi->nloci;++l)
-	{
-		if (sscanf(ptr,"%f",&cc_freq[cc][l])<1)
-		{
-			error("Could not read all supplied frequencies:\n",long_line);
-			return 0;
-		}
-		while(isspace(*ptr++)) ;
-		while(!isspace(*ptr++)) ;
-	}
-	if(!fgets(long_line,LONG_LINE_LENGTH,fp))
-	{
-		error("Could not read subject counts in ",fn);
-		return 0;
-	}
-	max_cc[cc]=0;
-	for(l=0,ptr=long_line;l<pi->nloci;++l)
-	{
-		if(sscanf(ptr,"%f",&cc_count[cc][l])<1)
-		{
-			error("Could not read all subject counts:\n",long_line);
-			return 0;
-		}
-		if(max_cc[cc]<cc_count[cc][l])
-			max_cc[cc]=cc_count[cc][l];
-		while(isspace(*ptr++)) ;
-		while(!isspace(*ptr++)) ;
-	}
-	return 1;
-}
-
 int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char names[MAX_LOCI][20],char comments[MAX_LOCI][MAX_COMMENT_LENGTH],float func_weight[MAX_LOCI])
 {
 	char aline[1000],pos[100],effect[100],*ptr;
@@ -487,6 +448,8 @@ int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char 
 		for (l = 0; l < pi->nloci; ++l)
 			pi->loci_to_use[l] = l;
 	}
+	for (l = 0; l < pi->nloci; ++l)
+		pi->n_alls[l]=2;
 	if (spi->df[GCDATAFILE].fp)
 		read_all_subjects(spi->df[GCDATAFILE].fp,sub,nsubptr,pi);
 	// after reading locus filter file, because that may provide number of loci
@@ -529,8 +492,8 @@ int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char 
 int main(int argc, char *argv[])
 {
 	char arg_string[2000];
-	int nsub,n_new_sub,real_nsub;
-	float *score,p;
+	int nsub,n_new_sub,real_nsub,nVarTypes;
+	float **varScore,p;
 	int s,n_non_mendelian;
 	non_mendelian *non_mendelians;
 	char *non_mendelian_report;
@@ -544,7 +507,6 @@ int main(int argc, char *argv[])
 	assert(sub=(subject **)calloc(MAX_SUB,sizeof(subject*)));
 	for (s=0;s<MAX_SUB;++s)
 		assert(sub[s]=(subject *)calloc(1,sizeof(subject)));
-	assert(score=(float *)calloc(MAX_SUB,sizeof(float)));
 	max_cc[0]=max_cc[1]=0;
 	read_all_args(argv,argc, &pi, &spi);
 	// make_arg_string(arg_string,argc,argv);
@@ -588,15 +550,20 @@ get_freqs(sub,nsub,&pi,&spi,cc_freq,cc_count,cc_genocount);
 applyExclusions(&pi);
 spi.use_func_weights=0; // this is a trick to prevent the rarity weight being multiplied by the functional weight
 set_weights(0,weight,missing_score,rarer,sub,nsub,&pi,&spi,func_weight,cc_freq,cc_count,max_cc,names,comments);
-// allocate a table to hold the subject scores for each variant type, then output fill it and it
-get_var_scores(var_score,weight,missing_score,rarer,sub,nsub,&pi,&spi);
+nVarTypes=readFlagTable(varFlagTable,&spi);
+assert(varScore=(float **)malloc(nsub*sizeof(float*)));
+for (s-0;s<nsub;++s)
+	assert(varScore[s]=(float*)malloc(nVarTypes*sizeof(float)));
 
-if (spi.df[SCOREFILE].fp)
-{
-	write_var_scores(spi.df[SCOREFILE].fp,sub,nsub,var_score);
-	fclose(spi.df[SCOREFILE].fp);
-	spi.df[SCOREFILE].fp=0;
-}
+// allocate a table to hold the subject scores for each variant type, then output fill it and it
+getVarScores(varFlagTable,varScore,weight,func_weight,missing_score,rarer,sub,nsub,nVarTypes,&pi,&spi);
+// beware, func_weight is indexed differently
+// weight[l]*=func_weight[pi->loci_to_use[l]];
+// weight and missing score are only calcuated for loci to be used
+writeVarScores(spi.df[SCOREFILE].fp,sub,nsub,varFlagTable,varScore);
+fclose(spi.df[SCOREFILE].fp);
+spi.df[SCOREFILE].fp=0;
+
 stateExclusions(spi.df[OUTFILE].fp);
 fclose(spi.df[OUTFILE].fp);
 spi.df[OUTFILE].fp=0; //  because otherwise the destructor will try to fclose it
