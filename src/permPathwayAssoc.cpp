@@ -393,8 +393,13 @@ int fillGeneScores(char *line, pathway **allPathways, float **geneScores, int *c
 					assert(fscanf(pp->scoreTableFile,"%s",thisGene)==1);
 					if (strcmp(thisGene,geneName))
 					{
+#if 0
 						dcerror(1,"Problem finding %s in %s. Tried to seek to position %" PRId64 " but got this: %s\n",
 							pp->scoreTableFileName,geneName,geneIter->second,thisGene);
+#else						
+						dcerror(1,"Problem finding %s in %s. Tried to seek to position %uld but got this: %s\n",
+							pp->scoreTableFileName,geneName,(unsigned long)geneIter->second,thisGene);
+#endif
 						exit(1);
 					}
 					for (s=0;s<pp->nSub;++s)
