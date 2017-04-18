@@ -17,15 +17,15 @@ void usage()
 struct geneSet_t { char name[100]; std::unordered_set<std::string> genes; };
 #define MAXSETS 50
 struct geneSet_t set[MAXSETS];
-struct subject_t { char ID[50]; float **score; };
+struct subject_t { char ID[50]; int cc; float **score; };
 
 
 // for MSDOS need to link setargv.obj to expand wildcards
 int main(int argc,char *argv[])
 {
 	FILE *fi,*fo,*fl,*fs;
-	char geneName[100],*ptr,fn[400],ID[100],line[400];
-	int a,first,cc,nSet,nVarType,s,t,v,nSub;
+	char geneName[100],*ptr,fn[400],ID[100],line[400],rest[400];
+	int a,first,cc,nSet,nVarType,s,t,v,nSub,nMember,member[MAXSETS],m;
 	float score,**scoreTable;
 	struct subject_t *sub;
 	printf("%s v%s\n",PROGRAM,MSTVERSION);
@@ -41,19 +41,20 @@ int main(int argc,char *argv[])
 	}
 	fclose(fl);
 	nVarType=atoi(argv[4]);
-	fo=fopen(argv[1],"w");
-	if (!fo)
-	{
-		dcerror(1,"Could not open file %s\n",argv[1]);
-		exit(1);
-	}
-	fprintf(fo,"ID\tCC\t");
-	for (t=0;t<nSet;++t)
-		for (v=0;v<nVarType;++v)
-			fprintf(fo,"%s:%d",set[t].name,v);
-	fprintf(fo,"\n");
 	assert((fi=fopen(argv[5],"r"))!=0);
-	
+	for (nSub=0;fgets(line,99,fi)&&sscanf(line,"%s",ID)==1;++nSub)
+		;
+	assert((sub=(struct subject_t *)calloc(nSub,sizeof(struct subject_t *)))!=0);
+	for (s=0;s<nSub;++s)
+	{
+		assert((sub[s].score=(float**)calloc(nSet,sizeof(float*)))!=0);
+		for (t=0;t<nSet;++t)
+			assert((sub[s].score[t]=(float*)calloc(nVarType,sizeof(float)))!=0);
+	}
+	fseek(fi,SEEK_SET,0L);
+	for (s=0;s<nSub;++s)
+		assert(fgets(line,99,fi)&&sscanf(line,"%s %d",sub[s].ID,&sub[s].cc)==2);
+	fclose(fi);
 	for (a=5;a<argc;++a)
 	{
 		strcpy(fn,argv[a]);
@@ -77,26 +78,43 @@ int main(int argc,char *argv[])
 				exit(1);
 			}
 		strcpy(geneName,ptr+1); // relies on no gene containng .
-		if (first)
+		for (nMember=0,t=0;t<nSet;++t)
 		{
-			first=0;
-			fprintf(fo,"ID\t");
-			while (fgets(line,399,fi) && sscanf(line,"%s",ID)==1)
-				fprintf(fo,"%s\t",ID);
-			fprintf(fo,"\n");
-			fseek(fi,SEEK_SET,0L);
-			fprintf(fo,"CC\t");
-			while (fgets(line,399,fi) && sscanf(line,"%*s %d",&cc)==1)
-				fprintf(fo,"%d\t",cc);
-			fprintf(fo,"\n");
-			fseek(fi,SEEK_SET,0L);
+			auto it=set[t].genes.find(geneName);
+			if (it!=set[t].genes.end())
+				member[nMember++]=t;
 		}
-
-		fprintf(fo,"%s\t",geneName);
-		while (fgets(line,399,fi) && sscanf(line,"%*s %*d %f",&score)==1)
-			fprintf(fo,"%f\t",score);
-		fprintf(fo,"\n");
+		for (s=0;s<nSub;++s)
+		{
+			assert(fgets(line,99,fi)&&sscanf(line,"%*s %*d %[^\n]",rest)==1);
+			for (v=0;v<nVarType;++v)
+			{
+				strcpy(line,rest);
+				*rest='\0';
+				assert(sscanf(line,"%f %[^\n]",score,rest)>=1);
+				for (m=0;m<nMember;++m)
+					sub[s].score[m][v]+=score;
+			}
+		}
 		fclose(fi);
+	}
+	fo=fopen(argv[1],"w");
+	if (!fo)
+	{
+		dcerror(1,"Could not open file %s\n",argv[1]);
+		exit(1);
+	}
+	fprintf(fo,"ID\tCC\t");
+	for (t=0;t<nSet;++t)
+		for (v=0;v<nVarType;++v)
+			fprintf(fo,"%s:%d",set[t].name,v);
+	for (s=0;s<nSub;++s)
+	{
+		fprintf(fo,"%s\t%d\t",sub[s].ID,sub[s].cc);
+		for (t=0;t<nSet;++t)
+			for (v=0;v<nVarType;++v)
+				fprintf(fo,"%8.4f",sub[s].score[t][v]);
+		fprintf(fo,"\n");
 	}
 	fclose(fo);
 	return 0;
