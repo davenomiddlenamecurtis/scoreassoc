@@ -16,7 +16,7 @@ OURFLAGS = $(CFLAGS) -DMAX_LOCI=$(MAX_LOCI_MAK) -DMAX_ALL=$(MAX_ALL_MAK) -DMAX_S
 HEADERS = cdflib.h  dcerror.hpp  dcexpr.hpp  fisher.h  sagcutils.h  safilterfuncs.hpp  scoreassoc.hpp
 # cheat and just assume all code dependent on all of these
 
-EXES = scoreassoc pathwayAssoc permPathwayAssoc combineCohorts makeScoreTable getVarScores
+EXES = getVarScores scoreassoc pathwayAssoc permPathwayAssoc combineCohorts makeScoreTable 
 
 ifdef INOBJ
 all: ${EXES}
@@ -30,9 +30,9 @@ all:
 	echo copied executables to ${DCBIN} ; \
 	cd ../src
 endif
-
+ 
 clean:
-	rm ../obj/*.o
+	rm ../obj/*
 
 VPATH=../src
 	
