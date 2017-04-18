@@ -93,7 +93,7 @@ int main(int argc,char *argv[])
 				*rest='\0';
 				assert(sscanf(line,"%f %[^\n]",score,rest)>=1);
 				for (m=0;m<nMember;++m)
-					sub[s].score[m][v]+=score;
+					sub[s].score[member[m]][v]+=score;
 			}
 		}
 		fclose(fi);
