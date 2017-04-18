@@ -102,7 +102,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);MSDOS</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -144,11 +144,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\dcdflib.c" />
+    <ClCompile Include="..\..\src\dcerror.cpp" />
+    <ClCompile Include="..\..\src\dcexpr.cpp" />
+    <ClCompile Include="..\..\src\fisher.c" />
     <ClCompile Include="..\..\src\getVarScores.cpp" />
+    <ClCompile Include="..\..\src\ipmpar.c" />
+    <ClCompile Include="..\..\src\saFilterFuncs.cpp" />
+    <ClCompile Include="..\..\src\sagcutils.c" />
+    <ClCompile Include="..\..\src\saglobals.cpp" />
+    <ClCompile Include="..\..\src\satriofuncs.cpp" />
+    <ClCompile Include="..\..\src\scoreassocfuncs.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\cdflib.h" />
     <ClInclude Include="..\..\src\dcerror.hpp" />
     <ClInclude Include="..\..\src\dcexpr.hpp" />
+    <ClInclude Include="..\..\src\fisher.h" />
     <ClInclude Include="..\..\src\safilterfuncs.hpp" />
     <ClInclude Include="..\..\src\sagcutils.h" />
     <ClInclude Include="..\..\src\scoreassoc.hpp" />

@@ -69,6 +69,57 @@ void usage()
 
 #define MAXDEPTH 5
 
+void getVarScores(varType *varFlagTable,int nVarTypes,float **varScore,float *weight,float *func_weight,float *missing,int *rarer,subject **sub,int nsub,par_info *pi,sa_par_info *spi)
+{
+	int l,ll,s,a,p,v,flags;
+	float increment;
+	for (s=0;s<nsub;++s)
+	{
+		for (v=0;v<nVarTypes;++v)
+			varScore[s][v]=0;
+		for (l=0;l<pi->n_loci_to_use;++l)
+		{
+			ll=pi->loci_to_use[l];
+			if (spi->use_probs)
+			{
+				if (sub[s]->prob[ll][0]+sub[s]->prob[ll][1]+sub[s]->prob[ll][2]==0)
+					increment=missing[l]*2;
+				else if (rarer[l]==2)
+					increment=(sub[s]->prob[ll][1]+sub[s]->prob[ll][2]*2)*weight[l];
+				else
+					increment=(sub[s]->prob[ll][1]+sub[s]->prob[ll][0]*2)*weight[l];
+			}
+			else
+			{
+				increment=0;
+				for (a = 0; a < 2; ++a)
+					if (sub[s]->all[ll][a] == rarer[l])
+						increment+=weight[l];
+					else if (sub[s]->all[ll][a] == 0)
+						increment+=missing[l];
+			}
+			flags=(int)func_weight[ll];
+			for (v=0;v<nVarTypes;++v)
+			{
+				if (varFlagTable[v].flag&flags)
+					varScore[s][v]+=increment;
+			}
+		}
+	}
+}
+
+void writeVarScores(FILE *fs,subject **sub,int nsub,int nVarTypes,float **varScore)
+{
+	int s,v;
+	for (s=0;s<nsub;++s) 
+	{
+		fprintf(fs,"%20s %d ",sub[s]->id,sub[s]->cc);
+		for (v=0;v<nVarTypes;++v)
+			fprintf(fs,"%8.4f ",varScore[s][v]);
+		fprintf(fs,"\n");
+	}
+}
+
 int readFlagTable(varType *vt,sa_par_info *spi)
 {
 	int nVarTypes;
@@ -472,14 +523,6 @@ int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char 
 				dcerror(1, "Not enough values in locusnamefile %s\n", spi->df[LOCUSNAMEFILE].fn); exit(1);
 			}
 	}
-	if(spi->df[CONTFREQFILE].fp)
-	{
-		read_freqs_datafile(pi,spi,0,cc_freq,cc_count,max_cc);
-	}
-	if(spi->df[CASEFREQFILE].fp)
-	{
-		read_freqs_datafile(pi,spi,1,cc_freq,cc_count,max_cc);
-	}
 	for (l = 0; l < pi->nloci; ++l)
 	{
 		strncpy(names[l],comments[l],NAME_LENGTH-1);
@@ -556,11 +599,11 @@ for (s-0;s<nsub;++s)
 	assert(varScore[s]=(float*)malloc(nVarTypes*sizeof(float)));
 
 // allocate a table to hold the subject scores for each variant type, then output fill it and it
-getVarScores(varFlagTable,varScore,weight,func_weight,missing_score,rarer,sub,nsub,nVarTypes,&pi,&spi);
+getVarScores(varFlagTable,nVarTypes,varScore,weight,func_weight,missing_score,rarer,sub,nsub,&pi,&spi);
 // beware, func_weight is indexed differently
 // weight[l]*=func_weight[pi->loci_to_use[l]];
 // weight and missing score are only calcuated for loci to be used
-writeVarScores(spi.df[SCOREFILE].fp,sub,nsub,varFlagTable,varScore);
+writeVarScores(spi.df[SCOREFILE].fp,sub,nsub,nVarTypes,varScore);
 fclose(spi.df[SCOREFILE].fp);
 spi.df[SCOREFILE].fp=0;
 

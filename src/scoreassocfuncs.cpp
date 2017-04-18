@@ -135,9 +135,9 @@ void get_scores(float *score,float *weight,float *missing,int *rarer,subject **s
 					if (sub[s]->prob[ll][0]+sub[s]->prob[ll][1]+sub[s]->prob[ll][2]==0)
 						score[s] += missing[l]*2; 
 					else if (rarer[l]==2)
-						score[s]+=sub[s]->prob[ll][1]+sub[s]->prob[ll][2]*2;
+						score[s]+=(sub[s]->prob[ll][1]+sub[s]->prob[ll][2]*2)*weight[l];
 					else
-						score[s]+=sub[s]->prob[ll][1]+sub[s]->prob[ll][0]*2;
+						score[s]+=(sub[s]->prob[ll][1]+sub[s]->prob[ll][0]*2)*weight[l];
 				}
 				else
 				{
