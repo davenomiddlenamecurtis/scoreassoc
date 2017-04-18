@@ -216,6 +216,7 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 		case USEHAPS:
 			spi->use_haplotypes=1;
 			break;
+		case FLAGFILE:
 		case PSDATAFILE:
 		case GCDATAFILE:
 		case GENDATAFILE:
@@ -244,20 +245,20 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 int process_options(par_info *pi, sa_par_info *spi)
 {
 	int a,l;
-	if (spi->df[SCOREFILE].fn[0])
+	if (!spi->df[SCOREFILE].fn[0])
 	{
-		dcerror(1,"Must specify only one of --scorefile"); exit(1);
+		dcerror(1,"Must specify --scorefile"); exit(1);
 	}
-	if (spi->df[FLAGFILE].fn[0])
+	if (!spi->df[FLAGFILE].fn[0])
 	{
-		dcerror(1,"Must specify only one of --flagfile"); exit(1);
+		dcerror(1,"Must specify --flagfile"); exit(1);
 	}
 	if ((spi->df[PSDATAFILE].fn[0]==0)+(spi->df[GCDATAFILE].fn[0]==0)+(spi->df[GENDATAFILE].fn[0]==0) < 2)
 	{
 		dcerror(1,"Must specify only one of --psdatafile, --gcdatafile or --gendatafile"); exit(1);
 	}
 	// put below into scoreassoc
-	if ((spi->df[GCDATAFILE].fn[0]!='\0' || spi->df[GENDATAFILE].fn[0]!='\0' ) && spi->df[LOCUSFILTERFILE].fn[0]  && pi->nloci==0)
+	if ((spi->df[GCDATAFILE].fn[0]!='\0' || spi->df[GENDATAFILE].fn[0]!='\0' ) && spi->df[LOCUSFILTERFILE].fn[0]=='\0'  && pi->nloci==0)
 	{
 		dcerror(1,"Need to specify --nloci or --locusfilterfile when using --gcdatafile or --gendatafile"); exit(1);
 	}
@@ -586,16 +587,13 @@ if (spi.use_trios)
 else
 	non_mendelian_report=0;
 	// not used, compiler error otherwise
-fprintf(spi.df[OUTFILE].fp,"scoreassoc output\n"
-"Locus                   controls     frequency        cases          frequency   frequency allele  weight\n"
-"                     AA  :   AB  :  BB                  AA  :   AB  :  BB                     \n");
 get_freqs(sub,nsub,&pi,&spi,cc_freq,cc_count,cc_genocount);
 applyExclusions(&pi);
 spi.use_func_weights=0; // this is a trick to prevent the rarity weight being multiplied by the functional weight
 set_weights(0,weight,missing_score,rarer,sub,nsub,&pi,&spi,func_weight,cc_freq,cc_count,max_cc,names,comments);
 nVarTypes=readFlagTable(varFlagTable,&spi);
 assert(varScore=(float **)malloc(nsub*sizeof(float*)));
-for (s-0;s<nsub;++s)
+for (s=0;s<nsub;++s)
 	assert(varScore[s]=(float*)malloc(nVarTypes*sizeof(float)));
 
 // allocate a table to hold the subject scores for each variant type, then output fill it and it
@@ -607,6 +605,8 @@ writeVarScores(spi.df[SCOREFILE].fp,sub,nsub,nVarTypes,varScore);
 fclose(spi.df[SCOREFILE].fp);
 spi.df[SCOREFILE].fp=0;
 
+fprintf(spi.df[OUTFILE].fp,"geneVarAssoc output\n");
+fprintf(spi.df[OUTFILE].fp,"Used %d valid variants\n",pi.n_loci_to_use);
 stateExclusions(spi.df[OUTFILE].fp);
 fclose(spi.df[OUTFILE].fp);
 spi.df[OUTFILE].fp=0; //  because otherwise the destructor will try to fclose it
