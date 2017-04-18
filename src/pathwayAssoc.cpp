@@ -228,8 +228,13 @@ float runOnePathway(char *line,pathwaySubject **sub,paParams *pp, int writeFile)
 				assert(fscanf(pp->scoreTableFile,"%s",thisGene)==1);
 				if (strcmp(thisGene,gene[g]))
 				{
+#if 0
 					dcerror(1,"Problem finding %s in %s. Tried to seek to position %" PRId64 " but got this: %s\n",
 						pp->scoreTableFileName,gene[g],geneIter->second,thisGene);
+#else
+					dcerror(1,"Problem finding %s in %s. Tried to seek to position %uld but got this: %s\n",
+						pp->scoreTableFileName,gene[g],(unsigned long)geneIter->second,thisGene);
+#endif
 					exit(1);
 				}
 				missing[g]=0;
