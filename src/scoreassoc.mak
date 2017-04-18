@@ -17,7 +17,7 @@ HEADERS = cdflib.h  dcerror.hpp  dcexpr.hpp  fisher.h  sagcutils.h  safilterfunc
 # cheat and just assume all code dependent on all of these
 
 ifdef INOBJ
-all: scoreassoc pathwayAssoc permPathwayAssoc combineCohorts makeScoreTable
+all: scoreassoc pathwayAssoc permPathwayAssoc combineCohorts makeScoreTable getVarScores
 else
 all:
 	if [ ! -e ../obj ] ; then mkdir ../obj ; fi ; \
@@ -39,6 +39,9 @@ VPATH=../src
 	
 %.o: ../src/%.c $(HEADERS)
 	$(C) $(OURFLAGS) ${DEBUGFLAG} -c $< -o ../obj/$@
+
+getVarScores: getVarScores.o saglobals.o scoreassocfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o 
+	$(CC) ${DEBUGFLAG} -o getVarScores getVarScores.o saglobals.o scoreassocfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o -lm
 
 scoreassoc: scoreassoc.o saglobals.o scoreassocfuncs.o sarecfuncs.o sahaprecfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o 
 	$(CC) ${DEBUGFLAG} -o scoreassoc scoreassoc.o saglobals.o scoreassocfuncs.o sarecfuncs.o sahaprecfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o -lm
