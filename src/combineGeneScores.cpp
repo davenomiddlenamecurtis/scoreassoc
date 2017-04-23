@@ -113,7 +113,7 @@ int main(int argc,char *argv[])
 		fprintf(fo,"%s\t%d\t",sub[s].ID,sub[s].cc);
 		for (t=0;t<nSet;++t)
 			for (v=0;v<nVarType;++v)
-				fprintf(fo,"%8.4f",sub[s].score[t][v]);
+				fprintf(fo,"%8.4f\t",sub[s].score[t][v]);
 		fprintf(fo,"\n");
 	}
 	fclose(fo);
