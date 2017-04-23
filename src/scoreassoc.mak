@@ -16,7 +16,7 @@ OURFLAGS = $(CFLAGS) -DMAX_LOCI=$(MAX_LOCI_MAK) -DMAX_ALL=$(MAX_ALL_MAK) -DMAX_S
 HEADERS = cdflib.h  dcerror.hpp  dcexpr.hpp  fisher.h  sagcutils.h  safilterfuncs.hpp  scoreassoc.hpp
 # cheat and just assume all code dependent on all of these
 
-EXES = getVarScores scoreassoc pathwayAssoc permPathwayAssoc combineCohorts makeScoreTable 
+EXES = combineGeneScores getVarScores scoreassoc pathwayAssoc permPathwayAssoc combineCohorts makeScoreTable 
 
 ifdef INOBJ
 all: ${EXES}
@@ -41,6 +41,9 @@ VPATH=../src
 	
 %.o: ../src/%.c $(HEADERS)
 	$(C) $(OURFLAGS) ${DEBUGFLAG} -c $< -o ../obj/$@
+	
+combineGeneScores: combineGeneScores.o dcerror.o
+	$(CC) ${DEBUGFLAG} -o combineGeneScores combineGeneScores.o dcerror.o -lm
 
 getVarScores: getVarScores.o saglobals.o scoreassocfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o 
 	$(CC) ${DEBUGFLAG} -o getVarScores getVarScores.o saglobals.o scoreassocfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o -lm

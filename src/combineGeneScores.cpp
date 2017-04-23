@@ -29,9 +29,9 @@ int main(int argc,char *argv[])
 	float score,**scoreTable;
 	struct subject_t *sub;
 	printf("%s v%s\n",PROGRAM,MSTVERSION);
-	if (argc<6)
+	if (argc<5)
 		usage();
-	assert((fl=fopen(argv[3],"r"))!=0);
+	assert((fl=fopen(argv[2],"r"))!=0);
 	for (nSet=0;fgets(line,100,fl)&&sscanf(line,"%s",set[nSet].name)==1;++nSet)
 	{
 		assert((fs=fopen(set[nSet].name,"r"))!=0);
@@ -40,11 +40,11 @@ int main(int argc,char *argv[])
 		fclose(fs);
 	}
 	fclose(fl);
-	nVarType=atoi(argv[4]);
-	assert((fi=fopen(argv[5],"r"))!=0);
+	nVarType=atoi(argv[3]);
+	assert((fi=fopen(argv[4],"r"))!=0);
 	for (nSub=0;fgets(line,99,fi)&&sscanf(line,"%s",ID)==1;++nSub)
 		;
-	assert((sub=(struct subject_t *)calloc(nSub,sizeof(struct subject_t *)))!=0);
+	assert((sub=(struct subject_t *)calloc(nSub,sizeof(struct subject_t)))!=0);
 	for (s=0;s<nSub;++s)
 	{
 		assert((sub[s].score=(float**)calloc(nSet,sizeof(float*)))!=0);
@@ -55,19 +55,19 @@ int main(int argc,char *argv[])
 	for (s=0;s<nSub;++s)
 		assert(fgets(line,99,fi)&&sscanf(line,"%s %d",sub[s].ID,&sub[s].cc)==2);
 	fclose(fi);
-	for (a=5;a<argc;++a)
+	for (a=4;a<argc;++a)
 	{
 		strcpy(fn,argv[a]);
 		fi=fopen(fn,"r");
-		if (!fo)
+		if (!fi)
 		{
 			dcerror(1,"Could not open file %s\n",fn);
 			exit(1);
 		}
-		ptr=strstr(fn,".sco");
+		ptr=strstr(fn,".vsco");
 		if (ptr==0)
 		{
-			dcerror(1,"Could not find .sco in filename: %s\n",fn);
+			dcerror(1,"Could not find .vsco in filename: %s\n",fn);
 			exit(1);
 		}
 		*ptr='\0';
@@ -91,7 +91,7 @@ int main(int argc,char *argv[])
 			{
 				strcpy(line,rest);
 				*rest='\0';
-				assert(sscanf(line,"%f %[^\n]",score,rest)>=1);
+				assert(sscanf(line,"%f %[^\n]",&score,rest)>=1);
 				for (m=0;m<nMember;++m)
 					sub[s].score[member[m]][v]+=score;
 			}
