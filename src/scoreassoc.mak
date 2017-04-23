@@ -10,8 +10,10 @@ MAX_LOCI_MAK = 12000
 MAX_ALL_MAK = 40
 MAX_SUB_MAK = 15000
 
-OURFLAGS = $(CFLAGS) -DMAX_LOCI=$(MAX_LOCI_MAK) -DMAX_ALL=$(MAX_ALL_MAK) -DMAX_SUB=$(MAX_SUB_MAK) 
-# DEBUGFLAG = -g
+MYFLAGS = $(CFLAGS) -DMAX_LOCI=$(MAX_LOCI_MAK) -DMAX_ALL=$(MAX_ALL_MAK) -DMAX_SUB=$(MAX_SUB_MAK) -std=gnu++0x
+OURFLAGS = $(MYFLAGS) $(EXTRAFLAGS)
+
+# so to compile for debugging use make -f scoreassoc.mak EXTRAFLAGS=-g
 
 HEADERS = cdflib.h  dcerror.hpp  dcexpr.hpp  fisher.h  sagcutils.h  safilterfuncs.hpp  scoreassoc.hpp
 # cheat and just assume all code dependent on all of these
