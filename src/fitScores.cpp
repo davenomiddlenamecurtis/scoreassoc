@@ -377,6 +377,7 @@ int main(int argc,char *argv[])
 	}
 	if (fs.writeParamsFileName[0])
 	{
+		tt=1;
 		writeParamsFile=fopen(fs.writeParamsFileName,"w");
 		if (!writeParamsFile)
 		{
