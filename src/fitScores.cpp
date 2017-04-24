@@ -213,8 +213,8 @@ int readVarScores(fsParams *fs,FILE *varScoresFile,subject *sub,int nSub,int nGe
 
 float getTStat()
 {
-	int p,s,t,v,i,cc;
-	float score,sigma_x[2],sigma_x2[2],n[2],mean[2],var[2],SE,tval,s2;
+	int p,s,t,v,i,cc,n[2];
+	float score,sigma_x[2],sigma_x2[2],mean[2],var[2],SE,tval,s2;
 	for (p=0;p<nParamToFit;++p)
 		par[paramToFit[p]].val=fittedPar[p];
 	for (i=0;i<2;++i)
