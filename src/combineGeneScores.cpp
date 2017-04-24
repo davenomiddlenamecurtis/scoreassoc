@@ -107,7 +107,8 @@ int main(int argc,char *argv[])
 	fprintf(fo,"ID\tCC\t");
 	for (t=0;t<nSet;++t)
 		for (v=0;v<nVarType;++v)
-			fprintf(fo,"%s:%d",set[t].name,v);
+			fprintf(fo,"%s:%d\t",set[t].name,v);
+	fprintf(fo,"\n");
 	for (s=0;s<nSub;++s)
 	{
 		fprintf(fo,"%s\t%d\t",sub[s].ID,sub[s].cc);

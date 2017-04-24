@@ -18,11 +18,14 @@ typedef struct param_t param;
 struct subject_t { char ID[50]; int cc; float **varScore; float totScore[MAXPARAMS*2+1]; };
 typedef struct subject_t subject;
 
+float getTStat();
+extern int powell(double **pvar,int n,float ftol,float *fret,float (*func)(void));
+
 // globals
 subject *sub;
 param par[MAXPARAMS];
 int testTrain[2][MAXSUB],nVarType,nGeneSet,nSub,whichTotScore,paramToFit[MAXPARAMS],nParamToFit,tt;
-float fittedPar[MAXPARAMS];
+double fittedPar[MAXPARAMS];
 #define LONGLINELENGTH 20000
 char line[LONGLINELENGTH+1],rest[LONGLINELENGTH+1];
 FILE *resultsFile;
@@ -153,13 +156,53 @@ int fsParams::check()
 int readParams(fsParams *fs,FILE *readParamsFile,param *par,int nGeneSet,int nVarType)
 {
 	int p;
-	p=0;
 	for (p=0;p<nGeneSet;++p)
 		if (!fgets(line,200,readParamsFile) || sscanf(line,"%f %s %d",&par[p].val,par[p].name,&par[p].toFit)!=3)
-			{ dcerror(1,"Could not read all geneList values\n"); return 0; }
+		{
+			dcerror(1,"Could not read all geneList values\n"); return 0;
+		}
 	for (p=0;p<nVarType;++p)
 		if (!fgets(line,200,readParamsFile) || sscanf(line,"%f %s %d",&par[nGeneSet+p].val,par[nGeneSet+p].name,&par[nGeneSet+p].toFit)!=3)
-			{ dcerror(1,"Could not read all varType values\n"); return 0; }
+		{
+			dcerror(1,"Could not read all varType values\n"); return 0;
+		}
+	return 1;
+}
+
+int writeParams(fsParams *fs,FILE *writeParamsFile,param *par,int nGeneSet,int nVarType)
+{
+	int p,savedNParamToFit;
+	float tStat,savedVal;
+	savedNParamToFit=nParamToFit;
+	nParamToFit=0;
+	for (p=0;p<nGeneSet+nVarType;++p)
+	{
+		fprintf(writeParamsFile,"%.2f\t%s\t%d\t",par[p].val,par[p].name,par[p].toFit);
+		tStat=getTStat();
+		fprintf(writeParamsFile,"%.4f\t",-tStat);
+		savedVal=par[p].val;
+		if (fabs(savedVal>1.0))
+		{\
+			par[p].val=savedVal*0.5;
+			tStat=getTStat();
+			fprintf(writeParamsFile,"%.4f\t",-tStat);
+			par[p].val=savedVal*1.5;
+			tStat=getTStat();
+			fprintf(writeParamsFile,"%.4f\t",-tStat);
+		}
+		else
+		{
+			par[p].val=savedVal-0.5;
+			tStat=getTStat();
+			fprintf(writeParamsFile,"%.4f\t",-tStat);
+			par[p].val=savedVal+0.5;
+			tStat=getTStat();
+			fprintf(writeParamsFile,"%.4f\t",-tStat);
+		}
+		par[p].val=savedVal;
+		fprintf(writeParamsFile,"\n");
+	}
+	nParamToFit=savedNParamToFit;
 	return 1;
 }
 
@@ -262,9 +305,10 @@ float getTStat()
 int main(int argc,char *argv[])
 {
 	fsParams fs;
-	FILE *readParamsFile,*testTrainFile,*varScoresFile;
+	FILE *readParamsFile,*testTrainFile,*varScoresFile,*writeParamsFile;
 	int s,t,p;
 	float tval;
+	double *toFitPtr[MAXPARAMS];
 	printf("%s v%s\n",PROGRAM,FSVERSION);
 	if (!fs.readArgs(argc,argv))
 		exit(1);
@@ -310,10 +354,17 @@ int main(int argc,char *argv[])
 		{
 			paramToFit[nParamToFit]=p;
 			fittedPar[nParamToFit]=par[p].val;
+			++nParamToFit;
 		}
+	if (fs.fit)
+	{
+		tt=0;
+		for (p=0;p<nParamToFit;++p)
+			toFitPtr[p]=&fittedPar[p];
+		powell(toFitPtr,nParamToFit,0.00001,&tval,getTStat);
+	}
 	if (fs.ttestFileName[0])
 	{
-
 		resultsFile=fopen(fs.ttestFileName,"w");
 		if (!resultsFile)
 		{
@@ -323,5 +374,18 @@ int main(int argc,char *argv[])
 		tval=-getTStat();
 		fclose(resultsFile);
 		resultsFile=0;
+	}
+	if (fs.writeParamsFileName[0])
+	{
+		writeParamsFile=fopen(fs.writeParamsFileName,"w");
+		if (!writeParamsFile)
+		{
+			dcerror(1,"Could not open %s\n",fs.writeParamsFileName); exit(1);
+		}
+		if (!writeParams(&fs,writeParamsFile,par,nGeneSet,nVarType))
+		{
+			dcerror(1,"Could not write parameter values to %s\n",fs.writeParamsFileName); exit(1);
+		}
+		fclose(writeParamsFile);
 	}
 }

@@ -146,10 +146,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\dcerror.cpp" />
+    <ClCompile Include="..\..\src\dsvd.c" />
+    <ClCompile Include="..\..\src\dsvdcode.cpp" />
+    <ClCompile Include="..\..\src\dvector.cpp" />
     <ClCompile Include="..\..\src\fitScores.cpp" />
+    <ClCompile Include="..\..\src\powell.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\dcerror.hpp" />
+    <ClInclude Include="..\..\src\dvector.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
