@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "getVarScores", "..\getVarSc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "combineGeneScores", "..\combineGeneScores\combineGeneScores.vcxproj", "{77740291-9D42-446C-BA4A-48A0A4718727}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fitScores", "..\fitScores\fitScores.vcxproj", "{60CB9F7D-F078-45BF-88DC-AF5AC138069A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +99,16 @@ Global
 		{77740291-9D42-446C-BA4A-48A0A4718727}.Release|x64.Build.0 = Release|x64
 		{77740291-9D42-446C-BA4A-48A0A4718727}.Release|x86.ActiveCfg = Release|Win32
 		{77740291-9D42-446C-BA4A-48A0A4718727}.Release|x86.Build.0 = Release|Win32
+		{60CB9F7D-F078-45BF-88DC-AF5AC138069A}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{60CB9F7D-F078-45BF-88DC-AF5AC138069A}.Debug|x64.ActiveCfg = Debug|x64
+		{60CB9F7D-F078-45BF-88DC-AF5AC138069A}.Debug|x64.Build.0 = Debug|x64
+		{60CB9F7D-F078-45BF-88DC-AF5AC138069A}.Debug|x86.ActiveCfg = Debug|Win32
+		{60CB9F7D-F078-45BF-88DC-AF5AC138069A}.Debug|x86.Build.0 = Debug|Win32
+		{60CB9F7D-F078-45BF-88DC-AF5AC138069A}.Release|Any CPU.ActiveCfg = Release|Win32
+		{60CB9F7D-F078-45BF-88DC-AF5AC138069A}.Release|x64.ActiveCfg = Release|x64
+		{60CB9F7D-F078-45BF-88DC-AF5AC138069A}.Release|x64.Build.0 = Release|x64
+		{60CB9F7D-F078-45BF-88DC-AF5AC138069A}.Release|x86.ActiveCfg = Release|Win32
+		{60CB9F7D-F078-45BF-88DC-AF5AC138069A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
