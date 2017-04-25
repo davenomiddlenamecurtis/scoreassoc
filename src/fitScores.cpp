@@ -330,6 +330,124 @@ int writeScores(fsParams *fs,FILE *writeScoresFile)
 	return 1;
 }
 
+int processOption(fsParams &fs,char *option,char *value)
+{
+	FILE *readParamsFile,*testTrainFile,*varScoresFile,*writeParamsFile,*writeScoresFile;
+	int s,t,p;
+	float tval;
+	double *toFitPtr[MAXPARAMS];
+	if (strncmp(option,"--",2))
+		{ dcerror(1,"Option should start with -- but had this:%s\n",option); return 0; }
+	if (!strcmp(option,"-read-params-file"))
+	{
+		strcpy(fs.readParamsFileName,value);
+		readParamsFile=fopen(fs.readParamsFileName,"r");
+		if (!readParamsFile)
+		{
+			dcerror(1,"Could not open %s\n",fs.readParamsFileName); exit(1);
+		}
+		if (!readParams(&fs,readParamsFile,par,nGeneSet,nVarType))
+		{
+			dcerror(1,"Could not read parameter starting values from %s\n",fs.readParamsFileName); exit(1);
+		}
+		fclose(readParamsFile);
+	}
+	else if (!strcmp(option,"--test-train-file"))
+	{
+		strcpy(fs.testTrainFileName,value);
+		testTrainFile=fopen(fs.testTrainFileName,"r");
+		if (!testTrainFile)
+		{
+			dcerror(1,"Could not open %s\n",fs.testTrainFileName); exit(1);
+		}
+		if ((nSub=readTestTrain(&fs,testTrainFile,testTrain))==0)
+		{
+			dcerror(1,"Could not read parameter starting values from %s\n",fs.testTrainFileName); exit(1);
+		}
+		fclose(testTrainFile);
+	}
+	else if (!strcmp(option,"--var-scores-file"))
+	{
+		strcpy(fs.varScoresFileName,value);
+		varScoresFile=fopen(fs.varScoresFileName,"r");
+		if (!varScoresFile)
+		{
+			dcerror(1,"Could not open %s\n",fs.varScoresFileName); exit(1);
+		}
+		if (!readVarScores(&fs,varScoresFile,sub,nSub,nGeneSet,nVarType))
+		{
+			dcerror(1,"Problem reading %s\n",fs.varScoresFileName); exit(1);
+		}
+		fclose(varScoresFile);
+	}
+	else if (!strcmp(option,"--fit"))
+	{ 
+		fs.fit=atoi(value);
+		if (fs.fit)
+		{
+			tt=0;
+			for (p=0;p<nParamToFit;++p)
+				toFitPtr[p]=&fittedPar[p];
+			powell(toFitPtr,nParamToFit,0.00001,&tval,getTStat);
+		}
+	}
+	else if (!strcmp(option,"--ttest-file"))
+	{ 
+		strcpy(fs.ttestFileName,value);
+		if (fs.ttestFileName[0])
+		{
+			resultsFile=fopen(fs.ttestFileName,"w");
+			if (!resultsFile)
+			{
+				dcerror(1,"Could not open %s\n",fs.ttestFileName); exit(1);
+			}
+			tt=1;
+			tval=-getTStat();
+			fclose(resultsFile);
+			resultsFile=0;
+		}
+	}
+	else if (!strcmp(option,"--write-params-file"))
+	{
+		strcpy(fs.writeParamsFileName,value);
+		if (fs.writeParamsFileName[0])
+		{
+			tt=1;
+			writeParamsFile=fopen(fs.writeParamsFileName,"w");
+			if (!writeParamsFile)
+			{
+				dcerror(1,"Could not open %s\n",fs.writeParamsFileName); exit(1);
+			}
+			if (!writeParams(&fs,writeParamsFile,par,nGeneSet,nVarType))
+			{
+				dcerror(1,"Could not write parameter values to %s\n",fs.writeParamsFileName); exit(1);
+			}
+			fclose(writeParamsFile);
+		}
+
+	}
+	else if (!strcmp(option,"--write-scores-file"))
+	{
+		strcpy(fs.writeScoresFileName,value);
+		if (fs.writeScoresFileName[0])
+		{
+			writeScoresFile=fopen(fs.writeScoresFileName,"w");
+			if (!writeScoresFile)
+			{
+				dcerror(1,"Could not open %s\n",fs.writeScoresFileName); exit(1);
+			}
+			if (!writeScores(&fs,writeScoresFile))
+			{
+				dcerror(1,"Could not write scores to %s\n",fs.writeScoresFileName); exit(1);
+			}
+			fclose(writeScoresFile);
+		}
+	}
+	else
+		{ dcerror(1,"Unrecognised option: %s\n",option); return 0; }
+	return 1;
+}
+
 int main(int argc,char *argv[])
 {
 	fsParams fs;
@@ -430,4 +548,5 @@ int main(int argc,char *argv[])
 		}
 		fclose(writeScoresFile);
 	}
+	return 0;
 }
