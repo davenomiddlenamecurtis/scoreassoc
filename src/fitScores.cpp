@@ -301,11 +301,39 @@ float getTStat()
 	// plan to get normalised values of scores before writing them to a file so they can be combined later
 }
 
+int writeScores(fsParams *fs,FILE *writeScoresFile)
+{
+	int s,n;
+	float sigma_x,sigma_x2,mean,var,score,sd;
+	whichTotScore=0;
+	tt=1;
+	getTStat();
+	sigma_x=sigma_x2=n=0;
+	for (s=0;s<nSub;++s)
+	{
+		if (testTrain[tt][s]==0)
+			continue;
+		score=sub[s].totScore[0];
+		sigma_x+=score;
+		sigma_x2+=score*score;
+		++n;
+	}
+	mean=sigma_x/n;
+	var=(n*sigma_x2-sigma_x*sigma_x)/(n*(n-1));
+	sd=sqrt(var);
+	for (s=0;s<nSub;++s)
+	{
+		if (testTrain[tt][s]==0)
+			continue;
+		fprintf(writeScoresFile,"%s %d %.2f %f\n",sub[s].ID,sub[s].cc,sub[s].totScore[0],(sub[s].totScore[0]-mean)/sd);
+	}
+	return 1;
+}
 
 int main(int argc,char *argv[])
 {
 	fsParams fs;
-	FILE *readParamsFile,*testTrainFile,*varScoresFile,*writeParamsFile;
+	FILE *readParamsFile,*testTrainFile,*varScoresFile,*writeParamsFile,*writeScoresFile;
 	int s,t,p;
 	float tval;
 	double *toFitPtr[MAXPARAMS];
@@ -388,5 +416,18 @@ int main(int argc,char *argv[])
 			dcerror(1,"Could not write parameter values to %s\n",fs.writeParamsFileName); exit(1);
 		}
 		fclose(writeParamsFile);
+	}
+	if (fs.writeScoresFileName[0])
+	{
+		writeScoresFile=fopen(fs.writeScoresFileName,"w");
+		if (!writeScoresFile)
+		{
+			dcerror(1,"Could not open %s\n",fs.writeScoresFileName); exit(1);
+		}
+		if (!writeScores(&fs,writeScoresFile))
+		{
+			dcerror(1,"Could not write scores to %s\n",fs.writeScoresFileName); exit(1);
+		}
+		fclose(writeScoresFile);
 	}
 }
