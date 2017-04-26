@@ -171,8 +171,8 @@ int readParams(fsParams *fs,FILE *readParamsFile,param *par,int nGeneSet,int nVa
 
 int writeParams(fsParams *fs,FILE *writeParamsFile,param *par,int nGeneSet,int nVarType)
 {
-	int p,savedNParamToFit;
-	float tStat,savedVal;
+	int p,savedNParamToFit,r;
+	float tStat,savedVal,ratio;
 	savedNParamToFit=nParamToFit;
 	nParamToFit=0;
 	for (p=0;p<nGeneSet+nVarType;++p)
@@ -181,8 +181,18 @@ int writeParams(fsParams *fs,FILE *writeParamsFile,param *par,int nGeneSet,int n
 		tStat=getTStat();
 		fprintf(writeParamsFile,"%.4f\t",-tStat);
 		savedVal=par[p].val;
+#if 1
+		ratio=1.0/128.0;
+		for (r=0;r<13;++r)
+		{
+			par[p].val=savedVal*ratio;
+			tStat=getTStat();
+			fprintf(writeParamsFile,"%.4f\t",-tStat);
+			ratio=ratio*2;
+		}
+#else
 		if (fabs(savedVal>1.0))
-		{\
+		{
 			par[p].val=savedVal*0.5;
 			tStat=getTStat();
 			fprintf(writeParamsFile,"%.4f\t",-tStat);
@@ -199,6 +209,7 @@ int writeParams(fsParams *fs,FILE *writeParamsFile,param *par,int nGeneSet,int n
 			tStat=getTStat();
 			fprintf(writeParamsFile,"%.4f\t",-tStat);
 		}
+#endif
 		par[p].val=savedVal;
 		fprintf(writeParamsFile,"\n");
 	}
@@ -232,7 +243,6 @@ int readVarScores(fsParams *fs,FILE *varScoresFile,subject *sub,int nSub,int nGe
 				{
 					dcerror(1,"Incomplete data in --var-scores-file, got to s=%d t=%d v=%d sub[s].ID=%s\n",s,t,v,sub[s].ID); return 1;
 				}
-		
 	}
 #else
 	for (s=0;s<nSub;++s)
