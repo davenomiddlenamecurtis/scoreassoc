@@ -28,12 +28,14 @@ int testTrain[2][MAXSUB],nVarType,nGeneSet,nSub,whichTotScore,paramToFit[MAXPARA
 double fittedPar[MAXPARAMS];
 #define LONGLINELENGTH 20000
 char line[LONGLINELENGTH+1],rest[LONGLINELENGTH+1];
-FILE *resultsFile;
+FILE *resultsFile,*logFile;
 
 class fsParams { 
 public:
 	int fit,nReadScoresFiles;
-	char readParamsFileName[200],writeParamsFileName[200],readScoresFileName[MAXSCORESTOREAD][200],writeScoresFileName[200],varScoresFileName[200],ttestFileName[200],testTrainFileName[200];
+	float stepwiseTol;
+	char readParamsFileName[200],writeParamsFileName[200],readScoresFileName[MAXSCORESTOREAD][200],extraArgsFileName[200],
+		writeScoresFileName[200],varScoresFileName[200],ttestFileName[200],testTrainFileName[200],logFileName[200];
 	int readArgs(int argc,char *argv[]);
 	int getNextArg(char *nextArg,int argc,char *argv[],FILE **fpp,int *argNum);
 	int check();
@@ -49,7 +51,8 @@ int fsParams::readArgs(int argc,char *argv[])
 	FILE *fp;
 	fp=0;
 	argNum=1;
-	readParamsFileName[0]=writeParamsFileName[0]=writeScoresFileName[0]=varScoresFileName[0]=ttestFileName[0]=testTrainFileName[0]='\0';
+	stepwiseTol=0;
+	readParamsFileName[0]=writeParamsFileName[0]=writeScoresFileName[0]=varScoresFileName[0]=ttestFileName[0]=testTrainFileName[0]=logFileName[0]=extraArgsFileName[0]='\0';
 	fit=nReadScoresFiles=nVarType=nGeneSet=nSub=0;
 	while (getNextArg(arg,argc,argv,&fp,&argNum))
 	{
@@ -98,6 +101,14 @@ int fsParams::readArgs(int argc,char *argv[])
 		{
 			strcpy(testTrainFileName,arg);
 		}
+		else if (FILLARG("--extra-arg-file"))
+		{
+			strcpy(extraArgsFileName,arg);
+		}
+		else if (FILLARG("--log-file"))
+		{
+			strcpy(logFileName,arg);
+		}
 		else if (FILLARG("--fit"))
 		{
 			fit=atoi(arg);
@@ -109,6 +120,10 @@ int fsParams::readArgs(int argc,char *argv[])
 		else if (FILLARG("--n-gene-set"))
 		{
 			nGeneSet=atoi(arg);
+		}
+		else if (FILLARG("--stepwise-tol"))
+		{
+			stepwiseTol=atoi(arg);
 		}
 		else
 			dcerror(1,"Did not recognise argument specifier %s\n",arg);
@@ -171,25 +186,67 @@ int readParams(fsParams *fs,FILE *readParamsFile,param *par,int nGeneSet,int nVa
 
 int writeParams(fsParams *fs,FILE *writeParamsFile,param *par,int nGeneSet,int nVarType)
 {
-	int p,savedNParamToFit,r;
-	float tStat,savedVal,ratio;
+	int p,savedNParamToFit,r,side,steps;
+	float tStat,savedVal,ratio,val,diff,CL,savedTStat,step;
 	savedNParamToFit=nParamToFit;
 	nParamToFit=0;
+	fprintf(writeParamsFile,"value\tname\ttoFit\ttval\tlolim\thilim\t");
+	for (val=-100;val<-0.05;val/=10)
+		for (ratio=1.0;ratio>=0.05;ratio-=0.1)
+			fprintf(writeParamsFile,"%.2f\t",val*ratio);
+	fprintf(writeParamsFile,"0.0\t");
+	for (val=0.1;val<500;val*=10)
+		for (ratio=0.1;ratio<1.05;ratio+=0.1)
+			fprintf(writeParamsFile,"%.1f\t",val*ratio);
+	fprintf(writeParamsFile,"\n");
 	for (p=0;p<nGeneSet+nVarType;++p)
 	{
 		fprintf(writeParamsFile,"%.2f\t%s\t%d\t",par[p].val,par[p].name,par[p].toFit);
+		tStat=-getTStat();
+		fprintf(writeParamsFile,"%.4f\t",tStat);
+		savedVal=par[p].val;
+		savedTStat=tStat;
+		diff=1;
+		for (side=-1;side<=1;side+=2)
+		{
+			CL=0;
+			for (step=100;step>=0.05;step/=10.0)
+			{
+				for (steps=0;steps<=10;++steps)
+				{
+					par[p].val=CL*side+savedVal;
+					tStat=-getTStat();
+					if (tStat<savedTStat-diff)
+					{
+							CL-=step;
+					}
+					else
+						CL+=step;
+				}
+				if (CL==1000)
+					break;
+			}
+		fprintf(writeParamsFile,"%.2f\t",CL*side+savedVal);
+		}
+
+#if 1
+		for (val=-100;val<-0.05;val/=10)
+			for (ratio=1.0;ratio>=0.05;ratio-=0.1)
+			{
+				par[p].val=val*ratio;
+				tStat=getTStat();
+				fprintf(writeParamsFile,"%.4f\t",-tStat);
+			}
+		par[p].val=0.0;
 		tStat=getTStat();
 		fprintf(writeParamsFile,"%.4f\t",-tStat);
-		savedVal=par[p].val;
-#if 1
-		ratio=1.0/128.0;
-		for (r=0;r<13;++r)
-		{
-			par[p].val=savedVal*ratio;
-			tStat=getTStat();
-			fprintf(writeParamsFile,"%.4f\t",-tStat);
-			ratio=ratio*2;
-		}
+		for (val=0.1;val<500;val*=10)
+			for (ratio=0.1;ratio<1.05;ratio+=0.1)
+			{
+				par[p].val=val*ratio;
+				tStat=getTStat();
+				fprintf(writeParamsFile,"%.4f\t",-tStat);
+			}
 #else
 		if (fabs(savedVal>1.0))
 		{
@@ -307,6 +364,13 @@ float getTStat()
 				n[0],n[1],mean[0],mean[1],n[0] + n[1] - 2,tval);
 
 	}
+	if (logFile)
+	{
+		fprintf(logFile,"%.3f\t",tval);
+		for (p=0;p<nParamToFit;++p)
+			fprintf(logFile,"%.2f\t",fittedPar[p]);
+		fprintf(logFile,"\n");
+	}
 	return -tval;
 	// plan to get normalised values of scores before writing them to a file so they can be combined later
 }
@@ -340,6 +404,100 @@ int writeScores(fsParams *fs,FILE *writeScoresFile)
 	return 1;
 }
 
+int stepwise(fsParams *fs)
+{
+	float tval,highTval,savedTval,savedVal;
+	double *toFitPtr[MAXPARAMS];
+	int p,pp,savedToFit,temp,highestP,localToFit[MAXPARAMS],localNParamToFit;
+	FILE *myLog;
+	myLog=logFile;
+	logFile=0;
+	tt=0;
+	for (p=0,nParamToFit=0;p<nGeneSet+nVarType;++p)
+		if (par[p].toFit)
+		{
+			paramToFit[nParamToFit]=p;
+			fittedPar[nParamToFit]=par[p].val;
+			++nParamToFit;
+		}
+	for (p=0;p<nParamToFit;++p)
+		toFitPtr[p]=&fittedPar[p];
+	powell(toFitPtr,nParamToFit,0.00001,&savedTval,getTStat);
+	//for (p=0;p<nGeneSet+nVarType;++p)
+		//savedToFit[p]=par[p].toFit;
+	savedTval=savedTval*-1;
+	highTval=-1000;
+	highestP=-1;
+	fprintf(myLog,"Original t = %.4f\n",savedTval);
+	do
+	{
+		for (p=0;p<nParamToFit;++p)
+			fprintf(myLog,"%s\t",par[paramToFit[p]].name);
+		fprintf(myLog,"\n");
+		for (p=0;p<nParamToFit;++p)
+			fprintf(myLog,"%.2f\t",par[paramToFit[p]].val);
+		fprintf(myLog,"\n");
+		localNParamToFit=nParamToFit;
+		for (pp=0;pp<localNParamToFit;++pp)
+			localToFit[pp]=paramToFit[pp];
+		for (pp=0;pp<localNParamToFit;++pp) 
+		{
+			if (pp!=0)
+			{
+				par[savedToFit].val=savedVal;
+				par[savedToFit].toFit=1;
+			}
+			savedToFit=localToFit[pp];
+			savedVal=par[savedToFit].val;
+			par[savedToFit].val=0;
+			par[savedToFit].toFit=0;
+			for (p=0,nParamToFit=0;p<nGeneSet+nVarType;++p)
+				if (par[p].toFit)
+				{
+					paramToFit[nParamToFit]=p;
+					fittedPar[nParamToFit]=par[p].val;
+					++nParamToFit;
+				}
+			for (p=0;p<nParamToFit;++p)
+				toFitPtr[p]=&fittedPar[p];
+			powell(toFitPtr,nParamToFit,0.00001,&tval,getTStat); // could just evaluate instead
+			tval=tval*-1;
+			if (tval>highTval)
+			{
+				highTval=tval;
+				highestP=localToFit[pp];
+			}
+			fprintf(myLog,"%.2f\t",tval);
+		}
+		par[savedToFit].val=savedVal;
+		par[savedToFit].toFit=1;
+		if (savedTval-highTval>fs->stepwiseTol)
+			break;
+		else
+		{
+			par[highestP].val=0;
+			par[highestP].toFit=0;
+		}
+
+	} while (nParamToFit>0);
+	for (p=0,nParamToFit=0;p<nGeneSet+nVarType;++p)
+		if (par[p].toFit)
+		{
+			paramToFit[nParamToFit]=p;
+			fittedPar[nParamToFit]=par[p].val;
+			++nParamToFit;
+		}
+	fprintf(myLog,"Finished stepwise exclusion, t = %.2f\n",-getTStat());
+	for (p=0;p<nParamToFit;++p)
+		fprintf(myLog,"%s\t",par[paramToFit[p]].name);
+	fprintf(myLog,"\n");
+	for (p=0;p<nParamToFit;++p)
+		fprintf(myLog,"%.2f\t",par[paramToFit[p]].val);
+	fprintf(myLog,"\n");
+	logFile=myLog;
+	return 1;
+}
+
 int processOption(fsParams &fs,char *option,char *value)
 {
 	FILE *readParamsFile,*testTrainFile,*varScoresFile,*writeParamsFile,*writeScoresFile;
@@ -348,19 +506,26 @@ int processOption(fsParams &fs,char *option,char *value)
 	double *toFitPtr[MAXPARAMS];
 	if (strncmp(option,"--",2))
 		{ dcerror(1,"Option should start with -- but had this:%s\n",option); return 0; }
-	if (!strcmp(option,"-read-params-file"))
+	if (!strcmp(option,"--read-params-file"))
 	{
 		strcpy(fs.readParamsFileName,value);
 		readParamsFile=fopen(fs.readParamsFileName,"r");
 		if (!readParamsFile)
 		{
-			dcerror(1,"Could not open %s\n",fs.readParamsFileName); exit(1);
+			dcerror(1,"Could not open params file %s\n",fs.readParamsFileName); exit(1);
 		}
 		if (!readParams(&fs,readParamsFile,par,nGeneSet,nVarType))
 		{
 			dcerror(1,"Could not read parameter starting values from %s\n",fs.readParamsFileName); exit(1);
 		}
 		fclose(readParamsFile);
+		for (p=0,nParamToFit=0;p<nGeneSet+nVarType;++p)
+			if (par[p].toFit)
+			{
+				paramToFit[nParamToFit]=p;
+				fittedPar[nParamToFit]=par[p].val;
+				++nParamToFit;
+			}
 	}
 	else if (!strcmp(option,"--test-train-file"))
 	{
@@ -368,7 +533,7 @@ int processOption(fsParams &fs,char *option,char *value)
 		testTrainFile=fopen(fs.testTrainFileName,"r");
 		if (!testTrainFile)
 		{
-			dcerror(1,"Could not open %s\n",fs.testTrainFileName); exit(1);
+			dcerror(1,"Could not open test/train file %s\n",fs.testTrainFileName); exit(1);
 		}
 		if ((nSub=readTestTrain(&fs,testTrainFile,testTrain))==0)
 		{
@@ -390,11 +555,39 @@ int processOption(fsParams &fs,char *option,char *value)
 		}
 		fclose(varScoresFile);
 	}
+	else if (!strcmp(option,"--log-file"))
+	{
+		strcpy(fs.logFileName,value);
+		if (!strcmp(fs.logFileName,"close"))
+		{
+			if (logFile)
+			{
+				fclose(logFile);
+				logFile=0;
+			}
+		}
+		else
+		{
+			logFile=fopen(fs.logFileName,"w");
+			if (!logFile)
+			{
+				dcerror(1,"Could not open %s\n",fs.logFileName); exit(1);
+			}
+		}
+
+	}
 	else if (!strcmp(option,"--fit"))
 	{ 
 		fs.fit=atoi(value);
 		if (fs.fit)
 		{
+			if (logFile)
+			{
+				fprintf(logFile,"tVal\t");
+				for (p=0;p<nParamToFit;++p)
+					fprintf(logFile,"%s\t",par[paramToFit[p]].name);
+				fprintf(logFile,"\n");
+			}
 			tt=0;
 			for (p=0;p<nParamToFit;++p)
 				toFitPtr[p]=&fittedPar[p];
@@ -453,6 +646,13 @@ int processOption(fsParams &fs,char *option,char *value)
 			fclose(writeScoresFile);
 		}
 	}
+	
+	else if (!strcmp(option,"--stepwise-tol"))
+	{
+		fs.stepwiseTol=atof(value);
+		if (fs.stepwiseTol)
+			stepwise(&fs);
+	}
 	else
 		{ dcerror(1,"Unrecognised option: %s\n",option); return 0; }
 	return 1;
@@ -465,31 +665,22 @@ int main(int argc,char *argv[])
 	int s,t,p;
 	float tval;
 	double *toFitPtr[MAXPARAMS];
+	char arg[100];
 	printf("%s v%s\n",PROGRAM,FSVERSION);
 	if (!fs.readArgs(argc,argv))
 		exit(1);
 	if (!fs.check())
 		exit(1);
-	readParamsFile=fopen(fs.readParamsFileName,"r");
-	if (!readParamsFile)
+	if (!fs.readParamsFileName[0])
 	{
-		dcerror(1,"Could not open %s\n",fs.readParamsFileName); exit(1);
+		dcerror(1,"Must set value for --read-params-file"); exit(1);
 	}
-	if (!readParams(&fs,readParamsFile,par,nGeneSet,nVarType))
+	processOption(fs,"--read-params-file",fs.readParamsFileName);
+	if (!fs.testTrainFileName[0])
 	{
-		dcerror(1,"Could not read parameter starting values from %s\n",fs.readParamsFileName); exit(1);
+		dcerror(1,"Must set value for --test-train-file"); exit(1);
 	}
-	fclose(readParamsFile);
-	testTrainFile=fopen(fs.testTrainFileName,"r");
-	if (!testTrainFile)
-	{
-		dcerror(1,"Could not open %s\n",fs.testTrainFileName); exit(1);
-	}
-	if ((nSub=readTestTrain(&fs,testTrainFile,testTrain))==0)
-	{
-		dcerror(1,"Could not read parameter starting values from %s\n",fs.testTrainFileName); exit(1);
-	}
-	fclose(testTrainFile);
+	processOption(fs,"--test-train-file",fs.testTrainFileName);
 	assert((sub=(subject *)calloc(nSub,sizeof(subject)))!=0);
 	for (s=0;s<nSub;++s)
 	{
@@ -497,66 +688,28 @@ int main(int argc,char *argv[])
 		for (t=0;t<nGeneSet;++t)
 			assert((sub[s].varScore[t]=(float*)calloc(nVarType,sizeof(float)))!=0);
 	}
-	varScoresFile=fopen(fs.varScoresFileName,"r");
-	if (!varScoresFile)
+	if (!fs.varScoresFileName[0])
 	{
-		dcerror(1,"Could not open %s\n",fs.varScoresFileName); exit(1);
+		dcerror(1,"Must set value for --var-scores-file"); exit(1);
 	}
-	if (!readVarScores(&fs,varScoresFile,sub,nSub,nGeneSet,nVarType))
-		{ dcerror(1,"Problem reading %s\n",fs.varScoresFileName); exit(1); }
-	fclose(varScoresFile);
-	for (p=0,nParamToFit=0;p<nGeneSet+nVarType;++p)
-		if (par[p].toFit)
-		{
-			paramToFit[nParamToFit]=p;
-			fittedPar[nParamToFit]=par[p].val;
-			++nParamToFit;
-		}
+	processOption(fs,"--var-scores-file",fs.varScoresFileName);
+	if (fs.logFileName[0])
+		processOption(fs,"--log-file",fs.logFileName);
 	if (fs.fit)
 	{
-		tt=0;
-		for (p=0;p<nParamToFit;++p)
-			toFitPtr[p]=&fittedPar[p];
-		powell(toFitPtr,nParamToFit,0.00001,&tval,getTStat);
+		sprintf(arg,"%d",fs.fit);
+		processOption(fs,"--fit",arg);
+	}
+	if (fs.stepwiseTol)
+	{
+		sprintf(arg,"%f",fs.stepwiseTol);
+		processOption(fs,"--stepwise-tol",arg);
 	}
 	if (fs.ttestFileName[0])
-	{
-		resultsFile=fopen(fs.ttestFileName,"w");
-		if (!resultsFile)
-		{
-			dcerror(1,"Could not open %s\n",fs.ttestFileName); exit(1);
-		}
-		tt=1;
-		tval=-getTStat();
-		fclose(resultsFile);
-		resultsFile=0;
-	}
+		processOption(fs,"--ttest-file",fs.ttestFileName);
 	if (fs.writeParamsFileName[0])
-	{
-		tt=1;
-		writeParamsFile=fopen(fs.writeParamsFileName,"w");
-		if (!writeParamsFile)
-		{
-			dcerror(1,"Could not open %s\n",fs.writeParamsFileName); exit(1);
-		}
-		if (!writeParams(&fs,writeParamsFile,par,nGeneSet,nVarType))
-		{
-			dcerror(1,"Could not write parameter values to %s\n",fs.writeParamsFileName); exit(1);
-		}
-		fclose(writeParamsFile);
-	}
+		processOption(fs,"--write-params-file",fs.writeParamsFileName);
 	if (fs.writeScoresFileName[0])
-	{
-		writeScoresFile=fopen(fs.writeScoresFileName,"w");
-		if (!writeScoresFile)
-		{
-			dcerror(1,"Could not open %s\n",fs.writeScoresFileName); exit(1);
-		}
-		if (!writeScores(&fs,writeScoresFile))
-		{
-			dcerror(1,"Could not write scores to %s\n",fs.writeScoresFileName); exit(1);
-		}
-		fclose(writeScoresFile);
-	}
+		processOption(fs,"--write-scores-file",fs.writeScoresFileName);
 	return 0;
 }
