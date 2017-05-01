@@ -668,6 +668,7 @@ int main(int argc,char *argv[])
 	printf("%s v%s\n",PROGRAM,FSVERSION);
 	if (!fs.readArgs(argc,argv))
 		exit(1);
+#if 0
 	if (!fs.check())
 		exit(1);
 	if (!fs.readParamsFileName[0])
@@ -703,5 +704,6 @@ int main(int argc,char *argv[])
 		processOption(fs,"--write-params-file",fs.writeParamsFileName);
 	if (fs.writeScoresFileName[0])
 		processOption(fs,"--write-scores-file",fs.writeScoresFileName);
+#endif
 	return 0;
 }
