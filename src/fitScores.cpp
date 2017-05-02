@@ -390,17 +390,21 @@ int stepwise(fsParams *fs)
 	//for (p=0;p<nGeneSet+nVarType;++p)
 		//savedToFit[p]=par[p].toFit;
 	savedTval=savedTval*-1;
-	fprintf(myLog,"Original t = %.4f\n",savedTval);
+	if (myLog)
+		fprintf(myLog,"Original t = %.4f\n",savedTval);
 	do
 	{
 		highTval=-1000;
 		highestP=-1;
-		for (p=0;p<nParamToFit;++p)
-			fprintf(myLog,"%s\t",par[paramToFit[p]].name);
-		fprintf(myLog,"\n");
-		for (p=0;p<nParamToFit;++p)
-			fprintf(myLog,"%.2f\t",par[paramToFit[p]].val);
-		fprintf(myLog,"\n");
+		if (myLog)
+		{
+			for (p=0;p<nParamToFit;++p)
+				fprintf(myLog,"%s\t",par[paramToFit[p]].name);
+			fprintf(myLog,"\n");
+			for (p=0;p<nParamToFit;++p)
+				fprintf(myLog,"%.2f\t",par[paramToFit[p]].val);
+			fprintf(myLog,"\n");
+		}
 		localNParamToFit=nParamToFit;
 		for (pp=0;pp<localNParamToFit;++pp)
 			localToFit[pp]=paramToFit[pp];
@@ -435,7 +439,8 @@ int stepwise(fsParams *fs)
 				highTval=tval;
 				highestP=localToFit[pp];
 			}
-			fprintf(myLog,"%.2f\t",tval);
+			if (myLog)
+				fprintf(myLog,"%.2f\t",tval);
 		}
 		par[savedToFit].val=savedVal;
 		par[savedToFit].toFit=1;
@@ -470,13 +475,16 @@ int stepwise(fsParams *fs)
 	for (p=0;p<nParamToFit;++p)
 		par[paramToFit[p]].val=1;
 	powell(toFitPtr,nParamToFit,fs->powellTol,&tval,getTStat);
-	fprintf(myLog,"\n\nFinished stepwise exclusion, t = %.2f\n",-tval);
-	for (p=0;p<nParamToFit;++p)
-		fprintf(myLog,"%s\t",par[paramToFit[p]].name);
-	fprintf(myLog,"\n");
-	for (p=0;p<nParamToFit;++p)
-		fprintf(myLog,"%.2f\t",par[paramToFit[p]].val);
-	fprintf(myLog,"\n");
+	if (myLog)
+	{
+		fprintf(myLog,"\n\nFinished stepwise exclusion, t = %.2f\n",-tval);
+		for (p=0;p<nParamToFit;++p)
+			fprintf(myLog,"%s\t",par[paramToFit[p]].name);
+		fprintf(myLog,"\n");
+		for (p=0;p<nParamToFit;++p)
+			fprintf(myLog,"%.2f\t",par[paramToFit[p]].val);
+		fprintf(myLog,"\n");
+	}
 	logFile=myLog;
 	return 1;
 }
