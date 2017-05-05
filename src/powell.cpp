@@ -16,7 +16,7 @@ int powell(double **pvar,int n,float ftol,float *fret,float (*func)(void));
 void mnbrak(float *ax,float *bx,float *cx,float *fa,float *fb,float *fc,float (*func)(float));
 float brent(float ax,float bx,float cx,float (*f)(float),float tol,float *xmin);
 
-int powell(double **pvar,int n,float ftol,float *fret,float (*func)(void))
+int NR_float_powell(double **pvar,int n,float ftol,float *fret,float (*func)(void))
 // pvar points to variables
 {
 	int i,ibig,j,iter;

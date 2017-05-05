@@ -3,6 +3,11 @@
 #include <string.h>
 #include <assert.h>
 #include <math.h>
+#include <dlib/optimization.h>
+
+using namespace dlib;
+typedef matrix<double,0,1> column_vector;
+
 #include "dcerror.hpp"
 
 #define PROGRAM "fitScores"
@@ -11,15 +16,27 @@
 #define MAXSCORESTOREAD 20
 #define MAXPARAMS 100
 
-struct param_t { float val; char name[200]; int toFit; };
+struct param_t { double val; char name[200]; int toFit; };
 typedef struct param_t param;
 
 
 struct subject_t { char ID[50]; int cc; float **varScore; float totScore[MAXPARAMS*2+1]; };
 typedef struct subject_t subject;
 
-float getTStat();
-extern int powell(double **pvar,int n,float ftol,float *fret,float (*func)(void));
+double getTStat();
+
+float float_getTStat() { return (float)getTStat(); }
+extern int NR_float_powell(double **pvar,int n,float ftol,float *fret,float (*func)(void));
+
+
+int NR_powell(double **pvar,int n,float ftol,float *fret,double (*func)(void))
+{
+	return NR_float_powell(pvar,n,ftol,fret,float_getTStat);
+}
+
+int NR_powell(double **pvar,int n,float ftol,float *fret,double (*func)(void));
+
+int (*powell)(double **pvar,int n,float ftol,float *fret,double (*func)(void));
 
 // globals
 subject *sub;
@@ -29,6 +46,43 @@ double fittedPar[MAXPARAMS];
 #define LONGLINELENGTH 20000
 char line[LONGLINELENGTH+1],rest[LONGLINELENGTH+1];
 FILE *resultsFile,*logFile;
+
+class powell_function
+{
+public:
+	// I don't think I need to keep any state data
+	double operator() (const column_vector& arg) const ;
+	double (*func)(void);
+	powell_function(double (*f)(void)) { func=f; }
+};
+
+// may have failed because function was returning float, not double
+int dlib_powell(double **pvar,int n,float ftol,float *fret,double (*func)(void))
+{
+	int i;
+	double d;
+	column_vector starting_point(n);
+	for (i=0;i<n;++i)
+		starting_point(i,0)=*pvar[i];
+	// I'm not sure if below will work
+	d=find_min_using_approximate_derivatives(cg_search_strategy(),
+		objective_delta_stop_strategy(ftol),
+		powell_function(func),starting_point,-20);
+	for (i=0;i<n;++i)
+		*pvar[i]=starting_point(i,0);
+	*fret=d;
+	return 1;
+}
+
+double powell_function::operator() (const column_vector& c) const
+{
+	int i;
+	double f;
+	for (i=0;i<c.nr();++i)
+		fittedPar[i]=c(i,0);
+	f=func();
+	return f;
+}
 
 class fsParams { 
 public:
@@ -57,6 +111,7 @@ int fsParams::readArgs(int argc,char *argv[])
 	powellTol=0.00001; // 0.001 and 0.0001 did not fit well tval-=0.4
 	readParamsFileName[0]=writeParamsFileName[0]=writeScoresFileName[0]=varScoresFileName[0]=ttestFileName[0]=testTrainFileName[0]=logFileName[0]=extraArgsFileName[0]='\0';
 	fit=nReadScoresFiles=nVarType=nGeneSet=nSub=0;
+	powell=dlib_powell;
 	while (getNextArg(arg,argc,argv,&fp,&argNum))
 	{
 		if (!isArgType(arg))
@@ -103,6 +158,8 @@ int fsParams::readArgs(int argc,char *argv[])
 			processOption(*this,"--stepwise-tol",arg);
 		else if (FILLARG("--do-grid"))
 			processOption(*this,"--do-grid",arg);
+		else if (FILLARG("--use-NR-powell"))
+			processOption(*this,"--use-NR-powell",arg);
 		else
 			dcerror(1,"Did not recognise argument specifier %s\n",arg);
 	}
@@ -150,12 +207,12 @@ int readParams(fsParams *fs,FILE *readParamsFile,param *par,int nGeneSet,int nVa
 {
 	int p;
 	for (p=0;p<nGeneSet;++p)
-		if (!fgets(line,200,readParamsFile) || sscanf(line,"%f %s %d",&par[p].val,par[p].name,&par[p].toFit)!=3)
+		if (!fgets(line,200,readParamsFile) || sscanf(line,"%lf %s %d",&par[p].val,par[p].name,&par[p].toFit)!=3)
 		{
 			dcerror(1,"Could not read all geneList values\n"); return 0;
 		}
 	for (p=0;p<nVarType;++p)
-		if (!fgets(line,200,readParamsFile) || sscanf(line,"%f %s %d",&par[nGeneSet+p].val,par[nGeneSet+p].name,&par[nGeneSet+p].toFit)!=3)
+		if (!fgets(line,200,readParamsFile) || sscanf(line,"%lf %s %d",&par[nGeneSet+p].val,par[nGeneSet+p].name,&par[nGeneSet+p].toFit)!=3)
 		{
 			dcerror(1,"Could not read all varType values\n"); return 0;
 		}
@@ -285,10 +342,10 @@ int readVarScores(fsParams *fs,FILE *varScoresFile,subject *sub,int nSub,int nGe
 	return 1;
 }
 
-float getTStat()
+double getTStat()
 {
 	int p,s,t,v,i,cc,n[2];
-	float score,sigma_x[2],sigma_x2[2],mean[2],var[2],SE,tval,s2;
+	double score,sigma_x[2],sigma_x2[2],mean[2],var[2],SE,tval,s2;
 	for (p=0;p<nParamToFit;++p)
 		par[paramToFit[p]].val=fittedPar[p];
 	for (i=0;i<2;++i)
@@ -336,7 +393,6 @@ float getTStat()
 		fprintf(logFile,"\n");
 	}
 	return -tval;
-	// plan to get normalised values of scores before writing them to a file so they can be combined later
 }
 
 int writeScores(fsParams *fs,FILE *writeScoresFile)
@@ -428,11 +484,7 @@ int stepwise(fsParams *fs)
 				}
 			for (p=0;p<nParamToFit;++p)
 				toFitPtr[p]=&fittedPar[p];
-#if 0
-			powell(toFitPtr,nParamToFit,fs->powellTol,&tval,getTStat); // could just evaluate instead
-#else
 			tval=getTStat();
-#endif
 			tval=tval*-1;
 			if (tval>highTval)
 			{
@@ -657,6 +709,13 @@ int processOption(fsParams &fs,char *option,char *value)
 		fs.stepwiseTol=atof(value);
 		if (fs.stepwiseTol)
 			stepwise(&fs);
+	}
+	else if (!strcmp(option,"--use-NR-powell"))
+	{
+		if (atoi(value))
+			powell=NR_powell;
+		else
+			powell=dlib_powell;
 	}
 	else if (!strcmp(option,"--do-grid"))
 		fs.doGrid=atoi(value);
