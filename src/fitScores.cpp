@@ -160,6 +160,8 @@ int fsParams::readArgs(int argc,char *argv[])
 			processOption(*this,"--do-grid",arg);
 		else if (FILLARG("--use-NR-powell"))
 			processOption(*this,"--use-NR-powell",arg);
+		else if (FILLARG("--test-train"))
+			processOption(*this,"--test-train",arg);
 		else
 			dcerror(1,"Did not recognise argument specifier %s\n",arg);
 	}
@@ -673,7 +675,6 @@ int processOption(fsParams &fs,char *option,char *value)
 		strcpy(fs.writeParamsFileName,value);
 		if (fs.writeParamsFileName[0])
 		{
-			tt=1;
 			writeParamsFile=fopen(fs.writeParamsFileName,"w");
 			if (!writeParamsFile)
 			{
@@ -716,6 +717,13 @@ int processOption(fsParams &fs,char *option,char *value)
 			powell=NR_powell;
 		else
 			powell=dlib_powell;
+	}
+	else if (!strcmp(option,"--test-train"))
+	{
+		if (atoi(value))
+			tt=1;
+		else
+			tt=0;
 	}
 	else if (!strcmp(option,"--do-grid"))
 		fs.doGrid=atoi(value);
