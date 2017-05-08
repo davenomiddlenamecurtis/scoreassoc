@@ -597,6 +597,7 @@ if (spi.df[SCOREFILE].fp)
 {
 	write_scores(spi.df[SCOREFILE].fp,sub,nsub,score);
 	fclose(spi.df[SCOREFILE].fp);
+	spi.df[SCOREFILE].fp=0;
 }
 if (spi.do_recessive_test)
 {
