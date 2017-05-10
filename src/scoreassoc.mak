@@ -18,7 +18,7 @@ OURFLAGS = $(MYFLAGS) $(EXTRAFLAGS)
 HEADERS = cdflib.h  dcerror.hpp  dcexpr.hpp  fisher.h  sagcutils.h  safilterfuncs.hpp  scoreassoc.hpp
 # cheat and just assume all code dependent on all of these
 
-EXES = combineGeneScores getVarScores scoreassoc pathwayAssoc permPathwayAssoc combineCohorts makeScoreTable 
+EXES = scoreassoc pathwayAssoc permPathwayAssoc makeScoreTable # combineGeneScores getVarScores combineCohorts 
 
 ifdef INOBJ
 all: ${EXES}

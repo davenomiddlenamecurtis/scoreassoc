@@ -86,6 +86,7 @@ int paParams::readParms(int argc, char *argv[])
 	scoreFilePrefix[0]=scoreFileSuffix[0]=pathwayFileName[0]=scoreTableFileName[0]='\0';
 	summaryOutputFile=0;
 	geneLevelOutputThreshold=1000;
+	scoreTableFile=0;
 	while (getNextArg(arg, argc, argv, &fp, &argNum))
 	{
 		if (!isArgType(arg))
