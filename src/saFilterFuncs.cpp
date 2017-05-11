@@ -124,7 +124,7 @@ for (l=0;l<pi->n_loci_to_use;++l)
 	{
 		if (double(*exclusion[e].eval())!=0.0)
 		{
-			printf("Excluding locus %d (%s) because it fails this condition: %s(contfreq=%f,casefreq=%f)\n",currentLocus+1,names[currentLocus],exclusionStr[e],cc_freq[0][currentLocus],cc_freq[1][currentLocus]);
+			printf("Excluding locus %d (%s) because it fails this condition: %s (contfreq=%f,casefreq=%f)\n",currentLocus+1,names[currentLocus],exclusionStr[e],cc_freq[0][currentLocus],cc_freq[1][currentLocus]);
 			for (ll=l;ll<pi->n_loci_to_use-1;++ll)
 				pi->loci_to_use[ll]=pi->loci_to_use[ll+1];
 			--pi->n_loci_to_use;

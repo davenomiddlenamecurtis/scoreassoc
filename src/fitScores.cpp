@@ -86,8 +86,8 @@ double powell_function::operator() (const column_vector& c) const
 
 class fsParams { 
 public:
-	int fit,nReadScoresFiles,doGrid;
-	float stepwiseTol,powellTol;
+	int fit,nReadScoresFiles,doGrid,shouldSaveT;
+	float stepwiseTol,powellTol,savedMaxT;
 	char readParamsFileName[200],writeParamsFileName[200],readScoresFileName[MAXSCORESTOREAD][200],extraArgsFileName[200],
 		writeScoresFileName[200],varScoresFileName[200],ttestFileName[200],testTrainFileName[200],logFileName[200];
 	int readArgs(int argc,char *argv[]);
@@ -161,7 +161,9 @@ int fsParams::readArgs(int argc,char *argv[])
 		else if (FILLARG("--use-NR-powell"))
 			processOption(*this,"--use-NR-powell",arg);
 		else if (FILLARG("--test-train"))
-			processOption(*this,"--test-train",arg);
+			processOption(*this,"--save-max-t",arg);
+		else if (FILLARG("--test-train"))
+			processOption(*this,"--save-max-t",arg);
 		else
 			dcerror(1,"Did not recognise argument specifier %s\n",arg);
 	}
@@ -248,7 +250,8 @@ int writeParams(fsParams *fs,FILE *writeParamsFile,param *par,int nGeneSet,int n
 			tStat=-getTStat();
 			fprintf(writeParamsFile,"%.4f\t",tStat);
 			savedVal=par[p].val;
-			savedTStat=tStat;
+			// savedTStat=tStat;
+			savedTStat=fs->savedMaxT;
 			diff=1;
 			for (side=-1;side<=1;side+=2)
 			{
@@ -448,6 +451,8 @@ int stepwise(fsParams *fs)
 	//for (p=0;p<nGeneSet+nVarType;++p)
 		//savedToFit[p]=par[p].toFit;
 	savedTval=savedTval*-1;
+	if (fs->shouldSaveT)
+		fs->savedMaxT=savedTval;
 	if (myLog)
 		fprintf(myLog,"Original t = %.4f\n",savedTval);
 	do
@@ -644,6 +649,8 @@ int processOption(fsParams &fs,char *option,char *value)
 			for (p=0;p<nParamToFit;++p)
 				toFitPtr[p]=&fittedPar[p];
 			powell(toFitPtr,nParamToFit,fs.powellTol,&tval,getTStat);
+			if (fs.shouldSaveT)
+				fs.savedMaxT=-tval;
 		}
 	}
 	else if (!strcmp(option,"--n-var-type"))
@@ -666,6 +673,8 @@ int processOption(fsParams &fs,char *option,char *value)
 			}
 			tt=1;
 			tval=-getTStat();
+			if (fs.shouldSaveT)
+				fs.savedMaxT=tval;
 			fclose(resultsFile);
 			resultsFile=0;
 		}
@@ -717,6 +726,13 @@ int processOption(fsParams &fs,char *option,char *value)
 			powell=NR_powell;
 		else
 			powell=dlib_powell;
+	}
+	else if (!strcmp(option,"--save-max-t"))
+	{
+		if (atoi(value))
+			fs.shouldSaveT=1;
+		else
+			fs.shouldSaveT=0;
 	}
 	else if (!strcmp(option,"--test-train"))
 	{
