@@ -162,7 +162,7 @@ int fsParams::readArgs(int argc,char *argv[])
 			processOption(*this,"--use-NR-powell",arg);
 		else if (FILLARG("--test-train"))
 			processOption(*this,"--save-max-t",arg);
-		else if (FILLARG("--test-train"))
+		else if (FILLARG("--save-max-t"))
 			processOption(*this,"--save-max-t",arg);
 		else
 			dcerror(1,"Did not recognise argument specifier %s\n",arg);
