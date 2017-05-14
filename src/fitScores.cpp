@@ -87,7 +87,7 @@ double powell_function::operator() (const column_vector& c) const
 class fsParams { 
 public:
 	int fit,nReadScoresFiles,doGrid,shouldSaveT;
-	float stepwiseTol,powellTol,savedMaxT;
+	float stepwiseTol,powellTol,savedMaxT,scaleMean;
 	char readParamsFileName[200],writeParamsFileName[200],readScoresFileName[MAXSCORESTOREAD][200],extraArgsFileName[200],
 		writeScoresFileName[200],varScoresFileName[200],ttestFileName[200],testTrainFileName[200],logFileName[200];
 	int readArgs(int argc,char *argv[]);
@@ -112,6 +112,7 @@ int fsParams::readArgs(int argc,char *argv[])
 	readParamsFileName[0]=writeParamsFileName[0]=writeScoresFileName[0]=varScoresFileName[0]=ttestFileName[0]=testTrainFileName[0]=logFileName[0]=extraArgsFileName[0]='\0';
 	fit=nReadScoresFiles=nVarType=nGeneSet=nSub=0;
 	powell=dlib_powell;
+	scaleMean=10;
 	while (getNextArg(arg,argc,argv,&fp,&argNum))
 	{
 		if (!isArgType(arg))
@@ -225,10 +226,45 @@ int readParams(fsParams *fs,FILE *readParamsFile,param *par,int nGeneSet,int nVa
 
 int writeParams(fsParams *fs,FILE *writeParamsFile,param *par,int nGeneSet,int nVarType)
 {
-	int p,savedNParamToFit,r,side,steps;
-	float tStat,savedVal,ratio,val,diff,CL,savedTStat,step;
+	int p,savedNParamToFit,r,side,steps,nFitted,doNotScale;
+	float tStat,savedVal,ratio,val,diff,CL,savedTStat,step,scaleFactor,tot;
 	savedNParamToFit=nParamToFit;
 	nParamToFit=0;
+	if (fs->scaleMean!=0)
+	{
+		doNotScale=nFitted=tot=0;
+		for (p=0;p<nGeneSet;++p)
+			if (par[p].toFit)
+			{
+				tot+=fabs(par[p].val);
+				++nFitted;
+			}
+			else
+				if (par[p].val!=0)
+					doNotScale=1;
+		if (doNotScale==0)
+		{
+			scaleFactor=fs->scaleMean/(tot/nFitted);
+			for (p=0;p<nGeneSet;++p)
+				par[p].val*=scaleFactor;
+		}
+		doNotScale=nFitted=tot=0;
+		for (p=nGeneSet;p<nGeneSet+nVarType;++p)
+			if (par[p].toFit)
+			{
+				tot+=fabs(par[p].val);
+				++nFitted;
+			}
+			else
+				if (par[p].val!=0)
+					doNotScale=1;
+		if (doNotScale==0)
+		{
+			scaleFactor=fs->scaleMean/(tot/nFitted);
+			for (p=nGeneSet;p<nGeneSet+nVarType;++p)
+				par[p].val*=scaleFactor;
+		}
+	}
 	fprintf(writeParamsFile,"value\tname\ttoFit\t");
 	if (fs->doGrid)
 	{
