@@ -217,6 +217,11 @@ float runOnePathway(char *line,pathwaySubject **sub,paParams *pp, int writeFile)
 		for (s=0;s<pp->nSub;++s)
 			assert(fscanf(pp->scoreTableFile,"%d",&sub[s]->cc)==1);
 	}
+	if (pp->nSub==0)
+		{
+			dcerror(1,"Number of subjects read is 0\n");
+			return 0;
+		}
 	for (g = 0; g < nGene; ++g)
 	{
 		if (pp->scoreTableFile)
