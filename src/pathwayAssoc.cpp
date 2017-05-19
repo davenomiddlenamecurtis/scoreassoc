@@ -188,7 +188,7 @@ float runOnePathway(char *line,pathwaySubject **sub,paParams *pp, int writeFile)
 {
 	char pathwayName[1000],pathwayURL[1000],gene[MAX_LOCI][50],scoreFileName[1000],outputFileName[1000],thisGene[50];
 	FILE *fs,*fo;
-	int nGene,missing[MAX_LOCI],s,nSub,g,n[2],i,cc,c;
+	int nGene,missing[MAX_LOCI],s,g,n[2],i,cc,c;
 	float sigma_x[2],sigma_x2[2],mean[2],var[2],SLP,SE,tval,s2,score;
 	double p,pathway_p;
 	if (sscanf(line,"%s %s %[^\n]",pathwayName,pathwayURL,rest)!=3)
@@ -212,6 +212,7 @@ float runOnePathway(char *line,pathwaySubject **sub,paParams *pp, int writeFile)
 			ungetc(c,pp->scoreTableFile);
 			assert(fscanf(pp->scoreTableFile,"%s",sub[s++]->id)==1);
 		}
+		pp->nSub=s;
 		fscanf(pp->scoreTableFile,"%*s"); // CC
 		for (s=0;s<pp->nSub;++s)
 			assert(fscanf(pp->scoreTableFile,"%d",&sub[s]->cc)==1);
