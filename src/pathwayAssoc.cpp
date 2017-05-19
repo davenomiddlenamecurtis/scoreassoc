@@ -58,7 +58,7 @@ public:
 	float totScore,score[MAX_LOCI];
 };
 
-#define LONGLINELENGTH 20000
+#define LONGLINELENGTH 40000
 char line[LONGLINELENGTH+1],rest[LONGLINELENGTH+1];
 
 #define isArgType(a) (a[0]=='-' && a[1]=='-')
