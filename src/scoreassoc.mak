@@ -19,6 +19,7 @@ HEADERS = cdflib.h  dcerror.hpp  dcexpr.hpp  fisher.h  sagcutils.h  safilterfunc
 # cheat and just assume all code dependent on all of these
 
 EXES = scoreassoc pathwayAssoc permPathwayAssoc makeScoreTable # combineGeneScores getVarScores combineCohorts 
+DLIB = ../dlib-19.4
 
 ifdef INOBJ
 all: ${EXES}
@@ -45,6 +46,12 @@ VPATH=../src
 	$(C) $(OURFLAGS) ${DEBUGFLAG} -c $< -o ../obj/$@
 	
 combineGeneScores: combineGeneScores.o dcerror.o
+	$(CC) ${DEBUGFLAG} -o combineGeneScores combineGeneScores.o dcerror.o -lm
+
+fitScores.o: fitScores.cpp ${DLIB}/dlib/optimization.h
+	$(CC) $(OURFLAGS) ${DEBUGFLAG} -c fitScores.cpp  -o ../obj/fitScores.o -I ${DLIB}
+
+fitScores: fitScores.o dcerror.o
 	$(CC) ${DEBUGFLAG} -o combineGeneScores combineGeneScores.o dcerror.o -lm
 
 getVarScores: getVarScores.o saglobals.o scoreassocfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o 
