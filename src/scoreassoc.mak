@@ -48,7 +48,7 @@ VPATH=../src
 combineGeneScores: combineGeneScores.o dcerror.o
 	$(CC) ${DEBUGFLAG} -o combineGeneScores combineGeneScores.o dcerror.o -lm
 
-fitScoresWithDlib.o: ../src/fitScores.cpp ${DLIB}/dlib/optimization.h
+../obj/fitScoresWithDlib.o: ../src/fitScores.cpp ${DLIB}/dlib/optimization.h
 	$(CC) $(OURFLAGS) ${DEBUGFLAG} -c ../src/fitScores.cpp  -o ../obj/fitScoresWithDlib.o -I ${DLIB}
 
 fitScores: ../obj/fitScoresWithDlib.o ../obj/dcerror.o
