@@ -1,4 +1,3 @@
-
 # Makefile for all programs relating to scoreassoc
 
 # Destination for executables, change this if you want
@@ -49,11 +48,11 @@ VPATH=../src
 combineGeneScores: combineGeneScores.o dcerror.o
 	$(CC) ${DEBUGFLAG} -o combineGeneScores combineGeneScores.o dcerror.o -lm
 
-fitScores.o: fitScores.cpp ${DLIB}/dlib/optimization.h
-	$(CC) $(OURFLAGS) ${DEBUGFLAG} -c fitScores.cpp  -o ../obj/fitScores.o -I ${DLIB}
+fitScores.o: ../src/fitScores.cpp ${DLIB}/dlib/optimization.h
+	$(CC) $(OURFLAGS) ${DEBUGFLAG} -c ../src/fitScores.cpp  -o ../obj/fitScores.o -I ${DLIB}
 
-fitScores: fitScores.o dcerror.o
-	$(CC) ${DEBUGFLAG} -o combineGeneScores combineGeneScores.o dcerror.o -lm
+fitScores: ../obj/fitScores.o ../obj/dcerror.o
+	$(CC) ${DEBUGFLAG} -o fitScores ../obj/fitScores.o ../obj/dcerror.o -lm
 
 getVarScores: getVarScores.o saglobals.o scoreassocfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o 
 	$(CC) ${DEBUGFLAG} -o getVarScores getVarScores.o saglobals.o scoreassocfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o -lm
