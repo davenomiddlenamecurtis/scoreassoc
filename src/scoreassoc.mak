@@ -1,3 +1,4 @@
+
 # Makefile for all programs relating to scoreassoc
 
 # Destination for executables, change this if you want
@@ -18,7 +19,8 @@ HEADERS = cdflib.h  dcerror.hpp  dcexpr.hpp  fisher.h  sagcutils.h  safilterfunc
 # cheat and just assume all code dependent on all of these
 
 EXES = scoreassoc pathwayAssoc permPathwayAssoc makeScoreTable combineGeneScores getVarScores fitScores # combineCohorts 
-DLIB = /home/rejudcu/dlib-19.4 # needed only for fitScores
+DLIB = /home/rejudcu/dlib-19.4
+# needed only for fitScores
 
 ifdef INOBJ
 all: ${EXES}
