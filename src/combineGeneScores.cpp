@@ -11,7 +11,7 @@
 
 void usage()
 {
-	printf("Usage:\ncombineGeneScores geneSetTableName.txt geneSetList.txt nVarTypes *.sco\n");
+	printf("Usage:\ncombineGeneScores geneSetTableName.txt geneSetList.txt nVarTypes *.vsco\n");
 }
 
 struct geneSet_t { char name[100]; std::unordered_set<std::string> genes; };

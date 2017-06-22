@@ -26,12 +26,20 @@ typedef struct subject_t subject;
 double getTStat();
 
 float float_getTStat() { return (float)getTStat(); }
+#ifdef CANUSENRPOWELL
 extern int NR_float_powell(double **pvar,int n,float ftol,float *fret,float (*func)(void));
+#endif
 
 
 int NR_powell(double **pvar,int n,float ftol,float *fret,double (*func)(void))
 {
+#ifdef CANUSENRPOWELL
 	return NR_float_powell(pvar,n,ftol,fret,float_getTStat);
+#else
+	dcerror(1,"NR_powell() is not implemented - use only dlib_powell()");
+	exit(1);
+	return 0;
+#endif
 }
 
 int NR_powell(double **pvar,int n,float ftol,float *fret,double (*func)(void));
