@@ -235,7 +235,7 @@ int readParams(fsParams *fs,FILE *readParamsFile,param *par,int nGeneSet,int nVa
 int writeParams(fsParams *fs,FILE *writeParamsFile,param *par,int nGeneSet,int nVarType)
 {
 	int p,savedNParamToFit,r,side,steps,nFitted,doNotScale;
-	float tStat,savedVal,ratio,val,diff,CL,savedTStat,step,scaleFactor,tot;
+	float tStat,savedVal,ratio,val,CL,savedTStat,step,scaleFactor,tot,diff;
 	savedNParamToFit=nParamToFit;
 	nParamToFit=0;
 	if (fs->scaleMean!=0)

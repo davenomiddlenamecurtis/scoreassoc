@@ -1,0 +1,18 @@
+--n-var-type 8
+--n-gene-set 33
+--test-train-file testTrain.all.txt
+--var-scores-file combinedScores.txt
+--read-params-file paramsFree.txt
+--fit 1
+--save-max-t 1
+--ttest-file ttest.out
+--save-max-t 0
+--do-grid 1
+--write-params-file paramsOut.txt
+--stepwise-tol 1.0
+--ttest-file cropped.ttest.out
+--do-grid 1
+--write-params-file params.cropped.txt
+
+
+
