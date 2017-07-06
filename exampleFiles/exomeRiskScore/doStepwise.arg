@@ -2,6 +2,8 @@
 --n-gene-set 33
 --test-train-file testTrain.all.txt
 --var-scores-file combinedScores.txt
+--read-params-file paramsEqual.txt
+--ttest-file ttest.paramsEqual.out
 --read-params-file paramsFree.txt
 --fit 1
 --save-max-t 1
