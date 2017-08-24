@@ -1,7 +1,7 @@
 # setwd("/Users/dave_000/OneDrive/sharedseq/SSS2/scores/SSS2.vrare.1/combinedscores")
 setwd("d:/dave/OneDrive/sharedseq/SSS2/scores/SSS2.vrare.1/combinedscores")
 rm(list=ls())   
-paramsOut=dataframe(stringsAsFactors=FALSE)
+paramsOut=data.frame(stringsAsFactors=FALSE)
 paramsOut=read.table("paramsOut.txt",header=TRUE)
 params.cropped=read.table("params.cropped.txt",header=TRUE)
 Table1=cbind(paramsOut[2],paramsOut[1],paramsOut[5:6],params.cropped[1],params.cropped[5:6])
