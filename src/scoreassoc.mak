@@ -17,7 +17,7 @@ OURFLAGS = $(MYFLAGS) $(EXTRAFLAGS)
 HEADERS = cdflib.h  dcerror.hpp  dcexpr.hpp  fisher.h  sagcutils.h  safilterfuncs.hpp  scoreassoc.hpp
 # cheat and just assume all code dependent on all of these
 
-EXES = scoreassoc pathwayAssoc permPathwayAssoc makeScoreTable # combineGeneScores getVarScores fitScores combineCohorts 
+EXES = scoreassoc pathwayAssoc permPathwayAssoc makeScoreTable # combineGeneScores getVarScores combineCohorts 
 DLIB = /home/rejudcu/dlib-19.4
 # needed only for fitScores
 
