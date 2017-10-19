@@ -17,17 +17,17 @@ xmlns="http://www.w3.org/TR/REC-html40">
   <o:Author>David Curtis</o:Author>
   <o:Template>B436C3BA.dotm</o:Template>
   <o:LastAuthor>Dave Curtis</o:LastAuthor>
-  <o:Revision>14</o:Revision>
-  <o:TotalTime>8922</o:TotalTime>
+  <o:Revision>15</o:Revision>
+  <o:TotalTime>8927</o:TotalTime>
   <o:Created>2017-06-21T13:32:00Z</o:Created>
-  <o:LastSaved>2017-06-22T14:45:00Z</o:LastSaved>
+  <o:LastSaved>2017-10-19T16:22:00Z</o:LastSaved>
   <o:Pages>10</o:Pages>
-  <o:Words>1842</o:Words>
-  <o:Characters>10501</o:Characters>
+  <o:Words>1900</o:Words>
+  <o:Characters>10832</o:Characters>
   <o:Company>UCL</o:Company>
-  <o:Lines>87</o:Lines>
-  <o:Paragraphs>24</o:Paragraphs>
-  <o:CharactersWithSpaces>12319</o:CharactersWithSpaces>
+  <o:Lines>90</o:Lines>
+  <o:Paragraphs>25</o:Paragraphs>
+  <o:CharactersWithSpaces>12707</o:CharactersWithSpaces>
   <o:Version>16.00</o:Version>
  </o:DocumentProperties>
  <o:OfficeDocumentSettings>
@@ -39,7 +39,6 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <!--[if gte mso 9]><xml>
  <w:WordDocument>
   <w:View>Print</w:View>
-  <w:SpellingState>Clean</w:SpellingState>
   <w:TrackMoves>false</w:TrackMoves>
   <w:TrackFormatting/>
   <w:ValidateAgainstSchemas/>
@@ -80,7 +79,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 </xml><![endif]--><!--[if gte mso 9]><xml>
  <w:LatentStyles DefLockedState="false" DefUnhideWhenUsed="false"
   DefSemiHidden="false" DefQFormat="false" DefPriority="99"
-  LatentStyleCount="374">
+  LatentStyleCount="375">
   <w:LsdException Locked="false" Priority="0" QFormat="true" Name="Normal"/>
   <w:LsdException Locked="false" Priority="9" QFormat="true" Name="heading 1"/>
   <w:LsdException Locked="false" Priority="9" SemiHidden="true"
@@ -286,8 +285,6 @@ xmlns="http://www.w3.org/TR/REC-html40">
   <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
    Name="HTML Variable"/>
   <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
-   Name="Normal Table"/>
-  <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
    Name="annotation subject"/>
   <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
    Name="No List"/>
@@ -380,12 +377,8 @@ xmlns="http://www.w3.org/TR/REC-html40">
   <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
    Name="Table Web 2"/>
   <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
-   Name="Table Web 3"/>
-  <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
    Name="Balloon Text"/>
   <w:LsdException Locked="false" Priority="59" Name="Table Grid"/>
-  <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
-   Name="Table Theme"/>
   <w:LsdException Locked="false" SemiHidden="true" Name="Placeholder Text"/>
   <w:LsdException Locked="false" Priority="1" QFormat="true" Name="No Spacing"/>
   <w:LsdException Locked="false" Priority="60" Name="Light Shading"/>
@@ -651,6 +644,8 @@ xmlns="http://www.w3.org/TR/REC-html40">
    Name="Smart Hyperlink"/>
   <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
    Name="Hashtag"/>
+  <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
+   Name="Unresolved Mention"/>
  </w:LatentStyles>
 </xml><![endif]-->
 <style>
@@ -718,7 +713,8 @@ h1
 	mso-hansi-theme-font:minor-latin;
 	font-weight:bold;}
 h2
-	{mso-style-priority:9;
+	{mso-style-noshow:yes;
+	mso-style-priority:9;
 	mso-style-qformat:yes;
 	mso-style-link:"Heading 2 Char";
 	mso-style-next:Normal;
@@ -1088,6 +1084,7 @@ span.Heading1Char
 	font-weight:bold;}
 span.Heading2Char
 	{mso-style-name:"Heading 2 Char";
+	mso-style-noshow:yes;
 	mso-style-priority:9;
 	mso-style-unhide:no;
 	mso-style-locked:yes;
@@ -1284,9 +1281,6 @@ p.commandCxSpLast, li.commandCxSpLast, div.commandCxSpLast
 	font-size:14.0pt;
 	font-family:"Courier New";
 	mso-fareast-font-family:"Times New Roman";}
-span.SpellE
-	{mso-style-name:"";
-	mso-spl-e:yes;}
 .MsoChpDefault
 	{mso-style-type:export-only;
 	mso-default-props:yes;
@@ -1343,91 +1337,94 @@ paper, which provides background and further information.</p>
 
 <p class=MsoNormal>The process involves a number of stages with custom-written
 software and specification files. The data set it was applied to is not
-publicly available (though can be obtained from <span class=SpellE>dbGaP</span>)
-so it is not possible to provide a full working example. However hopefully this
-description and the example files should allow people to apply it to their own
-datasets. A set of example files, referred to below, are provided in the
-directory called <span class=SpellE><i style='mso-bidi-font-style:normal'>exampleFiles</i></span><i
-style='mso-bidi-font-style:normal'>/<span class=SpellE>exomeRiskScore</span></i>.
-They will need to be modified before use.</p>
+publicly available (though can be obtained from dbGaP) so it is not possible to
+provide a full working example. However hopefully this description and the
+example files should allow people to apply it to their own datasets. A set of
+example files, referred to below, are provided in the directory called <i
+style='mso-bidi-font-style:normal'>exampleFiles/exomeRiskScore</i>. They will
+need to be modified before use.</p>
 
-<p class=MsoNormal>To build the necessary programs described below, they first
-need to be added to the EXES variable in <i style='mso-bidi-font-style:normal'>scoreassoc.mak</i>.
-Then enter:</p>
+<p class=MsoNormal>First, change directory to the src folder. Most of the files
+can then be built by entering:</p>
 
-<p class=MsoNormal><i style='mso-bidi-font-style:normal'>make -f scoreassoc.mak<o:p></o:p></i></p>
+<p class=MsoNormal><i style='mso-bidi-font-style:normal'>make -f <a
+name="_Hlk496196887">scoreassoc.mak</a></i><span style='mso-bookmark:_Hlk496196887'></span></p>
+
+<span style='mso-bookmark:_Hlk496196887'></span>
+
+<p class=MsoNormal>However to compile <i style='mso-bidi-font-style:normal'>fitScores</i>
+you must first install the <i style='mso-bidi-font-style:normal'>dlib</i>
+library, which can be found here: <a href="http://dlib.net/">http://dlib.net/</a></p>
+
+<p class=MsoNormal>Then, edit <i style='mso-bidi-font-style:normal'>scoreassoc.mak</i>
+so that the variable DLIB points to the home <i style='mso-bidi-font-style:
+normal'>dlib </i>folder. Then enter:</p>
+
+<p class=MsoNormal><i style='mso-bidi-font-style:normal'>make -f scoreassoc.mak
+fitScores<o:p></o:p></i></p>
+
+<p class=MsoNormal>Alternatively, you can add <i style='mso-bidi-font-style:
+normal'>fitScores </i>to the EXES variable in <i style='mso-bidi-font-style:
+normal'>scoreassoc.mak</i> and it will be built automatically along with the
+rest of the executables.<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
 <h2>Gene-wise extraction of variants with binary coded risk scores</h2>
 
 <p class=MsoNormal>The first step involves extracting genotypes for each
-variant from a <span class=SpellE>vcf</span> file containing exome sequence
-data for a sample of case-control subjects. The <span class=SpellE><i
-style='mso-bidi-font-style:normal'>geneVarAssoc</i></span><i style='mso-bidi-font-style:
-normal'> </i>program is used for this purpose. It is available here:</p>
+variant from a vcf file containing exome sequence data for a sample of
+case-control subjects. The <i style='mso-bidi-font-style:normal'>geneVarAssoc </i>program
+is used for this purpose. It is available here:</p>
 
 <p class=MsoNormal><a
 href="https://github.com/davenomiddlenamecurtis/geneVarAssoc">https://github.com/davenomiddlenamecurtis/geneVarAssoc</a></p>
 
 <p class=MsoNormal>Variants are extracted one gene at a time. The variants are
-annotated using VEP, SIFT and <span class=SpellE>PolyPhen</span>. Usually <span
-class=SpellE><i style='mso-bidi-font-style:normal'>geneVarAssoc</i></span>
-would allocate a weight to each variant depending on its functional effect.
-Here we wish to provide a binary encoded weight which says whether or not the
-variant has one of a number of attributes. To do this, a special argument file
-for <span class=SpellE><i style='mso-bidi-font-style:normal'>geneVarAssoc</i></span>
+annotated using VEP, SIFT and PolyPhen. Usually <i style='mso-bidi-font-style:
+normal'>geneVarAssoc</i> would allocate a weight to each variant depending on
+its functional effect. Here we wish to provide a binary encoded weight which
+says whether or not the variant has one of a number of attributes. To do this,
+a special argument file for <i style='mso-bidi-font-style:normal'>geneVarAssoc</i>
 was used called <i style='mso-bidi-font-style:normal'>gvs.SSS2.vrare.1.arg</i>.
 This assigns binary coded weights for VEP annotations based on those in <i
 style='mso-bidi-font-style:normal'>allVarWeights.txt</i> and then adds 64 to
-the weight if <span class=SpellE>PolyPhen</span> classes the variant as
-possibly or probably damaging and 128 if SIFT classes the variant as
-deleterious. It should be noted that the file is set up to only use variants
-with MAF&lt;0.01. However if desired it could be modified to include common
-variants.</p>
+the weight if PolyPhen classes the variant as possibly or probably damaging and
+128 if SIFT classes the variant as deleterious. It should be noted that the
+file is set up to only use variants with MAF&lt;0.01. However if desired it
+could be modified to include common variants.</p>
 
 <p class=MsoNormal>To run this extraction for one gene one would issue a
 command such as:</p>
 
-<p class=MsoNormal><span class=SpellE><i style='mso-bidi-font-style:normal'>geneVarAssoc</i></span><i
-style='mso-bidi-font-style:normal'> --<span class=SpellE>arg</span>-file
-gvs.SSS2.vrare.1.arg --gene DRD2</i></p>
+<p class=MsoNormal><i style='mso-bidi-font-style:normal'>geneVarAssoc
+--arg-file gvs.SSS2.vrare.1.arg --gene DRD2</i></p>
 
 <h2>Aggregation of variant scores across variant attributes</h2>
 
 <p class=MsoNormal>The next step is to aggregate the scores for individual
 variants into scores for the different possible variant attributes, according
 to the attributes each gene possesses. This is achieved by a custom-written
-program called <span class=SpellE><i style='mso-bidi-font-style:normal'>getVarScores</i></span>.
-This can be built using the <span class=SpellE><i style='mso-bidi-font-style:
-normal'>scoreAssoc</i></span> distribution by adding <span class=SpellE><i
-style='mso-bidi-font-style:normal'>getVarScores</i></span> to the EXES variable
-in the <span class=SpellE>makefile</span> <i style='mso-bidi-font-style:normal'>scoreassoc.mak</i>.
-It runs on the file produced by <span class=SpellE><i style='mso-bidi-font-style:
-normal'>geneVarAssoc</i></span> containing the genotypes and binary coded
-weights of the variants:</p>
+program called <i style='mso-bidi-font-style:normal'>getVarScores</i>. This can
+be built using the <i style='mso-bidi-font-style:normal'>scoreAssoc</i>
+distribution by adding <i style='mso-bidi-font-style:normal'>getVarScores</i>
+to the EXES variable in the makefile <i style='mso-bidi-font-style:normal'>scoreassoc.mak</i>.
+It runs on the file produced by <i style='mso-bidi-font-style:normal'>geneVarAssoc</i>
+containing the genotypes and binary coded weights of the variants:</p>
 
-<p class=MsoNormal><span class=SpellE><i style='mso-bidi-font-style:normal'>geneName</i></span><i
-style='mso-bidi-font-style:normal'>=DRD2<o:p></o:p></i></p>
+<p class=MsoNormal><i style='mso-bidi-font-style:normal'>geneName=DRD2<o:p></o:p></i></p>
 
-<p class=MsoNormal><span class=SpellE><i style='mso-bidi-font-style:normal'>getVarScores</i></span><i
-style='mso-bidi-font-style:normal'> --<span class=SpellE>flagfile</span>
-varFlags.txt --<span class=SpellE>gcdatafile</span> gva.$geneName.dat --<span
-class=SpellE>locusfilterfile</span> <span class=SpellE>gva</span>.$<span
-class=SpellE>geneName.lf.par</span> --<span class=SpellE>locusweightfile</span>
-<span class=SpellE>gva</span>.$<span class=SpellE>geneName.lw.par</span> --<span
-class=SpellE>locusnamefile</span> <span class=SpellE>gva</span>.$<span
-class=SpellE>geneName.comm.par</span> --<span class=SpellE>filterfile</span> <span
-class=SpellE>gva</span>.$<span class=SpellE>geneName.filter.par</span> --<span
-class=SpellE>outfile</span> <span class=SpellE>gvs</span>.$<span class=SpellE>geneName.sao</span>
---<span class=SpellE>scorefile</span> <span class=SpellE>gvs</span>.$<span
-class=SpellE>geneName.vsco</span> --<span class=SpellE>weightfactor</span>
-1.000000<o:p></o:p></i></p>
+<p class=MsoNormal><i style='mso-bidi-font-style:normal'>getVarScores
+--flagfile varFlags.txt --gcdatafile gva.$geneName.dat --locusfilterfile
+gva.$geneName.lf.par --locusweightfile gva.$geneName.lw.par --locusnamefile
+gva.$geneName.comm.par --filterfile gva.$geneName.filter.par --outfile
+gvs.$geneName.sao --scorefile gvs.$geneName.vsco --weightfactor 1.000000<o:p></o:p></i></p>
 
 <p class=MsoNormal>It requires a file here called <i style='mso-bidi-font-style:
 normal'>varFlags.txt</i> which provides the binary codes for the attributes and
 which is provided among the example files. It produces a file for each gene
-called <span class=SpellE><i style='mso-bidi-font-style:normal'>gvs</i></span><i
-style='mso-bidi-font-style:normal'>.$<span class=SpellE>geneName.vsco</span></i>.
-The weighting factor of 1 means that no extra weight is given to rare variants,
+called <i style='mso-bidi-font-style:normal'>gvs.$geneName.vsco</i>. The
+weighting factor of 1 means that no extra weight is given to rare variants,
 because only rare variants are used. If one wished to include common variants
 in the analysis one might change this to, for example, 10. </p>
 
@@ -1435,10 +1432,9 @@ in the analysis one might change this to, for example, 10. </p>
 
 <p class=MsoNormal>A script which will run this extraction and variant
 aggregation process on each gene is provided as <i style='mso-bidi-font-style:
-normal'>setupScoreScripts.sh</i>. It runs <span class=SpellE><i
-style='mso-bidi-font-style:normal'>geneVarAssoc</i></span><i style='mso-bidi-font-style:
-normal'> </i>and then <span class=SpellE><i style='mso-bidi-font-style:normal'>getVarScores</i></span>
-on every gene listed in a file called <i style='mso-bidi-font-style:normal'>allGenes101115.txt</i>.
+normal'>setupScoreScripts.sh</i>. It runs <i style='mso-bidi-font-style:normal'>geneVarAssoc
+</i>and then <i style='mso-bidi-font-style:normal'>getVarScores</i> on every
+gene listed in a file called <i style='mso-bidi-font-style:normal'>allGenes101115.txt</i>.
 It produces scripts which are set up to be run as jobs on a cluster and the
 main script will need to be modified to run on the computer system used.</p>
 
@@ -1448,15 +1444,13 @@ main script will need to be modified to run on the computer system used.</p>
 score file for each gene. This contains, for each subject, the total score for
 each attribute type. The next stage is to combine these gene-wise score files
 for each of a number of gene sets and write them into a single summary table.
-This is done using the <span class=SpellE><i style='mso-bidi-font-style:normal'>combineGeneScores</i></span>
-program, which can be built by adding <span class=SpellE><i style='mso-bidi-font-style:
-normal'>combineGeneScores</i></span> to the EXES variable in <i
-style='mso-bidi-font-style:normal'>scoreassoc.mak</i>. It is run with a command
-such as the following:</p>
+This is done using the <i style='mso-bidi-font-style:normal'>combineGeneScores</i>
+program, which can be built by adding <i style='mso-bidi-font-style:normal'>combineGeneScores</i>
+to the EXES variable in <i style='mso-bidi-font-style:normal'>scoreassoc.mak</i>.
+It is run with a command such as the following:</p>
 
-<p class=MsoNormal><span class=SpellE><i style='mso-bidi-font-style:normal'>combineGeneScores</i></span><i
-style='mso-bidi-font-style:normal'> combinedScores.txt allLists.txt 8
-../results/*.<span class=SpellE>vsco</span><o:p></o:p></i></p>
+<p class=MsoNormal><i style='mso-bidi-font-style:normal'>combineGeneScores
+combinedScores.txt allLists.txt 8 ../results/*.vsco<o:p></o:p></i></p>
 
 <p class=MsoNormal>The file <i style='mso-bidi-font-style:normal'>allLists.txt</i>
 consists of the names of files, each of which contains a list of genes
@@ -1471,46 +1465,41 @@ normal'>combinedScores.txt</i>.</p>
 <h2>Calculating t statistics and fitting weights for gene sets and attribute
 types</h2>
 
-<p class=MsoNormal>The <span class=SpellE><i style='mso-bidi-font-style:normal'>fitScores</i></span>
+<p class=MsoNormal>The <i style='mso-bidi-font-style:normal'>fitScores</i>
 program carries out a t test to compare a weighted sum of scores between cases
-and controls and can adjust the weights for gene sets and attribute types in order
-to maximise the t statistic.</p>
+and controls and can adjust the weights for gene sets and attribute types in
+order to maximise the t statistic.</p>
 
-<p class=MsoNormal>In order to compile <span class=SpellE><i style='mso-bidi-font-style:
-normal'>fitScores</i></span> you need to first install the <span class=SpellE><i
-style='mso-bidi-font-style:normal'>dlib</i></span> library: <a
-href="http://dlib.net/">http://dlib.net/</a></p>
+<p class=MsoNormal>In order to compile <i style='mso-bidi-font-style:normal'>fitScores</i>
+you need to first install the <i style='mso-bidi-font-style:normal'>dlib</i>
+library: <a href="http://dlib.net/">http://dlib.net/</a></p>
 
-<p class=MsoNormal>You may only need to download the <span class=SpellE><i
-style='mso-bidi-font-style:normal'>dlib</i></span> files without compiling any
-of them because the necessary files get included at the time that <span
-class=SpellE><i style='mso-bidi-font-style:normal'>fitScores</i></span> is
-compiled. You need to add <span class=SpellE><i style='mso-bidi-font-style:
-normal'>fitScores</i></span> to the EXES variable in <i style='mso-bidi-font-style:
-normal'>scoreassoc.mak</i> and you also need to set the DLIB variable to be the
-directory which contains the <span class=SpellE><i style='mso-bidi-font-style:
-normal'>dlib</i></span> directory. </p>
+<p class=MsoNormal>You may only need to download the <i style='mso-bidi-font-style:
+normal'>dlib</i> files without compiling any of them because the necessary
+files get included at the time that <i style='mso-bidi-font-style:normal'>fitScores</i>
+is compiled. You need to add <i style='mso-bidi-font-style:normal'>fitScores</i>
+to the EXES variable in <i style='mso-bidi-font-style:normal'>scoreassoc.mak</i>
+and you also need to set the DLIB variable to be the directory which contains
+the <i style='mso-bidi-font-style:normal'>dlib</i> directory. </p>
 
-<p class=MsoNormal>The <span class=SpellE><i style='mso-bidi-font-style:normal'>fitScores</i></span>
+<p class=MsoNormal>The <i style='mso-bidi-font-style:normal'>fitScores</i>
 program is run by providing it with a number of arguments. Rather than being
 program options, these are commands which are executed sequentially. Each
 begins with a double hyphen and is followed by a single parameter. They can be
 provided on the command line or in an argument file. The possible arguments are
 listed below. A typical usage would be:</p>
 
-<p class=MsoNormal><span class=SpellE><i style='mso-bidi-font-style:normal'>fitScores</i></span><i
-style='mso-bidi-font-style:normal'> --<span class=SpellE>arg</span>-file <span
-class=SpellE>doStepwise.arg</span><o:p></o:p></i></p>
+<p class=MsoNormal><i style='mso-bidi-font-style:normal'>fitScores --arg-file
+doStepwise.arg<o:p></o:p></i></p>
 
-<h2>--<span class=SpellE>arg</span>-file</h2>
+<h2>--arg-file</h2>
 
 <p class=MsoNormal>This argument is followed by the name of an file from which
-further arguments are read. Two argument files are provided as examples, <span
-class=SpellE><i style='mso-bidi-font-style:normal'>doStepwise.arg</i></span><i
-style='mso-bidi-font-style:normal'> </i>and <span class=SpellE><i
-style='mso-bidi-font-style:normal'>doAll.fifths.stepWise.arg</i></span>.</p>
+further arguments are read. Two argument files are provided as examples, <i
+style='mso-bidi-font-style:normal'>doStepwise.arg </i>and <i style='mso-bidi-font-style:
+normal'>doAll.fifths.stepWise.arg</i>.</p>
 
-<h2>--n-<span class=SpellE>var</span>-type</h2>
+<h2>--n-var-type</h2>
 
 <p class=MsoNormal>This is followed by a number giving the number of different
 variant attributes, in the example 8.</p>
@@ -1528,8 +1517,8 @@ either 0 or 1. The first entry denotes whether the subject is to be used in the
 training dataset and the second whether it is to be used in the test dataset.
 The example file <i style='mso-bidi-font-style:normal'>testTrain.all.txt</i>
 has two 1s in each row, indicating that every subject is to be used in both the
-training and test datasets. This file provides the information for the number
-of subjects in the dataset so this argument, and the two above, must be used
+training and test datasets. This file provides the information for the number of
+subjects in the dataset so this argument, and the two above, must be used
 before the ones below. </p>
 
 <p class=MsoNormal>Other example files are named e.g. <i style='mso-bidi-font-style:
@@ -1537,20 +1526,19 @@ normal'>ttFifth.2.txt</i>, which specifies that the second fifth of subjects
 should be used as the test dataset and the other four fifths for training.
 These files were produced using an excel spreadsheet in which the case-control
 status of each subject was listed. Then two additional columns were made which
-numbered the cases and controls sequentially. Then columns were made taking
-these numbers modulo 5 and then finally a pair of columns was used to select
+numbered the cases and controls sequentially. Then columns were made taking these
+numbers modulo 5 and then finally a pair of columns was used to select
 different fifths. The spreadsheet used to do this is provided as <i
 style='mso-bidi-font-style:normal'>trainTest.xlsx</i>.</p>
 
 <p class=MsoNormal><span class=Heading2Char><span style='font-size:24.0pt;
-mso-bidi-font-size:13.0pt'>--<span class=SpellE>var</span>-scores-file</span></span>
-</p>
+mso-bidi-font-size:13.0pt'>--var-scores-file</span></span> </p>
 
 <p class=MsoNormal>This is followed by the name of the file containing the
-aggregated scores across variant attributes and gene sets, as produced by <span
-class=SpellE><i style='mso-bidi-font-style:normal'>combineGeneScores</i></span>.</p>
+aggregated scores across variant attributes and gene sets, as produced by <i
+style='mso-bidi-font-style:normal'>combineGeneScores</i>.</p>
 
-<h2>--read-<span class=SpellE>params</span>-file </h2>
+<h2>--read-params-file </h2>
 
 <p class=MsoNormal>This is followed by the name of a file which contains a row
 for each gene set then attribute type. The first entry is the weight. The
@@ -1580,14 +1568,14 @@ maximum value is left intact.</p>
 <p class=MsoNormal>This is followed by 0 or 1 to select whether the subsequent
 t test will be performed on the training or test dataset.</p>
 
-<h2>--<span class=SpellE>ttest</span>-file </h2>
+<h2>--ttest-file </h2>
 
 <p class=MsoNormal>This is followed by the name of a file to be written which
 will contain the results of a t test performed on the scores in the dataset
 specified by the <i style='mso-bidi-font-style:normal'>--test-train</i>
 argument.</p>
 
-<h2>--write-<span class=SpellE>params</span>-file</h2>
+<h2>--write-params-file</h2>
 
 <p class=MsoNormal>This is followed by the name of a file to which the fitted
 weights will be written. For each gene set and attribute type is output the
@@ -1596,18 +1584,18 @@ weight, the name and then 0 or 1 to indicate whether it is free or fixed.</p>
 <h2>--do-grid</h2>
 
 <p class=MsoNormal>If this is followed by a 1 then subsequently whenever
-weights are output using <i style='mso-bidi-font-style:normal'>--write-<span
-class=SpellE>params</span>-file </i>additional values are appended to each row.
-The first of these is the t statistic achieved using the fitted weights. Next
-is output the low and high limits for the range that the weight can take
-without reducing the t statistic by more than 1 less than the saved maximum.
-Next, the t statistics obtained by setting the weight to a range of values from
--100 to 100 are output. This file can be input to excel and graphed to show how
-the t statistic is sensitive to the different model parameters. If it is followed
-by 0 then the additional values will not be output in subsequent uses of <i
-style='mso-bidi-font-style:normal'>--write-<span class=SpellE>params</span>-file</i>.</p>
+weights are output using <i style='mso-bidi-font-style:normal'>--write-params-file
+</i>additional values are appended to each row. The first of these is the t
+statistic achieved using the fitted weights. Next is output the low and high
+limits for the range that the weight can take without reducing the t statistic
+by more than 1 less than the saved maximum. Next, the t statistics obtained by
+setting the weight to a range of values from -100 to 100 are output. This file
+can be input to excel and graphed to show how the t statistic is sensitive to
+the different model parameters. If it is followed by 0 then the additional
+values will not be output in subsequent uses of <i style='mso-bidi-font-style:
+normal'>--write-params-file</i>.</p>
 
-<h2>--<span class=SpellE>stepwiseTol</span></h2>
+<h2>--stepwiseTol</h2>
 
 <p class=MsoNormal>This is followed by a number which sets the tolerance to be
 used in the stepwise procedure, which is then carried out. The training dataset
@@ -1622,39 +1610,35 @@ removed and then the remaining weights are re-fitted.</p>
 written the IDs of the subjects in the test dataset followed by the score for
 each subject using the current weights.</p>
 
-<h2>Example argument files for <span class=SpellE><i style='mso-bidi-font-style:
-normal'>fitScores</i></span><i style='mso-bidi-font-style:normal'><o:p></o:p></i></h2>
+<h2>Example argument files for <i style='mso-bidi-font-style:normal'>fitScores<o:p></o:p></i></h2>
 
 <p class=MsoNormal>The provided files were used to produce the results reported
 in the paper.</p>
 
-<p class=MsoNormal>The file <span class=SpellE><i style='mso-bidi-font-style:
-normal'>doStepwise.arg</i></span> reads in the aggregated scores and starting
-parameters, fits the weights in the whole dataset, outputs the fitted weights
-with a grid of values then carries out the stepwise process to zero weights
-which do not impact much on the t statistic.</p>
+<p class=MsoNormal>The file <i style='mso-bidi-font-style:normal'>doStepwise.arg</i>
+reads in the aggregated scores and starting parameters, fits the weights in the
+whole dataset, outputs the fitted weights with a grid of values then carries
+out the stepwise process to zero weights which do not impact much on the t
+statistic.</p>
 
-<p class=MsoNormal>The file <span class=SpellE><i style='mso-bidi-font-style:
-normal'>doAllFifths.stepWise.arg</i></span> takes each fifth at a time as a
-test set and uses the other four fifths as a training set. The same process is
-repeated five times. The weights are fitted in the training set and the fitted
-weights are saved. A t test is carried out using the test set and the scores
-for the test set are saved. A t test is also performed using all subjects. The
-stepwise procedure is carried out using the training set and inessential
-weights are set to zero. The weights are saved. A t test is carried out on the
-test set. The scores for subjects in the test set are saved. (The output from
-these t tests is not actually used - instead the fifths are combined and
-analysed as described below.)</p>
+<p class=MsoNormal>The file <i style='mso-bidi-font-style:normal'>doAllFifths.stepWise.arg</i>
+takes each fifth at a time as a test set and uses the other four fifths as a
+training set. The same process is repeated five times. The weights are fitted
+in the training set and the fitted weights are saved. A t test is carried out
+using the test set and the scores for the test set are saved. A t test is also
+performed using all subjects. The stepwise procedure is carried out using the
+training set and inessential weights are set to zero. The weights are saved. A
+t test is carried out on the test set. The scores for subjects in the test set
+are saved. (The output from these t tests is not actually used - instead the
+fifths are combined and analysed as described below.)</p>
 
-<h2>Analysis of output from <span class=SpellE><i style='mso-bidi-font-style:
-normal'>fitScores</i></span><i style='mso-bidi-font-style:normal'><o:p></o:p></i></h2>
+<h2>Analysis of output from <i style='mso-bidi-font-style:normal'>fitScores<o:p></o:p></i></h2>
 
-<p class=MsoNormal>The example file <span class=SpellE><i style='mso-bidi-font-style:
-normal'>analyse.fifths.r</i></span> provides R commands to read in the scores
-obtained from the five fifths used as test datasets, concatenate them and
-perform t test and ROC analyses. The file <span class=SpellE><i
-style='mso-bidi-font-style:normal'>makeTables.r</i></span> makes the tables
-used in the paper.</p>
+<p class=MsoNormal>The example file <i style='mso-bidi-font-style:normal'>analyse.fifths.r</i>
+provides R commands to read in the scores obtained from the five fifths used as
+test datasets, concatenate them and perform t test and ROC analyses. The file <i
+style='mso-bidi-font-style:normal'>makeTables.r</i> makes the tables used in
+the paper.</p>
 
 <h2><span style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:
 minor-fareast'>Contact details<o:p></o:p></span></h2>

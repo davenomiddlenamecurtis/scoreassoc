@@ -582,7 +582,7 @@ else
 	non_mendelian_report=0;
 	// not used, compiler error otherwise
 fprintf(spi.df[OUTFILE].fp,"scoreassoc output\n"
-"Locus                   controls     frequency        cases          frequency   frequency allele  weight\n"
+"Locus                     controls            frequency        cases          frequency   frequency allele  weight\n"
 "                     AA  :   AB  :  BB                  AA  :   AB  :  BB                     \n");
 get_freqs(sub,nsub,&pi,&spi,cc_freq,cc_count,cc_genocount);
 applyExclusions(&pi);
