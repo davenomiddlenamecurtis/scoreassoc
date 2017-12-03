@@ -10,7 +10,7 @@ extern "C" {
 #include "sagcutils.h"
 };
 
-#define MAX_COMMENT_LENGTH 100
+#define MAX_COMMENT_LENGTH 1000
 #define NAME_LENGTH 20
 
 enum OPT {
