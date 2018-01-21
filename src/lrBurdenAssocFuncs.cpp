@@ -1,6 +1,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <string>
+#include <math.h>
 #include <assert.h>
 #include "lrBurdenAssoc.hpp"
 #include "lrModel.hpp"
@@ -209,7 +210,7 @@ void set_weights(FILE *f,float *weight,float *missing_score,int *rarer,subject *
 	{
 		if (!spi->use_locus_names)
 			sprintf(names[ll],"LOC%05d",ll+1);
-		fprintf(f,"%-30s",names[ll]);
+		fprintf(f,"%-40s",names[ll]);
 		fprintf(f,
 			spi->use_probs ?
 			"%6.2f  %6.2f  %6.2f  %8.6f  %6.2f  %6.2f  %6.2f  %8.6f  %8.6f  %d      %6.2f   %s\n" :
