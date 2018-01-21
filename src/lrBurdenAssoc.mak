@@ -11,6 +11,7 @@ MAX_SUB_MAK = 15000
 
 MYFLAGS = $(CFLAGS) -DMAX_LOCI=$(MAX_LOCI_MAK) -DMAX_ALL=$(MAX_ALL_MAK) -DMAX_SUB=$(MAX_SUB_MAK) -std=gnu++0x
 OURFLAGS = $(MYFLAGS) $(EXTRAFLAGS)
+CFLAGS = $(OURFLAGS) ${DEBUGFLAG}
 
 # so to compile for debugging use make -f scoreassoc.mak DEBUGFLAG=-g
 
@@ -27,7 +28,7 @@ all:
 	if [ ! -e ../obj ] ; then mkdir ../obj ; fi ; \
 	if [ ! -e ${DCBIN} ] ; then mkdir ${DCBIN} ; fi ; \
 	cd ../obj; \
-	make -f ../src/lrBurdenAssoc.mak INOBJ=INOBJ ; \
+	make -f ../src/lrBurdenAssoc.mak INOBJ=INOBJ CFLAGS=$(CFLAGS) ; \
 	cp ${EXES} ${DCBIN} ; \
 	echo copied executables to ${DCBIN} ; \
 	cd ../src
@@ -39,7 +40,7 @@ clean:
 VPATH=../src
 	
 %.o: ../src/%.c $(HEADERS)
-	$(C) $(OURFLAGS) ${DEBUGFLAG} -c $< -o ../obj/$@ -I ${DLIB}
+	$(C) $(CFLAGS) -I ${DLIB} -c $< -o ../obj/$@ 
 	
 lrBurdenAssoc: lrBurdenAssoc.o lrBurdenAssocGlobals.o lrBurdenAssocFuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o lrBAFilterFuncs.o lrBAInit.o lrModel.o
 	$(CC) ${DEBUGFLAG} -o lrBurdenAssoc lrBurdenAssoc.o lrBurdenAssocGlobals.o lrBurdenAssocFuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o lrBAFilterFuncs.o lrBAInit.o lrModel.o -lm
