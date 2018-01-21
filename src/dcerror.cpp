@@ -5,13 +5,10 @@
  
 /* DCERROR.CPP */ 
 /* Copyright Dave Curtis 1991 */ 
-#include "dcerror.hpp"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifdef __ZTC__
-#include <bios.h>
-#endif
+#include "dcerror.hpp"
 #if 0
 #include <fg.h>
 #endif

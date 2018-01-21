@@ -23,7 +23,7 @@
     <ProjectGuid>{B831A537-4503-4138-88CE-996CA067876C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>lrBurdenAssoc</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -90,8 +90,10 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;MSDOS</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalIncludeDirectories>../../../../dlib-19.4;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile />
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,13 +148,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\cdflib.h" />
+    <ClInclude Include="..\..\src\dcerror.hpp" />
+    <ClInclude Include="..\..\src\dcexpr.hpp" />
     <ClInclude Include="..\..\src\lrBAFilterFuncs.hpp" />
     <ClInclude Include="..\..\src\lrBurdenAssoc.hpp" />
+    <ClInclude Include="..\..\src\lrModel.hpp" />
+    <ClInclude Include="..\..\src\sagcutils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\dcdflib.c" />
+    <ClCompile Include="..\..\src\dcerror.cpp" />
+    <ClCompile Include="..\..\src\dcexpr.cpp" />
+    <ClCompile Include="..\..\src\ipmpar.c" />
     <ClCompile Include="..\..\src\lrBAFilterFuncs.cpp" />
     <ClCompile Include="..\..\src\lrBAInit.cpp" />
     <ClCompile Include="..\..\src\lrBurdenAssoc.cpp" />
+    <ClCompile Include="..\..\src\lrBurdenAssocFuncs.cpp" />
+    <ClCompile Include="..\..\src\lrBurdenAssocGlobals.cpp" />
+    <ClCompile Include="..\..\src\lrModel.cpp" />
+    <ClCompile Include="..\..\src\sagcutils.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
