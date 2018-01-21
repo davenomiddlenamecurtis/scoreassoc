@@ -38,11 +38,11 @@ clean:
 
 VPATH=../src
 	
-%.o: ../src/%.c $(HEADERS)
-	$(C) $(CFLAGS) -c $< -o ../obj/$@ 
-	
 %.o: ../src/%.cpp $(HEADERS)
-	$(CC) $(CFLAGS) -I ${DLIB} -c $< -o ../obj/$@ 
+	$(CC) $(OURFLAGS) ${DEBUGFLAG} -I ${DLIB} -c $< -o ../obj/$@ 
+	
+%.o: ../src/%.c $(HEADERS)
+	$(CC) $(OURFLAGS) ${DEBUGFLAG} -c $< -o ../obj/$@
 	
 lrBurdenAssoc: lrBurdenAssoc.o lrBurdenAssocGlobals.o lrBurdenAssocFuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o lrBAFilterFuncs.o lrBAInit.o lrModel.o
 	$(CC) ${DEBUGFLAG} -o lrBurdenAssoc lrBurdenAssoc.o lrBurdenAssocGlobals.o lrBurdenAssocFuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o lrBAFilterFuncs.o lrBAInit.o lrModel.o -lm
