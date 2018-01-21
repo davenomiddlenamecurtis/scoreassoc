@@ -38,8 +38,8 @@ clean:
 
 VPATH=../src
 	
-%.o: ../src/%.cpp $(HEADERS)
-	$(CC) $(OURFLAGS) ${DEBUGFLAG} -c $< -o ../obj/$@ ${DLIB}/dlib/optimization.h
+%.o: ../src/%.c $(HEADERS)
+	$(C) $(OURFLAGS) ${DEBUGFLAG} -c $< -o ../obj/$@ -I ${DLIB}
 	
 lrBurdenAssoc: lrBurdenAssoc.o lrBurdenAssocGlobals.o lrBurdenAssocFuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o lrBAFilterFuncs.o lrBAInit.o lrModel.o
 	$(CC) ${DEBUGFLAG} -o lrBurdenAssoc lrBurdenAssoc.o lrBurdenAssocGlobals.o lrBurdenAssocFuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o lrBAFilterFuncs.o lrBAInit.o lrModel.o -lm
