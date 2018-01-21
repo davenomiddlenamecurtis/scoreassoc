@@ -2,6 +2,9 @@
 
 # Destination for executables, change this if you want
 DCBIN = ../bin
+# on cluster must enter this to get right compiler versiion:
+#  scl enable devtoolset-3 bash
+
 C = gcc
 CC = g++
 
@@ -9,7 +12,7 @@ MAX_LOCI_MAK = 12000
 MAX_ALL_MAK = 40
 MAX_SUB_MAK = 15000
 
-MYFLAGS = $(CFLAGS) -DMAX_LOCI=$(MAX_LOCI_MAK) -DMAX_ALL=$(MAX_ALL_MAK) -DMAX_SUB=$(MAX_SUB_MAK) -std=gnu++0x
+MYFLAGS = $(CFLAGS) -DMAX_LOCI=$(MAX_LOCI_MAK) -DMAX_ALL=$(MAX_ALL_MAK) -DMAX_SUB=$(MAX_SUB_MAK)  -std=c++14 # -std=gnu++0x
 OURFLAGS = $(MYFLAGS) $(EXTRAFLAGS)
 
 # so to compile for debugging use make -f scoreassoc.mak DEBUGFLAG=-g
@@ -17,7 +20,7 @@ OURFLAGS = $(MYFLAGS) $(EXTRAFLAGS)
 HEADERS = cdflib.h  dcerror.hpp  dcexpr.hpp  fisher.h  sagcutils.h  safilterfuncs.hpp  scoreassoc.hpp
 # cheat and just assume all code dependent on all of these
 
-EXES = scoreassoc pathwayAssoc permPathwayAssoc makeScoreTable # combineGeneScores getVarScores combineCohorts 
+EXES = scoreassoc pathwayAssoc permPathwayAssoc makeScoreTable # fitScores combineGeneScores getVarScores combineCohorts 
 DLIB = /home/rejudcu/dlib-19.4
 # needed only for fitScores
 
@@ -48,10 +51,10 @@ VPATH=../src
 combineGeneScores: combineGeneScores.o dcerror.o
 	$(CC) ${DEBUGFLAG} -o combineGeneScores combineGeneScores.o dcerror.o -lm
 
-../obj/fitScoresWithDlib.o: ../src/fitScores.cpp ${DLIB}/dlib/optimization.h
+fitScoresWithDlib.o: ../src/fitScores.cpp ${DLIB}/dlib/optimization.h
 	$(CC) $(OURFLAGS) ${DEBUGFLAG} -c ../src/fitScores.cpp  -o ../obj/fitScoresWithDlib.o -I ${DLIB}
 
-fitScores: ../obj/fitScoresWithDlib.o ../obj/dcerror.o
+fitScores: fitScoresWithDlib.o dcerror.o
 	$(CC) ${DEBUGFLAG} -o fitScores ../obj/fitScoresWithDlib.o ../obj/dcerror.o -lm
 
 getVarScores: getVarScores.o saglobals.o scoreassocfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o 
