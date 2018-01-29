@@ -5,6 +5,7 @@
 #include <string.h>
 #include <assert.h>
 #include <math.h>
+#include "lrModel.hpp"
 
 extern "C" {
 #include "sagcutils.h"
@@ -14,7 +15,7 @@ extern "C" {
 #define NAME_LENGTH 20
 
 enum OPT {
-	FLAGFILE=0,PSDATAFILE,GCDATAFILE,GENDATAFILE,WEIGHTFILE,ANNOTFILE,FILTERFILE,LOCUSFILTERFILE,LOCUSNAMEFILE,LOCUSWEIGHTFILE,TRIOFILE,SAMPLEFILE,CASEFREQFILE,CONTFREQFILE,OUTFILE,SCOREFILE,NUMDATAFILETYPES,NUMLOCI,LDTHRESHOLD,WEIGHTTHRESHOLD,DORECESSIVE,USEHAPS,WEIGHTFACTOR,ARGFILE,NUMOPTS
+	FLAGFILE=0,PSDATAFILE,GCDATAFILE,GENDATAFILE,WEIGHTFILE,ANNOTFILE,FILTERFILE,LOCUSFILTERFILE,LOCUSNAMEFILE,LOCUSWEIGHTFILE,TRIOFILE,SAMPLEFILE,CASEFREQFILE,CONTFREQFILE,OUTFILE,SCOREFILE,NUMDATAFILETYPES,NUMLOCI,LDTHRESHOLD,WEIGHTTHRESHOLD,DORECESSIVE,DOTTEST,DOLRTEST,USEHAPS,WEIGHTFACTOR,ARGFILE,NUMOPTS
 };
 
 // FLAGFILE is only useed by getVarScores but handy to have it here
@@ -39,6 +40,7 @@ struct sa_par_info_t {
 sa_data_file_type df[NUMDATAFILETYPES];
 float wfactor,LD_threshold,weight_threshold;
 int use_func_weights,use_cc_freqs[2],use_locus_names,use_comments,do_recessive_test,use_haplotypes,use_trios,use_probs;
+int do_ttest, do_lrtest;
 };
 
 typedef struct sa_par_info_t sa_par_info;
@@ -48,6 +50,11 @@ struct non_mendelian_t {
 	int loc,sub,nd;
 };
 typedef struct non_mendelian_t non_mendelian;
+
+void usage();
+int read_all_args(char *argv[], int argc, par_info *pi, sa_par_info *spi);
+int process_options(par_info *pi, sa_par_info *spi);
+int read_all_data(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr, char names[MAX_LOCI][20], char comments[MAX_LOCI][MAX_COMMENT_LENGTH], float func_weight[MAX_LOCI]);
 
 double do_score_onetailed_ttest(FILE *fo,float *score,subject **sub,int nsub,par_info *pi,sa_par_info *spi,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],float *weight,float *missing,int *rarer);
 void get_scores(float *score,float *weight,float *missing_score,int *rarer,subject **sub,int nsub,par_info *pi,sa_par_info *spi);
@@ -62,6 +69,9 @@ extern int sort_trios(subject **sub,int nsub,par_info *pi, sa_par_info *spi, sub
 extern int output_nm_report(FILE *fp, par_info *pi, char *non_mendelian_report);
 int read_all_gen_subjects(FILE *fi,subject **s,int *nsub,par_info *pi);
 int read_freqs_datafile(par_info *pi,sa_par_info *spi,int cc,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2]);
+double do_onetailed_LRT(FILE *fo, lrModel *m);
+double getlnLikeForH(int h, lrModel *m);
+void fillModel(lrModel *m, float *score, subject **sub, int nsub, par_info *pi, sa_par_info *spi);
 
 extern double cumulBinom(int N,int k,double p);
 
