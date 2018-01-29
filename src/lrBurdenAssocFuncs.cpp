@@ -12,19 +12,29 @@ double do_onetailed_LRT(FILE *fo, lrModel *m)
 	double L0, L1, p, SLP;
 	int b;
 	L0 = getlnLikeForH(0, m);
+	m->getSEs();
 	if (fo)
 	{
-		fprintf(fo,"\nL0 = %.2f, beta = %.5f",L0,m->beta[m->nCol]);
-		for(b = 0; b < m->nCol;++b)
-			fprintf(fo," %.5f",m->beta[b]);
-		fprintf(fo,"\n");
+		fprintf(fo,"\nL0 = %.2f\nbetas: %8.5f",L0,m->beta[m->nCol]);
+		for (b = 0; b < m->nCol; ++b)
+			fprintf(fo, " %8.5f", m->beta[b]);
+		fprintf(fo, "\n");
+		fprintf(fo, "SEs:   %8.5f", m->SE[m->nCol]);
+		for (b = 0; b < m->nCol; ++b)
+			fprintf(fo, " %8.5f", m->SE[b]);
+		fprintf(fo, "\n");
 	}
 	L1 = getlnLikeForH(1, m);
+	m->getSEs();
 	if (fo)
 	{
-		fprintf(fo, "\nL1 = %.2f, beta = %.5f", L1, m->beta[m->nCol]);
+		fprintf(fo, "\nL1 = %.2f\nbetas: %8.5f", L1, m->beta[m->nCol]);
 		for(b = 0; b < m->nCol;++b)
-			fprintf(fo, " %.5f", m->beta[b]);
+			fprintf(fo, " %8.5f", m->beta[b]);
+		fprintf(fo, "\n");
+		fprintf(fo, "SEs:   %8.5f", m->SE[m->nCol]);
+		for (b = 0; b < m->nCol; ++b)
+			fprintf(fo, " %8.5f", m->SE[b]);
 		fprintf(fo, "\n");
 	}
 	p = chistat(2 * (L1 - L0),1.0); // change for more complex models

@@ -8,8 +8,9 @@
 #include "lrModel.hpp"
 
 using namespace dlib;
-typedef matrix<double,0,1> column_vector;
+typedef matrix<double, 0, 1> column_vector;
 double derivative_eps = 1e-7; // used to get gradient of lnL by beta
+double second_derivative_eps = 1e-5; // I may be wrong but I think rounding errors otherwise
 double minimumP = 1e-8;
 double betaLimit = 20,tLimit=20;
 
@@ -37,7 +38,6 @@ double lrModelMaximiser::operator() (const column_vector& c) const
 	return f;
 }
 
-
 double getMinusModelLnL()
 {
 	int c,cc;
@@ -57,7 +57,7 @@ double lrModel::maximiseLnL()
 	int c,cc;
 	double d;
 	float ftol; // need to find an appropriate value for this
-	ftol = 0.01;
+	ftol = 1E-7; // 0.001;
 	if (betasToFit != 0)
 		free(betasToFit);
 	betasToFit = (double *)calloc(nCol + 1,sizeof(double));
@@ -75,7 +75,7 @@ double lrModel::maximiseLnL()
 	modelToFit = this;
 	d = find_min_using_approximate_derivatives(cg_search_strategy(),
 		objective_delta_stop_strategy(ftol),
-		lrModelMaximiser(getMinusModelLnL), starting_point, -20, derivative_eps); // 0.001 is derivative_eps
+		lrModelMaximiser(getMinusModelLnL), starting_point, -20, derivative_eps);
 	// if this fails an exception gets thrown
 	for (c = cc = 0; c<nCol + 1; ++c)
 		if (toFit[c])
@@ -86,21 +86,80 @@ double lrModel::maximiseLnL()
 	return -d;
 }
 
+void lrModel::getSEs()
+{
+	int i,ii,j,jj;
+	double fittedLike, LPlus, LMinus, dPlus, dMinus,keptBetaI,keptBetaJ,d2;
+	fittedLike = getLnL();
+	// make hessian matrix then invert it and take square roots of diagonal elements
+	matrix<double> minusHessian(nBetasToFit,nBetasToFit);
+	for(i = 0,ii=0; i < nCol + 1; ++i)
+	{
+		if(toFit[i])
+		{
+			keptBetaI=beta[i];
+			for(j=0,jj=0;j<nCol+1;++j)
+			{
+				if(toFit[j])
+				{
+					if(i==j)
+					{
+						beta[i] = keptBetaI - second_derivative_eps*2;
+						LMinus = getLnL();
+						dMinus=(fittedLike-LMinus)/ (second_derivative_eps*2);
+						beta[i] = keptBetaI + second_derivative_eps*2;
+						LPlus = getLnL();
+						dPlus = (LPlus - fittedLike) / (second_derivative_eps*2);
+						d2=(dMinus- dPlus)/ (second_derivative_eps*2);
+						// SE[i] = sqrt(1 / ((dMinus- dPlus)/ (second_derivative_eps*2)));
+						// SE[i] = (second_derivative_eps*2)/sqrt(2 * fittedLike - LMinus - LPlus);
+						// https://math.stackexchange.com/questions/302160/correct-way-to-calculate-numeric-derivative-in-discrete-time
+
+					}
+					else
+					{
+						keptBetaJ=beta[j];
+						beta[j] = keptBetaJ - second_derivative_eps;
+						beta[i] = keptBetaI - second_derivative_eps;
+						LMinus = getLnL();
+						beta[i] = keptBetaI + second_derivative_eps;
+						LPlus = getLnL();
+						dMinus=(LPlus-LMinus)/ (second_derivative_eps*2);
+						beta[j] = keptBetaJ + second_derivative_eps;
+						beta[i] = keptBetaI - second_derivative_eps;
+						LMinus = getLnL();
+						beta[i] = keptBetaI + second_derivative_eps;
+						LPlus = getLnL();
+						dPlus=(LPlus-LMinus)/ (second_derivative_eps*2);
+						d2=(dMinus- dPlus)/ (second_derivative_eps*2);
+						beta[j]=keptBetaJ;
+					}
+					minusHessian(ii,jj)=minusHessian(jj,ii)=d2;
+					++jj;
+				}
+			}
+			beta[i]=keptBetaI;
+			++ii;
+		}
+	}
+	matrix<double> inverseMinusHessian=inv(minusHessian);
+	for (i = 0,ii=0; i < nCol + 1; ++i)
+	{
+		if (toFit[i])
+		{
+			SE[i]=sqrt(inverseMinusHessian(ii,ii));
+			++ii;
+		}
+		else
+			SE[i] = 0;
+	}
+}
+
 double lrModel::getLnL()
 {
 	double lnL,eT,p;
 	int r, c;
 	lnL = 0;
-#if 0
-	for (c = 0; c < nCol; ++c)
-		if (toUse[c])
-		{
-			if (beta[c] > betaLimit)
-				beta[c] = betaLimit;
-			if (beta[c] < -betaLimit)
-				beta[c] = -betaLimit;
-		}
-#endif
 	for (r = 0; r < nRow; ++r)
 	{
 		t[r] = 0;
@@ -127,9 +186,19 @@ double lrModel::getLnL()
 void lrModel::freeAll()
 {
 	int r;
+	if (name)
+	{
+		free(name);
+		name = 0;
+	}
 	if (beta)
 	{
 		free(beta);
+		beta = 0;
+	}
+	if (SE)
+	{
+		free(SE);
 		beta = 0;
 	}
 	if (toFit)
@@ -193,14 +262,17 @@ int lrModel::init(int r, int c)
 	}
 	nRow = r;
 	nCol = c;
+	name = (char **)calloc(c + 1, sizeof(char*));
 	beta = (double *)calloc(c + 1, sizeof(double));
+	SE = (double *)calloc(c + 1, sizeof(double));
 	toFit = (int *)calloc(c + 1, sizeof(int));
 	toUse = (int *)calloc(c + 1, sizeof(int));
 	t = (double *)calloc(r, sizeof(double));
 	sigmaT = (double *)calloc(r, sizeof(double));
 	Y = (float *)calloc(r, sizeof(float));
-	if (beta == 0 || toFit == 0 || toUse == 0 || t == 0 || sigmaT == 0 || Y == 0)
+	if (name==0 || beta == 0 || SE == 0 || toFit == 0 || toUse == 0 || t == 0 || sigmaT == 0 || Y == 0)
 	{
+		freeAll();
 		dcerror(1, "Memory allocation error in lrModel::init(), r=%d c=%d", r, c);
 		return 0;
 	}

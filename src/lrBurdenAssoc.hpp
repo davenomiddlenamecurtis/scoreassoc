@@ -1,5 +1,7 @@
 #ifndef LRBURDENASSOCHPP
 #define LRBURDENASSOCHPP 1
+#include <string>
+#include <map>
 
 extern "C" {
 #include "sagcutils.h"
@@ -31,10 +33,19 @@ public:
 	~lrba_data_file_type() { if (fp != 0 && fp != stdout) fclose(fp); }
 };
 
+#define MAXLRVARIABLENAMELENGTH 100
+struct lrVariable_t { char name[MAXLRVARIABLENAMELENGTH]; float *val; };
+typedef struct lrVariable_t lrVariable;
+#define MAXLRVARIABLES 50
+extern lrVariable allVars[MAXLRVARIABLES];
+extern std::map<std::string, lrVariable *> varMap;
+
 struct lrba_par_info_t {
 	lrba_data_file_type df[NUMDATAFILETYPES];
 	float wfactor;
 	int use_func_weights, use_locus_names, use_comments, use_trios, use_probs;
+	int do_ttest, do_lrtest, num_vars,num_varFiles,num_testFiles;
+	lrba_data_file_type varFiles[MAXLRVARIABLES], testFiles[MAXLRVARIABLES];
 };
 
 typedef struct lrba_par_info_t lrba_par_info;
