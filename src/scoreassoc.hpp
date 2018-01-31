@@ -5,6 +5,8 @@
 #include <string.h>
 #include <assert.h>
 #include <math.h>
+#include <string>
+#include <map>
 #include "lrModel.hpp"
 
 extern "C" {
@@ -13,9 +15,11 @@ extern "C" {
 
 #define MAX_COMMENT_LENGTH 1000
 #define NAME_LENGTH 20
+#define MAXLRVARIABLES 50
+#define MAXLRVARIABLENAMELENGTH 100
 
 enum OPT {
-	FLAGFILE=0,PSDATAFILE,GCDATAFILE,GENDATAFILE,WEIGHTFILE,ANNOTFILE,FILTERFILE,LOCUSFILTERFILE,LOCUSNAMEFILE,LOCUSWEIGHTFILE,TRIOFILE,SAMPLEFILE,CASEFREQFILE,CONTFREQFILE,OUTFILE,SCOREFILE,NUMDATAFILETYPES,NUMLOCI,LDTHRESHOLD,WEIGHTTHRESHOLD,DORECESSIVE,DOTTEST,DOLRTEST,USEHAPS,WEIGHTFACTOR,ARGFILE,NUMOPTS
+	FLAGFILE=0,PSDATAFILE,GCDATAFILE,GENDATAFILE,WEIGHTFILE,ANNOTFILE,FILTERFILE,LOCUSFILTERFILE,LOCUSNAMEFILE,LOCUSWEIGHTFILE,TRIOFILE,SAMPLEFILE,CASEFREQFILE,CONTFREQFILE,OUTFILE,SCOREFILE,NUMDATAFILETYPES,NUMLOCI,LDTHRESHOLD,WEIGHTTHRESHOLD,DORECESSIVE,DOTTEST,DOLRTEST,USEHAPS,WEIGHTFACTOR,VARFILE,TESTFILE,ARGFILE,NUMOPTS
 };
 
 // FLAGFILE is only useed by getVarScores but handy to have it here
@@ -40,7 +44,8 @@ struct sa_par_info_t {
 sa_data_file_type df[NUMDATAFILETYPES];
 float wfactor,LD_threshold,weight_threshold;
 int use_func_weights,use_cc_freqs[2],use_locus_names,use_comments,do_recessive_test,use_haplotypes,use_trios,use_probs;
-int do_ttest, do_lrtest;
+int do_ttest, do_lrtest,numVars,numVarFiles,numTestFiles;
+sa_data_file_type varFiles[MAXLRVARIABLES],testFiles[MAXLRVARIABLES];
 };
 
 typedef struct sa_par_info_t sa_par_info;
@@ -50,6 +55,18 @@ struct non_mendelian_t {
 	int loc,sub,nd;
 };
 typedef struct non_mendelian_t non_mendelian;
+
+class lrVariable {
+public:
+	char name[MAXLRVARIABLENAMELENGTH];
+	float *val;
+	lrVariable() { name[0]='\0'; val=0; }
+	void clear() { name[0]='\0'; if(val) free(val); val=0; }
+	~lrVariable() { if(val) free(val); }
+};
+extern lrVariable allVars[MAXLRVARIABLES];
+extern std::map<std::string,lrVariable *> varMap;
+
 
 void usage();
 int read_all_args(char *argv[], int argc, par_info *pi, sa_par_info *spi);
