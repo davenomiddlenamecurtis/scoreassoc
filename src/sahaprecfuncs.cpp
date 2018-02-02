@@ -1,6 +1,6 @@
 #include "scoreassoc.hpp"
 
-void do_recessive_HWE_test_with_haplotypes(FILE *fo, float *score, subject **sub, int nsub, par_info *pi, sa_par_info *spi,float cc_freq[2][MAX_LOCI], float cc_count[2][MAX_LOCI], int max_cc[2], float *weight, float *missing, int *old_rarer, char names[MAX_LOCI][20])
+void do_recessive_HWE_test_with_haplotypes(FILE *fo, float *score, subject **sub, int nsub, par_info *pi, sa_par_info *spi,float cc_freq[2][MAX_LOCI], float cc_count[2][MAX_LOCI], int max_cc[2], float *weight, float *missing, int *old_rarer, char names[MAX_LOCI][LOCUS_NAME_LENGTH])
 {
 	float tab[2][2],ex[2][2],col_tot[3],row_tot[2],N,counts[2][3],hom_counts[2],all_count[MAX_LOCI],hapMAF;
 	int r,c,s,l,ll,lll,a,first,all_genotype,rec_rarer[MAX_LOCI];

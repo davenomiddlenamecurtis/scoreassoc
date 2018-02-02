@@ -14,14 +14,15 @@
 int main(int argc, char *argv[])
 {
 	char arg_string[2000];
-	int nsub,n_new_sub,real_nsub;
-	float *score,p;
-	int s,n_non_mendelian;
+	int nsub,n_new_sub,real_nsub,filledModel;
+	float *score,SLP,p;
+	int s,n_non_mendelian,t;
 	non_mendelian *non_mendelians;
 	char *non_mendelian_report;
 	par_info pi;
 	sa_par_info spi;
 	subject **sub,**new_sub,**real_sub;
+	lrModel model;
 	pi.use_cc=1;
 	printf("%s v%s\n",PROGRAM,SAVERSION);
 	printf("MAX_LOCI=%d\nMAX_SUB=%d\n",MAX_LOCI,MAX_SUB);
@@ -73,8 +74,35 @@ get_freqs(sub,nsub,&pi,&spi,cc_freq,cc_count,cc_genocount);
 applyExclusions(&pi);
 set_weights(spi.df[OUTFILE].fp,weight,missing_score,rarer,sub,nsub,&pi,&spi,func_weight,cc_freq,cc_count,max_cc,names,comments);
 get_scores(score,weight,missing_score,rarer,sub,nsub,&pi,&spi);
+filledModel=0;
+strcpy(allVars[spi.numVars].name, "score");
+allVars[spi.numVars].val = score;
+varMap["score"] = allVars+spi.numVars;
+++spi.numVars;
+
 if (spi.do_ttest)
-	p=do_score_onetailed_ttest(spi.df[OUTFILE].fp,score,sub,nsub,&pi,&spi,cc_freq,cc_count,max_cc,weight,missing_score,rarer);
+	SLP=do_score_onetailed_ttest(spi.df[OUTFILE].fp,score,sub,nsub,&pi,&spi,cc_freq,cc_count,max_cc,weight,missing_score,rarer);
+
+if(spi.do_lrtest)
+{
+	if (!filledModel)
+	{
+		fillModelWithVars(&model, sub, nsub, &pi, &spi);
+		filledModel = 1;
+	}
+	SLP = do_onetailed_LRT(spi.df[OUTFILE].fp,&model,&pi,&spi);
+}
+if (spi.numTestFiles>0)
+{
+	if (!filledModel)
+	{
+		fillModelWithVars(&model, sub, nsub, &pi, &spi);
+		filledModel = 1;
+	}
+	for (t = 0; t < spi.numTestFiles;++t)
+		p= runTestFile(spi.df[OUTFILE].fp, spi.testFiles[t].fn,&model, &pi, &spi);
+
+}
 
 if (spi.use_trios)
 	output_nm_report(spi.df[OUTFILE].fp,&pi,non_mendelian_report);

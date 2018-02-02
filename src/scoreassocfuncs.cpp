@@ -97,26 +97,7 @@ double do_score_onetailed_ttest(FILE *fo, float *score, subject **sub, int nsub,
 			"SLP = %8.2f (signed log10(p), positive if cases score higher than controls)\n",
 			n[0], n[1], mean[0], mean[1], sqrt(var[0]), sqrt(var[1]), n[0] + n[1] - 2, tval, 2 * p, SLP);
 	// I am writing SD because it will allow me to combine statistics later
-	if (mean[0]>mean[1])
-		p = 1.0 - p;
-#ifdef ALLOWUNEQUALVARIANCES
-	SE = sqrt(var[0] / n[0] + var[1] / n[1]);
-	if (SE == 0)
-		z = 0;
-	else
-		z = (mean[1] - mean[0]) / SE;
-	pz = one_tailed_p_norm(z);
-	fprintf(fo, "Comparison of means not assuming equal variances, standardised normal deviate z = %5.3f\np = %10.8f (one-tailed)\n",
-		z, pz);
-	if (mean[0] >= mean[1])
-		SLP = log10(2 * (1 - pz));
-	else
-		SLP = -log10(2 * pz);
-	fprintf(fo, "SLP = %8.2f (signed log10(2p), positive if cases score higher than controls)\n",
-		SLP);
-
-#endif
-	return p; // return one-tailed p
+	return SLP;
 }
 
 
@@ -227,7 +208,7 @@ float get_zero_based_quadratic_weight(float freq,float wfactor)
 	return wt;
 }
 
-void set_weights(FILE *f,float *weight,float *missing_score,int *rarer,subject **sub,int nsub,par_info *pi,sa_par_info *spi,float *func_weight,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],char names[MAX_LOCI][20],char comments[MAX_LOCI][MAX_COMMENT_LENGTH])
+void set_weights(FILE *f,float *weight,float *missing_score,int *rarer,subject **sub,int nsub,par_info *pi,sa_par_info *spi,float *func_weight,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],char names[MAX_LOCI][LOCUS_NAME_LENGTH],char comments[MAX_LOCI][MAX_COMMENT_LENGTH])
 {
 	int l,ll,s,nh[2],cc,i,g;
 	float freq,ccfreq[2],vcount[2],gencount[2][3];
@@ -296,7 +277,7 @@ void set_weights(FILE *f,float *weight,float *missing_score,int *rarer,subject *
 	{
 		if (!spi->use_locus_names)
 			sprintf(names[ll],"LOC%05d",ll+1);
-		fprintf(f,"%-20s",names[ll]);
+		fprintf(f,"%-" LOCUS_NAME_LENGTH_STR "s",names[ll]);
 		fprintf(f,
 			spi->use_probs ?
 			"%6.2f : %6.2f : %6.2f  %8.6f  %6.2f : %6.2f : %6.2f  %8.6f  %8.6f  %d      %5.2f  %s\n" :

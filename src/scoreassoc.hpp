@@ -17,12 +17,14 @@ extern "C" {
 #define NAME_LENGTH 20
 #define MAXLRVARIABLES 50
 #define MAXLRVARIABLENAMELENGTH 100
+#define LOCUS_NAME_LENGTH 40
+#define LOCUS_NAME_LENGTH_STR "40"
 
 enum OPT {
 	FLAGFILE=0,PSDATAFILE,GCDATAFILE,GENDATAFILE,WEIGHTFILE,ANNOTFILE,FILTERFILE,LOCUSFILTERFILE,LOCUSNAMEFILE,LOCUSWEIGHTFILE,TRIOFILE,SAMPLEFILE,CASEFREQFILE,CONTFREQFILE,OUTFILE,SCOREFILE,NUMDATAFILETYPES,NUMLOCI,LDTHRESHOLD,WEIGHTTHRESHOLD,DORECESSIVE,DOTTEST,DOLRTEST,USEHAPS,WEIGHTFACTOR,VARFILE,TESTFILE,ARGFILE,NUMOPTS
 };
 
-// FLAGFILE is only useed by getVarScores but handy to have it here
+// FLAGFILE is only used by getVarScores but handy to have it here
 
 struct option_t {
 	char *str;
@@ -71,30 +73,31 @@ extern std::map<std::string,lrVariable *> varMap;
 void usage();
 int read_all_args(char *argv[], int argc, par_info *pi, sa_par_info *spi);
 int process_options(par_info *pi, sa_par_info *spi);
-int read_all_data(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr, char names[MAX_LOCI][20], char comments[MAX_LOCI][MAX_COMMENT_LENGTH], float func_weight[MAX_LOCI]);
+int read_all_data(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr, char names[MAX_LOCI][LOCUS_NAME_LENGTH], char comments[MAX_LOCI][MAX_COMMENT_LENGTH], float func_weight[MAX_LOCI]);
 
 double do_score_onetailed_ttest(FILE *fo,float *score,subject **sub,int nsub,par_info *pi,sa_par_info *spi,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],float *weight,float *missing,int *rarer);
 void get_scores(float *score,float *weight,float *missing_score,int *rarer,subject **sub,int nsub,par_info *pi,sa_par_info *spi);
-void set_weights(FILE *fo,float *weight,float *missing_score,int *rarer,subject **sub,int nsub,par_info *pi,sa_par_info *spi,float *func_weight,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],char names[MAX_LOCI][20],char comments[MAX_LOCI][MAX_COMMENT_LENGTH]);
-int read_score_assoc_par(FILE *fp,par_info *pi,float *wfactor,int *use_func_weights,int use_cc_freqs[2],float *func_weight,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],int *use_locus_names,char names[MAX_LOCI][20],int *use_comments,char comments[MAX_LOCI][MAX_COMMENT_LENGTH], int *do_recessive_test,float *weight_threshold,float *LD_threshold,int *use_haplotypes);
-int read_sa_par(FILE *fp,par_info *pi,sa_par_info *spi,float *func_weight,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],char names[MAX_LOCI][20],char comments[MAX_LOCI][MAX_COMMENT_LENGTH]);
+void set_weights(FILE *fo,float *weight,float *missing_score,int *rarer,subject **sub,int nsub,par_info *pi,sa_par_info *spi,float *func_weight,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],char names[MAX_LOCI][LOCUS_NAME_LENGTH],char comments[MAX_LOCI][MAX_COMMENT_LENGTH]);
+int read_score_assoc_par(FILE *fp,par_info *pi,float *wfactor,int *use_func_weights,int use_cc_freqs[2],float *func_weight,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],int *use_locus_names,char names[MAX_LOCI][LOCUS_NAME_LENGTH],int *use_comments,char comments[MAX_LOCI][MAX_COMMENT_LENGTH], int *do_recessive_test,float *weight_threshold,float *LD_threshold,int *use_haplotypes);
+int read_sa_par(FILE *fp,par_info *pi,sa_par_info *spi,float *func_weight,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],char names[MAX_LOCI][LOCUS_NAME_LENGTH],char comments[MAX_LOCI][MAX_COMMENT_LENGTH]);
 void get_freqs(subject **sub,int nsub,par_info *pi,sa_par_info *spi,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],float cc_gencount[2][3][MAX_LOCI]);
 void write_scores(FILE *fs,subject **sub,int nsub,float *score);
-void do_recessive_HWE_test(FILE *fo,float *score,subject **sub,int nsub,par_info *pi,sa_par_info *spi,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],float *weight,float *missing,int *old_rarer,char names[MAX_LOCI][20]);
-void do_recessive_HWE_test_with_haplotypes(FILE *fo, float *score, subject **sub, int nsub, par_info *pi,sa_par_info *spi, float cc_freq[2][MAX_LOCI], float cc_count[2][MAX_LOCI], int max_cc[2], float *weight, float *missing, int *old_rarer, char names[MAX_LOCI][20]);
+void do_recessive_HWE_test(FILE *fo,float *score,subject **sub,int nsub,par_info *pi,sa_par_info *spi,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],float *weight,float *missing,int *old_rarer,char names[MAX_LOCI][LOCUS_NAME_LENGTH]);
+void do_recessive_HWE_test_with_haplotypes(FILE *fo, float *score, subject **sub, int nsub, par_info *pi,sa_par_info *spi, float cc_freq[2][MAX_LOCI], float cc_count[2][MAX_LOCI], int max_cc[2], float *weight, float *missing, int *old_rarer, char names[MAX_LOCI][LOCUS_NAME_LENGTH]);
 extern int sort_trios(subject **sub,int nsub,par_info *pi, sa_par_info *spi, subject **new_sub,non_mendelian *nm,int *n_non_mendelian,char *non_mendelian_report);
 extern int output_nm_report(FILE *fp, par_info *pi, char *non_mendelian_report);
 int read_all_gen_subjects(FILE *fi,subject **s,int *nsub,par_info *pi);
 int read_freqs_datafile(par_info *pi,sa_par_info *spi,int cc,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2]);
-double do_onetailed_LRT(FILE *fo, lrModel *m);
-double getlnLikeForH(int h, lrModel *m);
-void fillModel(lrModel *m, float *score, subject **sub, int nsub, par_info *pi, sa_par_info *spi);
-
+float do_onetailed_LRT(FILE *fo,lrModel *m,par_info *pi,sa_par_info *spi);
+void fillModelWithVars(lrModel *m,subject **sub,int nsub,par_info *pi,sa_par_info *spi);
+void printModel(FILE *fo, char *LLstr, double LL, lrModel *m);
 extern double cumulBinom(int N,int k,double p);
+float evaluateModel(FILE *fo, lrModel *m, int *toUse, float *startBetas, int *toFit, char *name);
+float runTestFile(FILE *fo, char *fn, lrModel *m, par_info *pi, sa_par_info *spi);
 
 extern float weight[MAX_LOCI],missing_score[MAX_LOCI],func_weight[MAX_LOCI],cc_freq[2][MAX_LOCI],cc_count[2][MAX_LOCI],cc_genocount[2][3][MAX_LOCI];
 extern int rarer[MAX_LOCI],max_cc[2];
-extern char names[MAX_LOCI][NAME_LENGTH],comments[MAX_LOCI][MAX_COMMENT_LENGTH],trios_fn[500];
+extern char names[MAX_LOCI][LOCUS_NAME_LENGTH],comments[MAX_LOCI][MAX_COMMENT_LENGTH],trios_fn[500];
 
 #define USEFILTERS 1
 #endif
