@@ -3,7 +3,7 @@
 # Destination for executables, change this if you want
 DCBIN = ../bin
 
-# on cluster must enter this to get right compiler versiion:
+# on cluster must enter this to get right compiler version:
 #  scl enable devtoolset-3 bash
 
 C = gcc

@@ -12,7 +12,7 @@ MAX_LOCI_MAK = 12000
 MAX_ALL_MAK = 40
 MAX_SUB_MAK = 15000
 
-MYFLAGS = $(CFLAGS) -DMAX_LOCI=$(MAX_LOCI_MAK) -DMAX_ALL=$(MAX_ALL_MAK) -DMAX_SUB=$(MAX_SUB_MAK)  # -std=c++14 # -std=gnu++0x
+MYFLAGS = $(CFLAGS) -DMAX_LOCI=$(MAX_LOCI_MAK) -DMAX_ALL=$(MAX_ALL_MAK) -DMAX_SUB=$(MAX_SUB_MAK)  -std=c++14 # -std=gnu++0x
 OURFLAGS = $(MYFLAGS) $(EXTRAFLAGS)
 
 # so to compile for debugging use make -f scoreassoc.mak DEBUGFLAG=-g
@@ -48,6 +48,9 @@ VPATH=../src
 %.o: ../src/%.c $(HEADERS)
 	$(C) $(OURFLAGS) ${DEBUGFLAG} -c $< -o ../obj/$@
 	
+lrModel.o: ../src/lrModel.cpp ${DLIB}/dlib/optimization.h
+	$(CC) $(OURFLAGS) ${DEBUGFLAG} -c ../src/lrModel.cpp  -o ../obj/lrModel.o -I ${DLIB}
+	
 combineGeneScores: combineGeneScores.o dcerror.o
 	$(CC) ${DEBUGFLAG} -o combineGeneScores combineGeneScores.o dcerror.o -lm
 
@@ -60,8 +63,8 @@ fitScores: fitScoresWithDlib.o dcerror.o
 getVarScores: getVarScores.o saglobals.o scoreassocfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o 
 	$(CC) ${DEBUGFLAG} -o getVarScores getVarScores.o saglobals.o scoreassocfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o -lm
 
-scoreassoc: scoreassoc.o saglobals.o scoreassocfuncs.o sarecfuncs.o sahaprecfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o 
-	$(CC) ${DEBUGFLAG} -o scoreassoc scoreassoc.o saglobals.o scoreassocfuncs.o sarecfuncs.o sahaprecfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o -lm
+scoreassoc: scoreassoc.o sainit.o salrtests.o lrModel.o saglobals.o scoreassocfuncs.o sarecfuncs.o sahaprecfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o 
+	$(CC) ${DEBUGFLAG} -o scoreassoc scoreassoc.o sainit.o salrtests.o lrModel.o saglobals.o scoreassocfuncs.o sarecfuncs.o sahaprecfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o -lm
 
 combineCohorts: combineCohorts.o dcdflib.o ipmpar.o dcerror.o 
 	$(CC) ${DEBUGFLAG} -o combineCohorts combineCohorts.o dcdflib.o ipmpar.o dcerror.o -lm
