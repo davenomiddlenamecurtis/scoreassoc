@@ -177,7 +177,8 @@ int readVarFiles(subject **sub,int nSub,sa_par_info *spi)
 		nCol=c;
 		while(fgets(long_line,LONG_LINE_LENGTH,spi->varFiles[i].fp))
 		{
-			while(*ptr && !isspace(*ptr))
+			ptr = long_line;
+			while(*ptr && isspace(*ptr))
 				*sptr++=*ptr++;
 			for(c=0;c<idCol;++c)
 			{
