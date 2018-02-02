@@ -124,11 +124,11 @@ int readVarFiles(subject **sub,int nSub,sa_par_info *spi)
 		for (c=0;1;++c)
 		{
 			sptr=colValue;
+			while (*ptr && !isspace(*ptr))
+				*sptr++ = *ptr++;
+			*sptr = '\0';
 			while(*ptr && isspace(*ptr))
 				++ptr;
-			*sptr='\0';
-			while(*ptr && !isspace(*ptr))
-				*sptr++=*ptr++;
 			if(!strcmp(colValue,"IID"))
 			{
 				idCol=c;
@@ -142,13 +142,13 @@ int readVarFiles(subject **sub,int nSub,sa_par_info *spi)
 			dcerror(1,"Variable file %s did not contain a column headed IID\n",spi->varFiles[i].fn);
 			return 0;
 		}
-		for(c=idCol;1;++c)
+		for(c=idCol+1;1;++c)
 		{
 			sptr=colValue;
-			while(*ptr && !isspace(*ptr))
-				*sptr++=*ptr++;
-			*sptr='\0';
-			while(*ptr && isspace(*ptr))
+			while (*ptr && !isspace(*ptr))
+				*sptr++ = *ptr++;
+			*sptr = '\0';
+			while (*ptr && isspace(*ptr))
 				++ptr;
 			if(colValue[0])
 			{
@@ -174,13 +174,13 @@ int readVarFiles(subject **sub,int nSub,sa_par_info *spi)
 			if(*ptr=='\0')
 				break;
 		}
-		nCol=c;
+		nCol=c+1;
 		while(fgets(long_line,LONG_LINE_LENGTH,spi->varFiles[i].fp))
 		{
 			ptr = long_line;
 			while(*ptr && isspace(*ptr))
 				*sptr++=*ptr++;
-			for(c=0;c<idCol;++c)
+			for(c=0;c<=idCol;++c)
 			{
 				sptr=colValue;
 				while(*ptr && !isspace(*ptr))
@@ -199,8 +199,9 @@ int readVarFiles(subject **sub,int nSub,sa_par_info *spi)
 			std::map<std::string,int>::const_iterator idIter=subIDs.find(colValue);
 			if(idIter==subIDs.end())
 			{
-				dcerror(1,"Unknown IID value in variable file %s in this line:\n%s\n",spi->varFiles[i].fn,long_line);
-				return 0;
+				continue; // this is not an error - maybe values for subjects not included in the analysis
+				// dcerror(1,"Unknown IID value in variable file %s in this line:\n%s\n",spi->varFiles[i].fn,long_line);
+				// return 0;
 			}
 			else
 				s=idIter->second;
@@ -220,7 +221,7 @@ int readVarFiles(subject **sub,int nSub,sa_par_info *spi)
 			}
 		}
 		for(s=0;s<nSub;++s)
-			if(allVars[idCol+1].val[s]==MISSING)
+			if(allVars[colIndex[idCol+1]].val[s]==MISSING)
 			{
 				dcerror(1,"Missing values in variable file %s for subject %s\n",spi->varFiles[i].fn,sub[s]->id);
 				return 0;

@@ -106,7 +106,8 @@ void printModel(FILE *fo, char *LLstr,double LL,lrModel *m)
 	for (b = 0; b < m->nCol+1; ++b)
 	{
 		bb = (b + m->nCol) % (m->nCol + 1); // print last first
-		fprintf(fo, "%-" LOCUS_NAME_LENGTH_STR "s %8.5f %8.5f\n", m->name[bb], m->beta[bb], m->SE[bb]);
+		if (m->toUse[bb])
+			fprintf(fo, "%-" LOCUS_NAME_LENGTH_STR "s %8.5f %8.5f\n", m->name[bb], m->beta[bb], m->SE[bb]);
 	}
 }
 
