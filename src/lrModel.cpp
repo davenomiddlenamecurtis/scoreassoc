@@ -13,6 +13,7 @@ double derivative_eps = 1e-7; // used to get gradient of lnL by beta
 double second_derivative_eps = 1e-5; // I may be wrong but I think rounding errors otherwise
 double minimumP = 1e-8;
 double betaLimit = 20,tLimit=20;
+double stop_limit_increment=1e-9; // this needs to be small or minimisation can fail badly
 
 class lrModelMaximiser
 {
@@ -75,7 +76,7 @@ double lrModel::maximiseLnL()
 	modelToFit = this;
 	d = find_min_using_approximate_derivatives(cg_search_strategy(),
 		objective_delta_stop_strategy(ftol),
-		lrModelMaximiser(getMinusModelLnL), starting_point, -20, derivative_eps);
+		lrModelMaximiser(getMinusModelLnL), starting_point, -20, stop_limit_increment);
 	// if this fails an exception gets thrown
 	for (c = cc = 0; c<nCol + 1; ++c)
 		if (toFit[c])
