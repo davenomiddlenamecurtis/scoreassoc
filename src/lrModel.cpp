@@ -13,7 +13,7 @@ double derivative_eps = 1e-7; // used to get gradient of lnL by beta
 double second_derivative_eps = 1e-5; // I may be wrong but I think rounding errors otherwise
 double minimumP = 1e-8;
 double betaLimit = 20,tLimit=20;
-double stop_limit_increment=1e-7; // 
+double stop_limit_increment = 1e-3; // 1e-7; 
 
 class lrModelMaximiser
 {
