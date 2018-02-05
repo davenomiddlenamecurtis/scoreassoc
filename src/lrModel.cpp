@@ -13,7 +13,7 @@ double derivative_eps = 1e-7; // used to get gradient of lnL by beta
 double second_derivative_eps = 1e-5; // I may be wrong but I think rounding errors otherwise
 double minimumP = 1e-8;
 double betaLimit = 20,tLimit=20;
-double stop_limit_increment=1e-9; // this needs to be small or minimisation can fail badly
+double stop_limit_increment=1e-7; // 
 
 class lrModelMaximiser
 {
@@ -39,6 +39,26 @@ double lrModelMaximiser::operator() (const column_vector& c) const
 	return f;
 }
 
+double getRegularisedMinusModelLnL()
+{
+	// penalise betas, see here: http://openclassroom.stanford.edu/MainFolder/DocumentPage.php?course=MachineLearning&doc=exercises/ex5/ex5.html
+	// main purpose is to stop beta hitting very large values and failing to fit properly, not to prevent over-fitting
+	int c, cc;
+	double lnL,halfLamda,penalty;
+	halfLamda = modelToFit->nRow*0.001;
+	for (c = cc = 0; c<modelToFit->nCol + 1; ++c)
+		if (modelToFit->toFit[c])
+		{
+			modelToFit->beta[c] = betasToFit[cc];
+			++cc;
+		}
+	lnL = modelToFit->getLnL();
+	for (c = 0, penalty = 0; c<modelToFit->nCol; ++c) // do not include intercept
+		if (modelToFit->toFit[c])
+			penalty += halfLamda * modelToFit->beta[c] * modelToFit->beta[c];
+	return -lnL+penalty;
+}
+
 double getMinusModelLnL()
 {
 	int c,cc;
@@ -55,10 +75,8 @@ double getMinusModelLnL()
 
 double lrModel::maximiseLnL()
 {
-	int c,cc;
-	double d;
-	float ftol; // need to find an appropriate value for this
-	ftol = 1E-7; // 0.001;
+	int c,cc,changed;
+	double d,savedBeta,dd,bestD;
 	if (betasToFit != 0)
 		free(betasToFit);
 	betasToFit = (double *)calloc(nCol + 1,sizeof(double));
@@ -67,23 +85,55 @@ double lrModel::maximiseLnL()
 		if (toFit[c])
 			++nBetasToFit;
 	column_vector starting_point(nBetasToFit);
-	for (c = cc = 0; c<nCol + 1; ++c)
-		if (toFit[c])
-		{
-			starting_point(cc,0)=beta[c] ;
-			++cc;
-		}
 	modelToFit = this;
-	d = find_min_using_approximate_derivatives(cg_search_strategy(),
-		objective_delta_stop_strategy(ftol),
-		lrModelMaximiser(getMinusModelLnL), starting_point, -20, stop_limit_increment);
-	// if this fails an exception gets thrown
-	for (c = cc = 0; c<nCol + 1; ++c)
-		if (toFit[c])
-		{
-			beta[c]=starting_point(cc,0);
-			++cc;
-		}
+	do
+	{
+		for (c = cc = 0; c < nCol + 1; ++c)
+			if (toFit[c])
+			{
+				starting_point(cc, 0) = beta[c];
+				++cc;
+			}
+		d = find_min_using_approximate_derivatives(cg_search_strategy(),
+			objective_delta_stop_strategy(stop_limit_increment),
+			lrModelMaximiser(getRegularisedMinusModelLnL), starting_point, -20, derivative_eps);
+		// if this fails an exception gets thrown
+		for (c = cc = 0; c < nCol + 1; ++c)
+			if (toFit[c])
+			{
+				beta[c] = starting_point(cc, 0);
+				++cc;
+			}
+// look to see if maybe stuck in local minimum
+		changed = 0;
+		bestD = d;
+		for (c = cc = 0; c < nCol + 1; ++c)
+			if (toFit[c])
+			{
+				savedBeta=beta[c];
+				beta[c] = savedBeta * 1.2;
+				dd = -getLnL();
+				if (dd < bestD)
+				{
+					bestD = dd;
+					changed = 1;
+					// and leaving beta[c] with its new value
+				}
+				else
+				{
+					beta[c] = savedBeta * 0.8;
+					dd = -getLnL();
+					if (dd < bestD)
+					{
+						bestD = dd;
+						changed = 1;
+						// and leaving beta[c] with its new value
+					}
+					else beta[c] = savedBeta;
+				}
+				++cc;
+			}
+	} while (changed);
 	return -d;
 }
 
