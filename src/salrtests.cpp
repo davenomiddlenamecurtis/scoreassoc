@@ -90,8 +90,10 @@ float evaluateModel(FILE *fo, lrModel *m, int *toUse, float *startBetas, int *to
 		m->beta[b] = startBetas[b];
 		m->toFit[b] = toFit[b];
 	}
+	m->normalise();
  	lnL = m->maximiseLnL();
 	m->getSEs();
+	m->deNormalise();
 	if (fo)
 		printModel(fo, name,lnL,m);
 	return lnL;

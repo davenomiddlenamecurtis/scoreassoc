@@ -111,7 +111,7 @@ int readVarFiles(subject **sub,int nSub,sa_par_info *spi)
 	for(i=0;i<spi->numVarFiles;++i)
 	{
 		spi->varFiles[i].fp=fopen(spi->varFiles[i].fn,"r");
-		if(spi->varFiles[i].fn==0)
+		if(spi->varFiles[i].fp==0)
 		{
 			dcerror(1,"Could not open variable file %s\n",spi->varFiles[i].fn);
 			return 0;

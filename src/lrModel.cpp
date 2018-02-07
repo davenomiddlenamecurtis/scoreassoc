@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,8 +12,7 @@ using namespace dlib;
 typedef matrix<double, 0, 1> column_vector;
 double derivative_eps = 1e-7; // used to get gradient of lnL by beta
 double second_derivative_eps = 1e-5; // I may be wrong but I think rounding errors otherwise
-double minimumP = 1e-8;
-double betaLimit = 20,tLimit=20;
+double tLimit=8;
 double stop_limit_increment = 1e-3; // 1e-7; 
 
 class lrModelMaximiser
@@ -39,13 +39,123 @@ double lrModelMaximiser::operator() (const column_vector& c) const
 	return f;
 }
 
+void lrModel::getMeans()
+{
+	int c,r;
+	if(gotMeans)
+		return;
+	for (c = 0; c < nCol; ++c)
+		mean[c] = 0;
+	for(c = 0; c < nCol; ++c)
+		for(r = 0; r < nRow; ++r)
+			mean[c] += X[r][c];
+	for(c = 0; c < nCol; ++c)
+		mean[c] /= nRow;
+	gotMeans = 1;
+}
+
+#if 0
+
+Minimisation can be difficult if some sets of values are much higher than others, so this code can normalise them.
+Instead of fitting B with X, fit B' with Z.
+Need to adjust B0 for intercept accordingly.
+Note that the mean and SD always refer to the original values, not the normalised ones which replace them.
+
+Xij=(Zij*Si+Mi)
+Zij=(Xij-Mi)/Si
+B' is for the normalised values
+Ti=S(Bj*Xij) + B0
+Ti=S(B'j*Zij)+B'0
+=S(B'j*Xij/Sj)-S(B'j*Mj/Sj)+B'0
+So Bj=B'j/Sj
+And B0=B'0-S(B'j*Mj/Sj)
+
+B'j=Bj*Sj
+B'0=B0+S(Bj*Mj)
+
+#endif
+
+void lrModel::normalise()
+{
+	int c,r;
+	double *X2,incBeta0,incSEBeta0;
+	if(isNormalised)
+		return;
+	assert((X2=(double*)calloc(nCol,sizeof(double)))!=0);
+	for (c = 0; c < nCol; ++c)
+		mean[c] = 0;
+	for(c = 0; c < nCol; ++c)
+		for(r = 0; r < nRow; ++r)
+		{
+			mean[c] += X[r][c];
+			X2[c]+=X[r][c]*X[r][c];
+		}
+	for(c = 0; c < nCol; ++c)
+	{
+		mean[c] /= nRow;
+		SD[c]=sqrt(X2[c]/nRow-mean[c]*mean[c]);
+	}
+	incSEBeta0=incBeta0 = 0;
+	for (c = 0; c < nCol; ++c)
+	{
+		for (r = 0; r < nRow; ++r)
+		{
+			X[r][c] -= mean[c];
+			if (SD[c])
+				X[r][c] /= SD[c];
+		}
+		if (SD[c])
+		{
+			incBeta0 += beta[c] * SD[c]; 
+			incSEBeta0 += SE[c] * SD[c];
+			beta[c] *= SD[c];
+			SE[c] *= SD[c];
+		}
+	}
+	beta[nCol] += incBeta0;
+	SE[nCol]+=incSEBeta0;
+	free(X2);
+	isNormalised=gotMeans = 1;
+}
+
+void lrModel::deNormalise()
+{
+
+	int c,r;
+	double incBeta0,incSEBeta0;
+	if(!isNormalised)
+		return;
+	incSEBeta0=incBeta0 = 0;
+	for(c = 0; c < nCol; ++c)
+	{
+		for(r = 0; r < nRow; ++r)
+		{
+			if(SD[c])
+				X[r][c] *= SD[c];
+			X[r][c] += mean[c];
+		}
+		if(SD[c])
+		{
+			incBeta0 -= beta[c] *mean[c]/ SD[c];
+			incSEBeta0-=SE[c] *mean[c]/ SD[c];
+			beta[c] /= SD[c];
+			SE[c] /= SD[c];
+		}
+	}
+	beta[nCol] += incBeta0;
+	SE[nCol]+=incSEBeta0;
+	isNormalised = 0;
+}
+
 double getRegularisedMinusModelLnL()
 {
 	// penalise betas, see here: http://openclassroom.stanford.edu/MainFolder/DocumentPage.php?course=MachineLearning&doc=exercises/ex5/ex5.html
 	// main purpose is to stop beta hitting very large values and failing to fit properly, not to prevent over-fitting
 	int c, cc;
 	double lnL,halfLamda,penalty;
-	halfLamda = modelToFit->nRow*0.001;
+	halfLamda = modelToFit->nRow*0.0;
+	if (!modelToFit->gotMeans)
+		modelToFit->getMeans();
 	for (c = cc = 0; c<modelToFit->nCol + 1; ++c)
 		if (modelToFit->toFit[c])
 		{
@@ -55,7 +165,8 @@ double getRegularisedMinusModelLnL()
 	lnL = modelToFit->getLnL();
 	for (c = 0, penalty = 0; c<modelToFit->nCol; ++c) // do not include intercept
 		if (modelToFit->toFit[c])
-			penalty += halfLamda * modelToFit->beta[c] * modelToFit->beta[c];
+			penalty += halfLamda * modelToFit->beta[c] * modelToFit->beta[c] * (modelToFit->isNormalised?1: modelToFit->mean[c] * modelToFit->mean[c]);
+	// parameters with large values (like weights) should not have large betas
 	return -lnL+penalty;
 }
 
@@ -77,6 +188,8 @@ double lrModel::maximiseLnL()
 {
 	int c,cc,changed;
 	double d,savedBeta,dd,bestD;
+	double (*func)();
+	func=getRegularisedMinusModelLnL;
 	if (betasToFit != 0)
 		free(betasToFit);
 	betasToFit = (double *)calloc(nCol + 1,sizeof(double));
@@ -86,54 +199,22 @@ double lrModel::maximiseLnL()
 			++nBetasToFit;
 	column_vector starting_point(nBetasToFit);
 	modelToFit = this;
-	do
-	{
-		for (c = cc = 0; c < nCol + 1; ++c)
-			if (toFit[c])
-			{
-				starting_point(cc, 0) = beta[c];
-				++cc;
-			}
-		d = find_min_using_approximate_derivatives(cg_search_strategy(),
+	for (c = cc = 0; c < nCol + 1; ++c)
+		if (toFit[c])
+		{
+			starting_point(cc, 0)= beta[c];
+			++cc;
+		}
+	d = find_min_using_approximate_derivatives(cg_search_strategy(),
 			objective_delta_stop_strategy(stop_limit_increment),
-			lrModelMaximiser(getRegularisedMinusModelLnL), starting_point, -20, derivative_eps);
+			lrModelMaximiser(func), starting_point, -20, derivative_eps);
 		// if this fails an exception gets thrown
-		for (c = cc = 0; c < nCol + 1; ++c)
+	for (c = cc = 0; c < nCol + 1; ++c)
 			if (toFit[c])
 			{
 				beta[c] = starting_point(cc, 0);
 				++cc;
 			}
-// look to see if maybe stuck in local minimum
-		changed = 0;
-		bestD = d;
-		for (c = cc = 0; c < nCol + 1; ++c)
-			if (toFit[c])
-			{
-				savedBeta=beta[c];
-				beta[c] = savedBeta * 1.2;
-				dd = -getLnL();
-				if (dd < bestD)
-				{
-					bestD = dd;
-					changed = 1;
-					// and leaving beta[c] with its new value
-				}
-				else
-				{
-					beta[c] = savedBeta * 0.8;
-					dd = -getLnL();
-					if (dd < bestD)
-					{
-						bestD = dd;
-						changed = 1;
-						// and leaving beta[c] with its new value
-					}
-					else beta[c] = savedBeta;
-				}
-				++cc;
-			}
-	} while (changed);
 	return -d;
 }
 
@@ -208,7 +289,7 @@ void lrModel::getSEs()
 
 double lrModel::getLnL()
 {
-	double lnL,eT,p;
+	double lnL,eT,p,ll;
 	int r, c;
 	lnL = 0;
 	for (r = 0; r < nRow; ++r)
@@ -220,16 +301,26 @@ double lrModel::getLnL()
 		if (toUse[nCol])
 			t[r] += beta[nCol];
 		if (t[r] > tLimit)
-			t[r] = tLimit;
-		if (t[r] < -tLimit)
-			t[r] = -tLimit;
-		eT = exp(t[r]); // maximisation routine can set very large negative beta, so this can be 0
-		p = eT / (eT + 1);
-		if (p < minimumP)
-			p = minimumP;
-		if (p > 1 - minimumP)
-			p = 1-minimumP;
-		lnL += log(Y[r] == 1 ? p : 1 - p);
+		{
+			if (Y[r] == 1)
+				ll = 0;
+			else
+				ll = -t[r];
+		}
+		else if (t[r] < -tLimit)
+		{ 
+			if (Y[r] == 0)
+				ll = 0;
+			else
+				ll = t[r];
+		}
+		else
+		{
+			eT = exp(t[r]);
+			p = eT / (eT + 1);
+			ll = log(Y[r] == 1 ? p : 1 - p);
+		}
+		lnL += ll;
 	}
 	return lnL;
 }
@@ -237,6 +328,17 @@ double lrModel::getLnL()
 void lrModel::freeAll()
 {
 	int r;
+	isNormalised=gotMeans = 0;
+	if(mean)
+	{
+		free(mean);
+		mean = 0;
+	}
+	if(SD)
+	{
+		free(SD);
+		SD = 0;
+	}
 	if (name)
 	{
 		free(name);
@@ -316,6 +418,8 @@ int lrModel::init(int r, int c)
 	name = (char **)calloc(c + 1, sizeof(char*));
 	beta = (double *)calloc(c + 1, sizeof(double));
 	SE = (double *)calloc(c + 1, sizeof(double));
+	mean = (double *)calloc(c + 1,sizeof(double));
+	SD = (double *)calloc(c + 1,sizeof(double));
 	toFit = (int *)calloc(c + 1, sizeof(int));
 	toUse = (int *)calloc(c + 1, sizeof(int));
 	t = (double *)calloc(r, sizeof(double));
