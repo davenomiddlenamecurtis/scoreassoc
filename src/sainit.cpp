@@ -682,8 +682,7 @@ int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char 
 		strncpy(names[l],comments[l],NAME_LENGTH-1);
 		names[l][NAME_LENGTH-1]='\0';
 	}
-	for(f=0;f<spi->numVarFiles;++f)
-		if(!readVarFiles(sub,*nsubptr,spi))
+	if (spi->numVarFiles && !readVarFiles(sub,*nsubptr,spi))
 			exit(1);
 	return 1;
 }

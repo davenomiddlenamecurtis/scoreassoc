@@ -22,7 +22,7 @@ float runTestFile(FILE *fo, char *fn, lrModel *m, par_info *pi, sa_par_info *spi
 		return 0;
 	}
 	for (b = 0; b < m->nCol; ++b)
-		toUse[b] = 0;
+		toUse[b] = toFit0[b] = toFit1[b] = 0;
 	toUse[b] = toFit0[b] = toFit1[b] = 1;
 	startBetas[b] = 0;
 	scoreVar = -1;
@@ -104,12 +104,12 @@ void printModel(FILE *fo, char *LLstr,double LL,lrModel *m)
 	// change this to be row-wise and use names
 	int b,bb;
 	fprintf(fo, "\n%s = %.2f\n", LLstr, LL);
-	fprintf(fo, "%-" LOCUS_NAME_LENGTH_STR "s %-8s %-8s\n", "beta", "value", "SE");
+	fprintf(fo, "%-" LOCUS_NAME_LENGTH_STR "s %-10s %-10s %-10s\n", "beta", "value", "SE","z");
 	for (b = 0; b < m->nCol+1; ++b)
 	{
 		bb = (b + m->nCol) % (m->nCol + 1); // print last first
 		if (m->toUse[bb])
-			fprintf(fo, "%-" LOCUS_NAME_LENGTH_STR "s %8.5f %8.5f\n", m->name[bb], m->beta[bb], m->SE[bb]);
+			fprintf(fo, "%-" LOCUS_NAME_LENGTH_STR "s %10.5f %10.5f %10.5f\n", m->name[bb], m->beta[bb], m->SE[bb], m->toFit[bb]?m->beta[bb] /m->SE[bb]:0.0);
 	}
 }
 

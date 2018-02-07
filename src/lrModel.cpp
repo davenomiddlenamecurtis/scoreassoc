@@ -104,7 +104,7 @@ void lrModel::normalise()
 			if (SD[c])
 				X[r][c] /= SD[c];
 		}
-		if (SD[c])
+		if (SD[c] && toUse[c])
 		{
 			incBeta0 += beta[c] * SD[c]; 
 			incSEBeta0 += SE[c] * SD[c];
@@ -134,7 +134,7 @@ void lrModel::deNormalise()
 				X[r][c] *= SD[c];
 			X[r][c] += mean[c];
 		}
-		if(SD[c])
+		if(SD[c] && toUse[c])
 		{
 			incBeta0 -= beta[c] *mean[c]/ SD[c];
 			incSEBeta0-=SE[c] *mean[c]/ SD[c];
