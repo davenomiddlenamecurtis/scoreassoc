@@ -15,19 +15,19 @@ xmlns="http://www.w3.org/TR/REC-html40">
  <o:DocumentProperties>
   <o:Author>David Curtis</o:Author>
   <o:Template>B436C3BA.dotm</o:Template>
-  <o:LastAuthor>Dave Curtis</o:LastAuthor>
-  <o:Revision>7</o:Revision>
-  <o:TotalTime>3273</o:TotalTime>
+  <o:LastAuthor>Curtis, David</o:LastAuthor>
+  <o:Revision>8</o:Revision>
+  <o:TotalTime>3282</o:TotalTime>
   <o:LastPrinted>2016-06-20T14:51:00Z</o:LastPrinted>
   <o:Created>2016-05-26T16:44:00Z</o:Created>
-  <o:LastSaved>2017-03-24T15:58:00Z</o:LastSaved>
-  <o:Pages>39</o:Pages>
-  <o:Words>7248</o:Words>
-  <o:Characters>41320</o:Characters>
+  <o:LastSaved>2018-02-16T09:39:00Z</o:LastSaved>
+  <o:Pages>40</o:Pages>
+  <o:Words>7302</o:Words>
+  <o:Characters>41625</o:Characters>
   <o:Company>UCL</o:Company>
-  <o:Lines>344</o:Lines>
-  <o:Paragraphs>96</o:Paragraphs>
-  <o:CharactersWithSpaces>48472</o:CharactersWithSpaces>
+  <o:Lines>346</o:Lines>
+  <o:Paragraphs>97</o:Paragraphs>
+  <o:CharactersWithSpaces>48830</o:CharactersWithSpaces>
   <o:Version>16.00</o:Version>
  </o:DocumentProperties>
  <o:OfficeDocumentSettings>
@@ -80,7 +80,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 </xml><![endif]--><!--[if gte mso 9]><xml>
  <w:LatentStyles DefLockedState="false" DefUnhideWhenUsed="false"
   DefSemiHidden="false" DefQFormat="false" DefPriority="99"
-  LatentStyleCount="374">
+  LatentStyleCount="375">
   <w:LsdException Locked="false" Priority="0" QFormat="true" Name="Normal"/>
   <w:LsdException Locked="false" Priority="9" QFormat="true" Name="heading 1"/>
   <w:LsdException Locked="false" Priority="9" SemiHidden="true"
@@ -286,8 +286,6 @@ xmlns="http://www.w3.org/TR/REC-html40">
   <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
    Name="HTML Variable"/>
   <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
-   Name="Normal Table"/>
-  <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
    Name="annotation subject"/>
   <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
    Name="No List"/>
@@ -380,12 +378,8 @@ xmlns="http://www.w3.org/TR/REC-html40">
   <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
    Name="Table Web 2"/>
   <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
-   Name="Table Web 3"/>
-  <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
    Name="Balloon Text"/>
   <w:LsdException Locked="false" Priority="59" Name="Table Grid"/>
-  <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
-   Name="Table Theme"/>
   <w:LsdException Locked="false" SemiHidden="true" Name="Placeholder Text"/>
   <w:LsdException Locked="false" Priority="1" QFormat="true" Name="No Spacing"/>
   <w:LsdException Locked="false" Priority="60" Name="Light Shading"/>
@@ -651,6 +645,8 @@ xmlns="http://www.w3.org/TR/REC-html40">
    Name="Smart Hyperlink"/>
   <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
    Name="Hashtag"/>
+  <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
+   Name="Unresolved Mention"/>
  </w:LatentStyles>
 </xml><![endif]-->
 <style>
@@ -1199,8 +1195,8 @@ exceeding the weight threshold.</p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'>Most
 of the arguments to the program are given in pairs. The first member of the
-pair, beginning --, specifies a parameter and the second member provides the
-value for that parameter. One pair of arguments provides a datafile and other
+pair, beginning --, specifies a parameter and the second member provides the value
+for that parameter. One pair of arguments provides a datafile and other
 optional arguments specify other aspects of the analysis. For <span
 style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>PLINK/SEQ
 datafiles the parameter is <i style='mso-bidi-font-style:normal'>--<span
@@ -1267,9 +1263,9 @@ variants in LD for recessive analysis, default 0.9)</p>
 <p class=MsoQuote>--<span class=SpellE>minweight</span> x (to include in
 recessive analysis)</p>
 
-<p class=MsoQuote>--<span class=SpellE>dorecessive</span> </p>
+<p class=MsoQuote>--<span class=SpellE>dorecessive</span> x</p>
 
-<p class=MsoQuote>--<span class=SpellE>usehaps</span> </p>
+<p class=MsoQuote>--<span class=SpellE>usehaps</span> x</p>
 
 <p class=MsoQuote>--<span class=SpellE>numloci</span> x (needed with --<span
 class=SpellE>gcdatafile</span>)</p>
@@ -1288,7 +1284,8 @@ usage: </p>
 DRD2.dat --<span class=SpellE>annotfile</span> DRD2.annot --<span class=SpellE>weightfile</span>
 funcWeights.txt --<span class=SpellE>filterfile</span> DRD2exclusions.txt --<span
 class=SpellE>outfile</span> DRD2.psao --<span class=SpellE>minweight</span> 80
---<span class=SpellE>ldthreshold</span> 0.7 --<span class=SpellE>dorecessive</span></p>
+--<span class=SpellE>ldthreshold</span> 0.7 --<span class=SpellE>dorecessive</span>
+1</p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
@@ -1344,8 +1341,8 @@ command <i style='mso-bidi-font-style:normal'>v-view</i>, e.g.:</p>
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
 <p class=MsoQuote><span class=SpellE>pseq</span> SSS v-view --<span
-class=SpellE>geno</span><span style='mso-spacerun:yes'>&nbsp;
-</span>--phenotype <span class=SpellE>scz</span> --gene DRD2 &gt; DRD2.dat</p>
+class=SpellE>geno</span><span style='mso-spacerun:yes'>&nbsp; </span>--phenotype
+<span class=SpellE>scz</span> --gene DRD2 &gt; DRD2.dat</p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
@@ -1525,19 +1522,18 @@ class=SpellE>weightfile</span> file</h3>
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'>This
-reads the weights for the function of each variant from the specified file.
-There must be a value for each possible function produced by the <i
-style='mso-bidi-font-style:normal'>--annotate</i> option of <span class=SpellE><i
-style='mso-bidi-font-style:normal'>pseq</i></span>. The file <i
-style='mso-bidi-font-style:normal'>funcWeights.txt</i> has the following
-values:</p>
+reads the weights for the function of each variant from the specified file. There
+must be a value for each possible function produced by the <i style='mso-bidi-font-style:
+normal'>--annotate</i> option of <span class=SpellE><i style='mso-bidi-font-style:
+normal'>pseq</i></span>. The file <i style='mso-bidi-font-style:normal'>funcWeights.txt</i>
+has the following values:</p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
 <p class=MsoQuote>intergenic<span style='mso-tab-count:1'> </span>1</p>
 
-<p class=MsoQuote><span class=SpellE><span class=QuoteChar>intronic</span></span><span
-style='mso-tab-count:1'>&nbsp;&nbsp; </span>3</p>
+<p class=MsoQuote><span class=QuoteChar>intronic</span><span style='mso-tab-count:
+1'>&nbsp;&nbsp; </span>3</p>
 
 <p class=MsoQuote>silent<span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp; </span>3</p>
 
@@ -1648,13 +1644,16 @@ must be an entry for every locus in the datafile.</p>
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
 <h3 style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'>--<span
-class=SpellE>dorecessive</span></h3>
+class=SpellE>dorecessive</span> x</h3>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'>This
 option specifies that an analysis for recessive effects should be performed to
-see if there is an excess of cases having two or more rare variants. </p>
+see if there is an excess of cases having two or more rare variants. Specify x as
+1 to do the recessive analysis, 0 to omit (the default). See the paper above on
+the evaluation of approaches to detect recessive effects - the general
+conclusion was that they didn't work very well.</p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
@@ -1686,7 +1685,7 @@ acid sequence one can use a value of 80.</p>
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
 <h3 style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'>--<span
-class=SpellE>usehaps</span></h3>
+class=SpellE>usehaps</span> x</h3>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
@@ -1697,7 +1696,8 @@ and the second allele in the second haplotype. The program will then look for
 an excess of cases in which both haplotypes have at least one variant with
 weight exceeding <span class=SpellE><i style='mso-bidi-font-style:normal'>minweight</i></span>.
 If trios are used then this option can be used to specify that the transmitted
-alleles will be treated as phased haplotypes.</p>
+alleles will be treated as phased haplotypes. Specify x as 1 to do use
+haplotypes, 0 not to (the default).</p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
@@ -1773,8 +1773,8 @@ line, which are evaluated for each variant and which eliminate the variant from
 all analyses if true. One can build up complex logical and arithmetic
 expressions and precedence rules mean that in the examples below the
 parentheses are optional. The symbols &amp;, | and = mean AND, OR and IS EQUAL
-TO. For example, to keep only variants with MAF&lt;=0.1 in cases or controls,
-one can have the following line:</p>
+TO. For example, to keep only variants with MAF&lt;=0.1 in cases or controls, one
+can have the following line:</p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
@@ -1790,8 +1790,8 @@ cases.</p>
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'>The
-following filter will remove variants which are not typed in more than 100 out
-of 2545 cases or controls:</p>
+following filter will remove variants which are not typed in more than 100 out of
+2545 cases or controls:</p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
@@ -1825,7 +1825,8 @@ style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fa
 effect weight for this variant. Note this is different from the overall weight
 which can be used as a threshold to include variants in the recessive analyses.
 This effect value depends only on function and the exclusion is applied to the
-weighted burden test as well as to the recessive analyses. For example, to
+weighted burden test as well as to the recessive analyses. For example, using
+the default weights produced by <span class=SpellE>geneVarAssoc</span> to
 include only missense, splice site and more severe variants one would use:<o:p></o:p></span></p>
 
 <p class=MsoQuote>weight(0) &lt; 10</p>
@@ -1859,11 +1860,10 @@ style='mso-bidi-font-weight:normal'> x<o:p></o:p></b></p>
 
 <p style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
 style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>The
-number of B alleles (0, 1 or 2) possessed by subject x. Subjects are numbered from
-1 in the order they are listed for the first variant in the datafile. To
-restrict attention to variants not seen in controls and shared between three
-subjects from the same family (here 143, 572, 93) one could use these two
-lines:<o:p></o:p></span></p>
+number of B alleles (0, 1 or 2) possessed by subject x. Subjects are numbered
+from 1 in the order they are listed for the first variant in the datafile. To restrict
+attention to variants not seen in controls and shared between three subjects
+from the same family (here 143, 572, 93) one could use these two lines:<o:p></o:p></span></p>
 
 <p class=MsoQuote>(0 <span class=SpellE>genocount</span> 1) &gt; 0 | (0 <span
 class=SpellE>genocount</span> 2) &gt; 0</p>
@@ -1881,13 +1881,13 @@ class=SpellE>triofile</span> file</h3>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'>This
 option means that the subjects consist of trios of affected subjects and their
-parents. The trio files consists of a list of IDs, three per line and separated
-by spaces, for <span class=SpellE>proband</span>, father, mother. If a subject
-does not appear in the file or has ID of 0 for the parents then this subject
-will be ignored. The CASE/CONTROL status in the main data file will be ignored.
-Instead, a dummy control subject is made with genotype consisting of the <span
-class=SpellE>untransmitted</span> alleles of both parents. If any of the three
-subjects has an unknown genotype the whole trio is ignored.</p>
+parents. The trio file consists of a list of IDs, three per line and separated
+by spaces, for proband, father, mother. If a subject does not appear in the file
+or has ID of 0 for the parents then this subject will be ignored. The
+CASE/CONTROL status in the main data file will be ignored. Instead, a dummy
+control subject is made with genotype consisting of the <span class=SpellE>untransmitted</span>
+alleles of both parents. If any of the three subjects has an unknown genotype
+the whole trio is ignored with respect to that variant.</p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
@@ -1975,8 +1975,8 @@ style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>3 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000589<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>2544 :<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1 :<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1 : <span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000196<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000393<span
 style='mso-spacerun:yes'>&nbsp; </span>2<span
@@ -1996,8 +1996,7 @@ style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000196<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000393<span
 style='mso-spacerun:yes'>&nbsp; </span>2<span
-style='mso-spacerun:yes'>&nbsp;&nbsp; </span><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;</span>49.93<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>49.93<span
 style='mso-spacerun:yes'>&nbsp; </span>chr11:113281521_silent_G/A<o:p></o:p></span></p>
 
 <p style='margin:0cm;margin-bottom:.0001pt;mso-add-space:auto;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
@@ -2025,8 +2024,7 @@ style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000982<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>2543 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>2 :<span
-style='mso-spacerun:yes'>&nbsp;&nbsp; </span><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;</span>0<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000393<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000688<span
 style='mso-spacerun:yes'>&nbsp; </span>2<span
@@ -2148,8 +2146,8 @@ style='mso-spacerun:yes'>&nbsp; </span>chr11:113283437_missense_T/C<o:p></o:p></
 <p style='margin:0cm;margin-bottom:.0001pt;mso-add-space:auto;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
 style='font-size:14.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";
 mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>chr11:113283450_sil<span
-style='mso-spacerun:yes'>&nbsp;&nbsp; </span>2541 :<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>4 :<span
+style='mso-spacerun:yes'>&nbsp;&nbsp; </span>2541 : <span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>4 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000786<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>2541 :<span
@@ -2196,8 +2194,8 @@ style='mso-spacerun:yes'>&nbsp; </span>chr11:113283476_missense_C/T<o:p></o:p></
 <p style='margin:0cm;margin-bottom:.0001pt;mso-add-space:auto;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
 style='font-size:14.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";
 mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>chr11:113283477_sil<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>238 : <span
-style='mso-spacerun:yes'>&nbsp;&nbsp;</span>1106 :<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>238 :<span
+style='mso-spacerun:yes'>&nbsp;&nbsp; </span>1106 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp; </span>1201<span
 style='mso-spacerun:yes'>&nbsp; </span>0.689195<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp; </span>220 :<span
@@ -2234,9 +2232,9 @@ style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000196<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>2538 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>7 :<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
-style='mso-spacerun:yes'>&nbsp; </span>0.001375<span
-style='mso-spacerun:yes'>&nbsp; </span>0.000786<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+style='mso-spacerun:yes'>&nbsp;</span>0<span style='mso-spacerun:yes'>&nbsp;
+</span>0.001375<span style='mso-spacerun:yes'>&nbsp; </span>0.000786<span
 style='mso-spacerun:yes'>&nbsp; </span>2<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>99.72<span
 style='mso-spacerun:yes'>&nbsp; </span>chr11:113283488_missense_G/A<o:p></o:p></span></p>
@@ -2254,8 +2252,7 @@ style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000987<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000593<span
 style='mso-spacerun:yes'>&nbsp; </span>2<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-spacerun:yes'>&nbsp;</span>29.94<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>29.94<span
 style='mso-spacerun:yes'>&nbsp; </span>chr11:113283638_intronic_C/T<o:p></o:p></span></p>
 
 <p style='margin:0cm;margin-bottom:.0001pt;mso-add-space:auto;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
@@ -2282,8 +2279,8 @@ style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000199<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>2507 :<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>2 : <span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>0<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>2 :<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000399<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000299<span
 style='mso-spacerun:yes'>&nbsp; </span>2<span
@@ -2311,8 +2308,7 @@ style='font-size:14.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";
 mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>chr11:113285066_int<span
 style='mso-spacerun:yes'>&nbsp;&nbsp; </span>2537 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>8 :<span
-style='mso-spacerun:yes'>&nbsp;&nbsp; </span><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;</span>0<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.001572<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>2539 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>6 :<span
@@ -2376,7 +2372,8 @@ style='font-size:14.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";
 mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>chr11:113286189_mis<span
 style='mso-spacerun:yes'>&nbsp;&nbsp; </span>2544 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1 :<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;</span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000196<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>2545 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0 :<span
@@ -2423,8 +2420,8 @@ style='mso-spacerun:yes'>&nbsp; </span>chr11:113286268_missense_C/T<o:p></o:p></
 style='font-size:14.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";
 mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>chr11:113286346_int<span
 style='mso-spacerun:yes'>&nbsp;&nbsp; </span>2543 :<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1 : <span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>0<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1 :<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000197<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>2544 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1 :<span
@@ -2480,8 +2477,8 @@ style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000393<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000295<span
 style='mso-spacerun:yes'>&nbsp; </span>2<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>99.89 <span
-style='mso-spacerun:yes'>&nbsp;</span>chr11:113287657_missense_C/T<o:p></o:p></span></p>
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>99.89<span
+style='mso-spacerun:yes'>&nbsp; </span>chr11:113287657_missense_C/T<o:p></o:p></span></p>
 
 <p style='margin:0cm;margin-bottom:.0001pt;mso-add-space:auto;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
 style='font-size:14.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";
@@ -2508,8 +2505,8 @@ style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.001179<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>2539 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>6 :<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0 <span
-style='mso-spacerun:yes'>&nbsp;</span>0.001179<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
+style='mso-spacerun:yes'>&nbsp; </span>0.001179<span
 style='mso-spacerun:yes'>&nbsp; </span>0.001179<span
 style='mso-spacerun:yes'>&nbsp; </span>2<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>49.79<span
@@ -2517,8 +2514,8 @@ style='mso-spacerun:yes'>&nbsp; </span>chr11:113287691_silent_G/A<o:p></o:p></sp
 
 <p style='margin:0cm;margin-bottom:.0001pt;mso-add-space:auto;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
 style='font-size:14.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";
-mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>chr11:113287694_sil<span
-style='mso-spacerun:yes'>&nbsp;&nbsp; </span>2367 :<span
+mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>chr11:113287694_sil
+<span style='mso-spacerun:yes'>&nbsp;&nbsp;</span>2367 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>175 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>3<span
 style='mso-spacerun:yes'>&nbsp; </span>0.035560<span
@@ -2631,7 +2628,8 @@ style='mso-spacerun:yes'>&nbsp; </span>chr11:113295218_silent_G/A<o:p></o:p></sp
 style='font-size:14.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";
 mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>chr11:113295221_sil<span
 style='mso-spacerun:yes'>&nbsp;&nbsp; </span>2539 :<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>6 :<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;</span>6 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.001179<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>2537 :<span
@@ -2680,8 +2678,7 @@ none;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412
 style='font-size:14.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";
 mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>chr11:113295316_mis<span
 style='mso-spacerun:yes'>&nbsp;&nbsp; </span>2542 :<span
-style='mso-spacerun:yes'>&nbsp;&nbsp; </span><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;</span>1 :<span
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1 :<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
 style='mso-spacerun:yes'>&nbsp; </span>0.000197<span
 style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>2544 :<span
@@ -2742,9 +2739,8 @@ style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&
 <p style='margin:0cm;margin-bottom:.0001pt;mso-add-space:auto;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
 style='font-size:14.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";
 mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>Mean
-score<span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='mso-spacerun:yes'>&nbsp;</span>21.775<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>21.521<o:p></o:p></span></p>
+score<span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>21.775<span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>21.521<o:p></o:p></span></p>
 
 <p style='margin:0cm;margin-bottom:.0001pt;mso-add-space:auto;tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
 style='font-size:14.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";
@@ -3089,8 +3085,7 @@ style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&
 style='font-size:14.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";
 mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>Controls
 2416.00<span style='mso-spacerun:yes'>&nbsp; </span>128.00<span
-style='mso-spacerun:yes'>&nbsp; </span><span
-style='mso-spacerun:yes'>&nbsp;&nbsp;</span>1.00 <o:p></o:p></span></p>
+style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>1.00 <o:p></o:p></span></p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
 style='font-size:14.0pt;mso-bidi-font-size:10.0pt;font-family:"Courier New";
@@ -3496,8 +3491,7 @@ style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fa
 <p class=MsoQuote><span style='mso-spacerun:yes'>&nbsp; </span>1
 113281616-NON_SYNON</p>
 
-<p class=MsoQuote><span style='mso-spacerun:yes'>&nbsp; </span>2
-113283337-NON_SYNON</p>
+<p class=MsoQuote><span style='mso-spacerun:yes'>&nbsp; </span>2 113283337-NON_SYNON</p>
 
 <p class=MsoQuote><span style='mso-spacerun:yes'>&nbsp; </span>3
 113283362-NON_SYNON</p>
@@ -3523,13 +3517,13 @@ style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fa
 <p class=MsoQuote><span style='mso-spacerun:yes'>&nbsp;</span>10
 113287594-NON_SYNON</p>
 
-<p class=MsoQuote><span style='mso-spacerun:yes'>&nbsp;</span>11 113287657-NON_SYNON</p>
+<p class=MsoQuote><span style='mso-spacerun:yes'>&nbsp;</span>11
+113287657-NON_SYNON</p>
 
 <p class=MsoQuote><span style='mso-spacerun:yes'>&nbsp;</span>12
 113287668-NON_SYNON</p>
 
-<p class=MsoQuote><span style='mso-spacerun:yes'>&nbsp;</span>13
-113295145-NON_SYNON</p>
+<p class=MsoQuote><span style='mso-spacerun:yes'>&nbsp;</span>13 113295145-NON_SYNON</p>
 
 <p class=MsoQuote><span style='mso-spacerun:yes'>&nbsp;</span>14
 113295304-NON_SYNON</p>
@@ -3710,10 +3704,10 @@ style='mso-bidi-font-style:normal'><o:p></o:p></i></h1>
 style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>pathwayAssoc</span></i></span><span
 style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>
 is a program which performs the same weighted burden analysis as <span
-class=SpellE><i style='mso-bidi-font-style:normal'>scoreassoc</i></span> but
-which is designed to be applied to groups of genes. It tests whether a group of
-genes has an excess of rare, functional variants in cases compared with
-controls, using the same approach as described in this paper:<o:p></o:p></span></p>
+class=SpellE><i style='mso-bidi-font-style:normal'>scoreassoc</i></span> but which
+is designed to be applied to groups of genes. It tests whether a group of genes
+has an excess of rare, functional variants in cases compared with controls,
+using the same approach as described in this paper:<o:p></o:p></span></p>
 
 <p><span style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:
 minor-fareast'><a
@@ -3771,10 +3765,10 @@ style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fa
 you run <span class=SpellE><i style='mso-bidi-font-style:normal'>pathwayAssoc</i></span>
 you must run <span class=SpellE><i style='mso-bidi-font-style:normal'>scoreassoc</i></span>
 on all genes, making sure you use the <i style='mso-bidi-font-style:normal'>--<span
-class=SpellE>scorefile</span></i> option so that scores are output for all
-subjects. If a gene has no usable variants then a score file will not be output
-and <span class=SpellE><i style='mso-bidi-font-style:normal'>pathwayAssoc</i></span>
-will report that it was missing. If something goes wrong with the system then <span
+class=SpellE>scorefile</span></i> option so that scores are output for all subjects.
+If a gene has no usable variants then a score file will not be output and <span
+class=SpellE><i style='mso-bidi-font-style:normal'>pathwayAssoc</i></span> will
+report that it was missing. If something goes wrong with the system then <span
 class=SpellE><i style='mso-bidi-font-style:normal'>scoreassoc</i></span> may
 write an incomplete file. The sizes for all the score files should be
 identical, so you can check if there are any small files. Under Unix you can do
@@ -3835,11 +3829,11 @@ mso-fareast-theme-font:minor-fareast'><o:p>&nbsp;</o:p></span></p>
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'>All
-of the arguments to the program are given in pairs. The first member of the pair,
-beginning --, specifies a parameter and the second member provides the value
-for that parameter. The pairs of arguments can be conveniently contained in an
-argument file,<span style='mso-spacerun:yes'>&nbsp; </span>which itself can be
-specified as the --<span class=SpellE>arg</span>-file parameter. </p>
+of the arguments to the program are given in pairs. The first member of the
+pair, beginning --, specifies a parameter and the second member provides the
+value for that parameter. The pairs of arguments can be conveniently contained
+in an argument file,<span style='mso-spacerun:yes'>&nbsp; </span>which itself
+can be specified as the --<span class=SpellE>arg</span>-file parameter. </p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
@@ -4398,10 +4392,10 @@ style='mso-bidi-font-style:normal'><o:p></o:p></i></h2>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'>All
 of the arguments to the program are given in pairs. The first member of the
-pair, beginning --, specifies a parameter and the second member provides the value
-for that parameter. The pairs of arguments can be conveniently contained in an
-argument file,<span style='mso-spacerun:yes'>&nbsp; </span>which itself can be
-specified as the --<span class=SpellE>arg</span>-file parameter. </p>
+pair, beginning --, specifies a parameter and the second member provides the
+value for that parameter. The pairs of arguments can be conveniently contained
+in an argument file,<span style='mso-spacerun:yes'>&nbsp; </span>which itself
+can be specified as the --<span class=SpellE>arg</span>-file parameter. </p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
@@ -4698,10 +4692,10 @@ normal'>nPerms</i></span> permutations. <o:p></o:p></span></p>
 mso-fareast-theme-font:minor-fareast'><o:p>&nbsp;</o:p></span></p>
 
 <p class=MsoNormal><span style='mso-fareast-font-family:"Times New Roman";
-mso-fareast-theme-font:minor-fareast'>The SLP file shows the SLP for each
-pathway produced by the real dataset followed by the maximum of these SLPs and
-then the number of SLPs which exceeded 1, 2, 3, 4 or 5. Then follow lines
-giving these values for each permuted dataset. <o:p></o:p></span></p>
+mso-fareast-theme-font:minor-fareast'>The SLP file shows the SLP for each pathway
+produced by the real dataset followed by the maximum of these SLPs and then the
+number of SLPs which exceeded 1, 2, 3, 4 or 5. Then follow lines giving these
+values for each permuted dataset. <o:p></o:p></span></p>
 
 <p class=MsoNormal><span style='mso-fareast-font-family:"Times New Roman";
 mso-fareast-theme-font:minor-fareast'><o:p>&nbsp;</o:p></span></p>
