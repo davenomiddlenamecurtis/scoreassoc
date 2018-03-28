@@ -9,7 +9,7 @@
 #include "safilterfuncs.hpp"
 
 #define PROGRAM "scoreassoc"
-#define SAVERSION "4.1"
+#define SAVERSION "5.0"
 
 int main(int argc, char *argv[])
 {
