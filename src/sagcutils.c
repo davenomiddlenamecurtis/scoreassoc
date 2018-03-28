@@ -15,7 +15,7 @@
 #define NUL "NUL"
 #else 
 #define NUL "/dev/null"
-#define _CRTIMP
+// #define _CRTIMP
 #endif
 
 int ISTEMP;

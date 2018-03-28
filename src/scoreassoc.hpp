@@ -94,6 +94,10 @@ void printModel(FILE *fo, char *LLstr, double LL, lrModel *m);
 extern double cumulBinom(int N,int k,double p);
 float evaluateModel(FILE *fo, lrModel *m, int *toUse, float *startBetas, int *toFit, char *name);
 float runTestFile(FILE *fo, char *fn, lrModel *m, par_info *pi, sa_par_info *spi);
+char *skip_word(char *ptr);
+int read_ps_datafile(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr, char names[MAX_LOCI][LOCUS_NAME_LENGTH], char comments[MAX_LOCI][MAX_COMMENT_LENGTH], float func_weight[MAX_LOCI],
+	std::map<std::string, float> weightMap, std::map<std::string, std::string> effectMap);
+int readVarFiles(subject **sub, int nSub, sa_par_info *spi);
 
 extern float weight[MAX_LOCI],missing_score[MAX_LOCI],func_weight[MAX_LOCI],cc_freq[2][MAX_LOCI],cc_count[2][MAX_LOCI],cc_genocount[2][3][MAX_LOCI];
 extern int rarer[MAX_LOCI],max_cc[2];
