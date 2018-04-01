@@ -35,6 +35,7 @@ option opt[]=
 	{ "dolrtest",DOLRTEST },
 	{ "usehaps", USEHAPS },
 	{ "weightfactor", WEIGHTFACTOR },
+	{"lamda",LAMDA},
 	{"varfile",VARFILE},
 	{"testfile",TESTFILE},
 	{"argfile",ARGFILE},
@@ -60,6 +61,7 @@ void usage()
 "--triofile file\n"
 "--ldthreshold x (to discard variants in LD for recessive analysis, default 0.9)\n"
 "--minweight x (to include in recessive analysis, default 0, i.e. all variants)\n"
+"--lamda x\n"
 "--dorecessive x\n"
 "--dottest x\n"
 "--dolrtest x\n"
@@ -115,6 +117,7 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 	spi->do_ttest = 1;
 	spi->do_lrtest = 0;
 	spi->numVars=spi->numVarFiles=spi->numTestFiles=0;
+	spi->lamda=DEFAULT_LAMDA;
 	while (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num))
 	{
 		if (strncmp(arg, "--", 2))
@@ -158,7 +161,11 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 				error=1;
 			break;
 		case WEIGHTFACTOR:
-			if (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num) == 0 || sscanf(arg, "%f", &spi->wfactor) != 1)
+			if(getNextArg(arg,argc,argv,fp,&arg_depth,&arg_num) == 0 || sscanf(arg,"%f",&spi->wfactor) != 1)
+				error=1;
+			break;
+		case LAMDA:
+			if(getNextArg(arg,argc,argv,fp,&arg_depth,&arg_num) == 0 || sscanf(arg,"%f",&spi->lamda) != 1)
 				error=1;
 			break;
 		case LDTHRESHOLD:

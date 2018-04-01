@@ -152,8 +152,7 @@ double getRegularisedMinusModelLnL()
 	// penalise betas, see here: http://openclassroom.stanford.edu/MainFolder/DocumentPage.php?course=MachineLearning&doc=exercises/ex5/ex5.html
 	// main purpose is to stop beta hitting very large values and failing to fit properly, not to prevent over-fitting
 	int c, cc;
-	double lnL,halfLamda,penalty;
-	halfLamda = modelToFit->nRow*0.0;
+	double lnL,penalty;
 	if (!modelToFit->gotMeans)
 		modelToFit->getMeans();
 	for (c = cc = 0; c<modelToFit->nCol + 1; ++c)
@@ -163,10 +162,14 @@ double getRegularisedMinusModelLnL()
 			++cc;
 		}
 	lnL = modelToFit->getLnL();
-	for (c = 0, penalty = 0; c<modelToFit->nCol; ++c) // do not include intercept
-		if (modelToFit->toFit[c])
-			penalty += halfLamda * modelToFit->beta[c] * modelToFit->beta[c] * (modelToFit->isNormalised?1: modelToFit->mean[c] * modelToFit->mean[c]);
-	// parameters with large values (like weights) should not have large betas
+	penalty = 0;
+	if(modelToFit->lamda!=0)
+	{
+		for(c = 0; c<modelToFit->nCol; ++c) // do not include intercept
+			if(modelToFit->toFit[c])
+				penalty += modelToFit->lamda * modelToFit->beta[c] * modelToFit->beta[c] * (modelToFit->isNormalised?1: modelToFit->mean[c] * modelToFit->mean[c]);
+		// parameters with large values (like weights) should not have large betas
+	}
 	return -lnL+penalty;
 }
 
