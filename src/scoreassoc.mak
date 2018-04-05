@@ -22,7 +22,6 @@ HEADERS = cdflib.h  dcerror.hpp  dcexpr.hpp  fisher.h  sagcutils.h  safilterfunc
 
 EXES = scoreassoc pathwayAssoc permPathwayAssoc makeScoreTable # fitScores combineGeneScores getVarScores combineCohorts 
 DLIB = /home/rejudcu/dlib-19.4
-# needed only for fitScores
 
 ifdef INOBJ
 all: ${EXES}
