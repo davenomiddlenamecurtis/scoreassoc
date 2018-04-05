@@ -2,7 +2,7 @@
 #define LRMODELHPP
 class lrModel {
 public:
-	float **X, *Y;
+	double **X, *Y;
 	double *sigmaT,*t,*beta,*SE,*mean,*SD;
 	int *toFit,*toUse;
 	int nRow, nCol,gotMeans,isNormalised;

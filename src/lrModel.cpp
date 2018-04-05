@@ -397,7 +397,7 @@ int lrModel::init(int r, int c)
 {
 	int rr,rrr;
 	freeAll();
-	X = (float **)calloc(r, sizeof(float*));
+	X = (double **)calloc(r, sizeof(double*));
 	if (X == 0)
 	{
 		dcerror(1, "Memory allocation error in lrModel::init(), r=%d c=%d", r, c);
@@ -405,7 +405,7 @@ int lrModel::init(int r, int c)
 	}
 	for (rr = 0; rr < r; ++rr)
 	{
-		X[rr] = (float *)calloc(c, sizeof(float));
+		X[rr] = (double *)calloc(c, sizeof(double));
 		if (X[rr] == 0)
 		{
 			for (rrr = 0; rrr < rr; ++rrr)
@@ -427,7 +427,7 @@ int lrModel::init(int r, int c)
 	toUse = (int *)calloc(c + 1, sizeof(int));
 	t = (double *)calloc(r, sizeof(double));
 	sigmaT = (double *)calloc(r, sizeof(double));
-	Y = (float *)calloc(r, sizeof(float));
+	Y = (double *)calloc(r, sizeof(double));
 	if (name==0 || beta == 0 || SE == 0 || toFit == 0 || toUse == 0 || t == 0 || sigmaT == 0 || Y == 0)
 	{
 		freeAll();
