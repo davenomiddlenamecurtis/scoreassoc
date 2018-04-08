@@ -51,7 +51,7 @@ float runTestFile(FILE *fo, char *fn, lrModel *m, par_info *pi, sa_par_info *spi
 	p = chistat(chisq, df);
 	if (fo)
 		fprintf(fo,
-			"chisq = %.2f, %d df, p = %10.8f\n", chisq,df, p);
+			"chisq = %.2f, %.0f df, p = %10.8f\n", chisq,df, p);
 	if (scoreVar != -1 && df == 1 && toFit0[scoreVar] == 0 && toFit1[scoreVar] == 1)
 	{
 		SLP = -log10(p);
