@@ -51,7 +51,7 @@ float runTestFile(FILE *fo, char *fn, lrModel *m, par_info *pi, sa_par_info *spi
 	p = chistat(chisq, df);
 	if (fo)
 		fprintf(fo,
-			"chisq = %.2f, 1 df, p = %10.8f\n", chisq, p);
+			"chisq = %.2f, %d df, p = %10.8f\n", chisq,df, p);
 	if (scoreVar != -1 && df == 1 && toFit0[scoreVar] == 0 && toFit1[scoreVar] == 1)
 	{
 		SLP = -log10(p);
@@ -59,6 +59,10 @@ float runTestFile(FILE *fo, char *fn, lrModel *m, par_info *pi, sa_par_info *spi
 			SLP *= -1;
 		if (fo)
 			fprintf(fo, "tSLP = %8.2f (signed log10(p), positive if cases have more variants than controls)\n", SLP);
+	}
+	else
+	{
+		fprintf(fo,"tMLP = %8.2f (minus log10(p))\n",-log10(p));
 	}
 	return p;
 
