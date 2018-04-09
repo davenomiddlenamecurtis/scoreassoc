@@ -73,7 +73,6 @@ void fillModelWithVars(lrModel *m, subject **sub, int nsub, par_info *pi, sa_par
 {
 	int s, b;
 	m->init(nsub, spi->numVars);
-	m->lamda=spi->lamda;
 	for (s = 0; s < nsub; ++s)
 	{
 		for (b = 0; b<spi->numVars; ++b)

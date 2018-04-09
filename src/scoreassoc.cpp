@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 	par_info pi;
 	sa_par_info spi;
 	subject **sub,**new_sub,**real_sub;
-	lrModel model;
+	lrRidgePenaltyModel model;
 	pi.use_cc=1;
 	printf("%s v%s\n",PROGRAM,SAVERSION);
 	printf("MAX_LOCI=%d\nMAX_SUB=%d\n",MAX_LOCI,MAX_SUB);
@@ -83,6 +83,7 @@ varMap["score"] = allVars+spi.numVars;
 if (spi.do_ttest)
 	SLP=do_score_onetailed_ttest(spi.df[OUTFILE].fp,score,sub,nsub,&pi,&spi,cc_freq,cc_count,max_cc,weight,missing_score,rarer);
 
+model.lamda = spi.lamda;
 if(spi.do_lrtest)
 {
 	if (!filledModel)

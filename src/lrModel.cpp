@@ -147,14 +147,26 @@ void lrModel::deNormalise()
 	isNormalised = 0;
 }
 
+double lrRidgePenaltyModel::penaltyFunction()
+{
+	double penalty;
+	int c;
+	penalty = 0;
+	for (c = 0; c<nCol; ++c) // do not include intercept
+		if (toFit[c])
+			penalty += lamda * beta[c] * beta[c] * (isNormalised ? 1 : mean[c] * mean[c]);
+	// parameters with large values (like weights) should not have large betas
+	return penalty;
+}
+
 double getRegularisedMinusModelLnL()
 {
 	// penalise betas, see here: http://openclassroom.stanford.edu/MainFolder/DocumentPage.php?course=MachineLearning&doc=exercises/ex5/ex5.html
 	// main purpose is to stop beta hitting very large values and failing to fit properly, not to prevent over-fitting
 	int c, cc;
 	double lnL,penalty;
-	if (!modelToFit->gotMeans)
-		modelToFit->getMeans();
+	if (!modelToFit->isNormalised)
+		modelToFit->normalise();
 	for (c = cc = 0; c<modelToFit->nCol + 1; ++c)
 		if (modelToFit->toFit[c])
 		{
@@ -162,14 +174,7 @@ double getRegularisedMinusModelLnL()
 			++cc;
 		}
 	lnL = modelToFit->getLnL();
-	penalty = 0;
-	if(modelToFit->lamda!=0)
-	{
-		for(c = 0; c<modelToFit->nCol; ++c) // do not include intercept
-			if(modelToFit->toFit[c])
-				penalty += modelToFit->lamda * modelToFit->beta[c] * modelToFit->beta[c] * (modelToFit->isNormalised?1: modelToFit->mean[c] * modelToFit->mean[c]);
-		// parameters with large values (like weights) should not have large betas
-	}
+	penalty = modelToFit->penaltyFunction();
 	return -lnL+penalty;
 }
 
@@ -221,11 +226,12 @@ double lrModel::maximiseLnL()
 	return -d;
 }
 
+// incorporate penalty along with LL for overall function value
 void lrModel::getSEs()
 {
 	int i,ii,j,jj;
 	double fittedLike, LPlus, LMinus, dPlus, dMinus,keptBetaI,keptBetaJ,d2;
-	fittedLike = getLnL();
+	fittedLike = getLnL() - penaltyFunction();
 	// make hessian matrix then invert it and take square roots of diagonal elements
 	matrix<double> minusHessian(nBetasToFit,nBetasToFit);
 	for(i = 0,ii=0; i < nCol + 1; ++i)
@@ -240,10 +246,10 @@ void lrModel::getSEs()
 					if(i==j)
 					{
 						beta[i] = keptBetaI - second_derivative_eps*2;
-						LMinus = getLnL();
+						LMinus = getLnL()-penaltyFunction();
 						dMinus=(fittedLike-LMinus)/ (second_derivative_eps*2);
 						beta[i] = keptBetaI + second_derivative_eps*2;
-						LPlus = getLnL();
+						LPlus = getLnL() - penaltyFunction();
 						dPlus = (LPlus - fittedLike) / (second_derivative_eps*2);
 						d2=(dMinus- dPlus)/ (second_derivative_eps*2);
 						// SE[i] = sqrt(1 / ((dMinus- dPlus)/ (second_derivative_eps*2)));
@@ -256,15 +262,15 @@ void lrModel::getSEs()
 						keptBetaJ=beta[j];
 						beta[j] = keptBetaJ - second_derivative_eps;
 						beta[i] = keptBetaI - second_derivative_eps;
-						LMinus = getLnL();
+						LMinus = getLnL() - penaltyFunction();
 						beta[i] = keptBetaI + second_derivative_eps;
-						LPlus = getLnL();
+						LPlus = getLnL() - penaltyFunction();
 						dMinus=(LPlus-LMinus)/ (second_derivative_eps*2);
 						beta[j] = keptBetaJ + second_derivative_eps;
 						beta[i] = keptBetaI - second_derivative_eps;
-						LMinus = getLnL();
+						LMinus = getLnL() - penaltyFunction();
 						beta[i] = keptBetaI + second_derivative_eps;
-						LPlus = getLnL();
+						LPlus = getLnL() - penaltyFunction();
 						dPlus=(LPlus-LMinus)/ (second_derivative_eps*2);
 						d2=(dMinus- dPlus)/ (second_derivative_eps*2);
 						beta[j]=keptBetaJ;
