@@ -13,7 +13,7 @@ typedef matrix<double, 0, 1> column_vector;
 double derivative_eps = 1e-7; // used to get gradient of lnL by beta
 double second_derivative_eps = 1e-3; // I may be wrong but I think rounding errors otherwise
 double tLimit=8;
-double stop_limit_increment = 1e-5; // 1e-7; 
+double stop_limit_increment = 1e-7; // 1e-7; 
 
 class lrModelMaximiser
 {
@@ -213,7 +213,8 @@ double lrModel::maximiseLnL()
 			starting_point(cc, 0)= beta[c];
 			++cc;
 		}
-	d = find_min_using_approximate_derivatives(cg_search_strategy(),
+//	d = find_min_using_approximate_derivatives(cg_search_strategy(),
+	d = find_min_using_approximate_derivatives(lbfgs_search_strategy(10),
 			objective_delta_stop_strategy(stop_limit_increment),
 			lrModelMaximiser(func), starting_point, -20, derivative_eps);
 		// if this fails an exception gets thrown
