@@ -11,9 +11,9 @@
 using namespace dlib;
 typedef matrix<double, 0, 1> column_vector;
 double derivative_eps = 1e-7; // used to get gradient of lnL by beta
-double second_derivative_eps = 1e-5; // I may be wrong but I think rounding errors otherwise
+double second_derivative_eps = 1e-3; // I may be wrong but I think rounding errors otherwise
 double tLimit=8;
-double stop_limit_increment = 1e-3; // 1e-7; 
+double stop_limit_increment = 1e-5; // 1e-7; 
 
 class lrModelMaximiser
 {
@@ -230,7 +230,7 @@ double lrModel::maximiseLnL()
 void lrModel::getSEs()
 {
 	int i,ii,j,jj;
-	double fittedLike, LPlus, LMinus, dPlus, dMinus,keptBetaI,keptBetaJ,d2;
+	double fittedLike, LPlus, LMinus, dPlus, dMinus,keptBetaI,keptBetaJ,d2,h;
 	fittedLike = getLnL() - penaltyFunction();
 	// make hessian matrix then invert it and take square roots of diagonal elements
 	matrix<double> minusHessian(nBetasToFit,nBetasToFit);
@@ -255,7 +255,8 @@ void lrModel::getSEs()
 						// SE[i] = sqrt(1 / ((dMinus- dPlus)/ (second_derivative_eps*2)));
 						// SE[i] = (second_derivative_eps*2)/sqrt(2 * fittedLike - LMinus - LPlus);
 						// https://math.stackexchange.com/questions/302160/correct-way-to-calculate-numeric-derivative-in-discrete-time
-
+						if (d2 < 0)
+							fprintf(stderr, "Warning, d2 for beta[%d] is negative, local minimum not found\n", i);
 					}
 					else
 					{
@@ -283,12 +284,16 @@ void lrModel::getSEs()
 			++ii;
 		}
 	}
-	matrix<double> inverseMinusHessian=inv(minusHessian);
+	// matrix<double> inverseMinusHessian=inv(minusHessian);
+	matrix<double> inverseMinusHessian = pinv(minusHessian);
 	for (i = 0,ii=0; i < nCol + 1; ++i)
 	{
 		if (toFit[i])
 		{
-			SE[i]=sqrt(inverseMinusHessian(ii,ii));
+			h = inverseMinusHessian(ii, ii);
+			if (h < 0)
+				fprintf(stderr, "Warning, element %d of inverse negative Hessian diagonal is negative, SE will be nAn\n", ii);
+			SE[i]=sqrt(h);
 			++ii;
 		}
 		else

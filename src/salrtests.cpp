@@ -97,7 +97,7 @@ float evaluateModel(FILE *fo, lrModel *m, int *toUse, float *startBetas, int *to
 	m->normalise();
  	lnL = m->maximiseLnL();
 	m->getSEs();
-	m->deNormalise();
+//	m->deNormalise(); // avoid repeated normalising and deNormalising
 	if (fo)
 		printModel(fo, name,lnL,m);
 	return lnL;
@@ -106,15 +106,43 @@ float evaluateModel(FILE *fo, lrModel *m, int *toUse, float *startBetas, int *to
 void printModel(FILE *fo, char *LLstr,double LL,lrModel *m)
 {
 	// change this to be row-wise and use names
-	int b,bb;
+	int b,bb,c;
+	double *realBeta, *realSE;
+	double incBeta0, incSEBeta0;
+	realBeta = (double*)calloc(m->nCol + 1, sizeof(double));
+	realSE = (double*)calloc(m->nCol + 1, sizeof(double));
 	fprintf(fo, "\n%s = %.2f\n", LLstr, LL);
 	fprintf(fo, "%-" LOCUS_NAME_LENGTH_STR "s %-10s %-10s %-10s\n", "beta", "value", "SE","z");
+	if (m->isNormalised)
+	{ 
+		incSEBeta0 = incBeta0 = 0;
+		for (c = 0; c < m->nCol; ++c)
+		{
+			if (m->SD[c] && m->toUse[c])
+			{
+				incBeta0 -= m->beta[c] * m->mean[c] / m->SD[c];
+				incSEBeta0 -= m->SE[c] * m->mean[c] / m->SD[c];
+				realBeta[c] = m->beta[c] / m->SD[c];
+				realSE[c] = m->SE[c] / m->SD[c];
+			}
+		}
+		realBeta[m->nCol] = m->beta[m->nCol]+incBeta0;
+		realSE[m->nCol] = m->SE[m->nCol]+incSEBeta0;
+	}
+	else 
+		for (b = 0; b < m->nCol + 1; ++b)
+		{
+			realBeta[b] = m->beta[b];
+			realSE[b] = m->SE[b];
+		}
 	for (b = 0; b < m->nCol+1; ++b)
 	{
 		bb = (b + m->nCol) % (m->nCol + 1); // print last first
 		if (m->toUse[bb])
-			fprintf(fo, "%-" LOCUS_NAME_LENGTH_STR "s %10.5f %10.5f %10.5f\n", m->name[bb], m->beta[bb], m->SE[bb], m->toFit[bb]?m->beta[bb] /m->SE[bb]:0.0);
+			fprintf(fo, "%-" LOCUS_NAME_LENGTH_STR "s %10.5f %10.5f %10.5f\n", m->name[bb], realBeta[bb], realSE[bb], m->toFit[bb]?realBeta[bb] /realSE[bb]:0.0);
 	}
+	free(realBeta);
+	free(realSE);
 }
 
 float do_onetailed_LRT(FILE *fo, lrModel *m,par_info *pi, sa_par_info *spi)
