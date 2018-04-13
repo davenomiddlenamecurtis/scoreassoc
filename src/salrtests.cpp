@@ -29,13 +29,18 @@ float runTestFile(FILE *fo, char *fn, lrModel *m, par_info *pi, sa_par_info *spi
 	df = 0;
 	while (fgets(long_line, 200, ft) && sscanf(long_line, "%s %f %d %d", varName, &sB,&t0, &t1) == 4)
 	{
-		for (b = 0; b < spi->numVars; ++b)
-			if (!strcmp(varName, allVars[b].name))
-				break;
-		if (b == spi->numVars)
+		if (!strcmp(varName, "INTERCEPT"))
+			b = m->nCol;
+		else
 		{
-			dcerror(1, "Test file %s contains unknown variable called %s\n", fn, varName);
-			return 0;
+			for (b = 0; b < spi->numVars; ++b)
+				if (!strcmp(varName, allVars[b].name))
+					break;
+			if (b == spi->numVars)
+			{
+				dcerror(1, "Test file %s contains unknown variable called %s\n", fn, varName);
+				return 0;
+			}
 		}
 		toUse[b] = 1;
 		startBetas[b] = sB;
@@ -46,6 +51,9 @@ float runTestFile(FILE *fo, char *fn, lrModel *m, par_info *pi, sa_par_info *spi
 		df += t1 - t0;
 	}
 	L0 = evaluateModel(fo, m, toUse, startBetas, toFit0, "L0");
+	if (spi->start_from_fitted)
+		for (b = 0; b < m->nCol + 1; ++b)
+			startBetas[b] = m->beta[b];
 	L1 = evaluateModel(fo, m, toUse, startBetas, toFit1, "L1");
 	chisq = 2 * (L1 - L0);
 	p = chistat(chisq, df);

@@ -33,6 +33,7 @@ option opt[]=
 	{ "dorecessive", DORECESSIVE },
 	{ "dottest",DOTTEST },
 	{ "dolrtest",DOLRTEST },
+	{ "start-from-fitted",STARTFROMFITTED },
 	{ "usehaps", USEHAPS },
 	{ "weightfactor", WEIGHTFACTOR },
 	{"lamda",LAMDA},
@@ -65,6 +66,7 @@ void usage()
 "--dorecessive x\n"
 "--dottest x\n"
 "--dolrtest x\n"
+"--start-from-fitted x\n"
 "--varfile file\n"
 "--testfile file\n"
 "--usehaps x\n"
@@ -116,6 +118,7 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 	spi->use_probs=0;
 	spi->do_ttest = 1;
 	spi->do_lrtest = 0;
+	spi->start_from_fitted = 1;
 	spi->numVars=spi->numVarFiles=spi->numTestFiles=0;
 	spi->lamda=DEFAULT_LAMDA;
 	while (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num))
@@ -185,8 +188,12 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 				error=1;
 			break;
 		case DOLRTEST:
-			if(getNextArg(arg,argc,argv,fp,&arg_depth,&arg_num) == 0 || sscanf(arg,"%d",&spi->do_lrtest)!=1)
-				error=1;
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->do_lrtest) != 1)
+				error = 1;
+			break;
+		case STARTFROMFITTED:
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->start_from_fitted) != 1)
+				error = 1;
 			break;
 		case USEHAPS:
 			if(getNextArg(arg,argc,argv,fp,&arg_depth,&arg_num) == 0 || sscanf(arg,"%d",&spi->use_haplotypes)!=1)
