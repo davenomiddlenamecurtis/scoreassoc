@@ -29,7 +29,7 @@ float runTestFile(FILE *fo, char *fn, lrModel *m, par_info *pi, sa_par_info *spi
 	df = 0;
 	while (fgets(long_line, 200, ft) && sscanf(long_line, "%s %f %d %d", varName, &sB,&t0, &t1) == 4)
 	{
-		if (!strcmp(varName, "INTERCEPT"))
+		if (!strcmp(varName, "intercept"))
 			b = m->nCol;
 		else
 		{
