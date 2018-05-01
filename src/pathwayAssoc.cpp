@@ -3,6 +3,7 @@ extern "C"
 #include "cdflib.h" 
 };
 #include "dcerror.hpp"
+#include "scoreassoc.hpp"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -12,10 +13,10 @@ extern "C"
 #include <map>
 
 #define PROGRAM "pathwayAssoc"
-#define PAVERSION "1.1"
+#define PAVERSION "1.2"
 
-#ifndef MAX_LOCI
-#define MAX_LOCI 12000
+#ifndef MAX_GENES
+#define MAX_GENES 12000
 #endif
 #ifndef MAX_SUB
 #define MAX_SUB 15000
@@ -38,24 +39,24 @@ MSVC implements long with 32 bits but unix is 64 bits so use __int64
 #define FILEOFFSET long
 #endif
 
-
-
 class paParams {
 public:
 	char scoreFilePrefix[1000],scoreFileSuffix[1000],outputFilePrefix[1000],outputFileSuffix[1000],pathwayFileName[1000],scoreTableFileName[1000];
 	std::map<std::string,FILEOFFSET> geneIndex;
 	int nSub;
-	float geneLevelOutputThreshold;
+	float geneLevelOutputThreshold,lamda;
 	int readParms(int argc,char *argv[]);
 	int getNextArg(char *nextArg,int argc,char *argv[],FILE **fpp,int *argNum);
 	FILE *summaryOutputFile,*scoreTableFile;
+	int do_ttest, do_lrtest, numVars, numVarFiles, numTestFiles, start_from_fitted;
+	sa_data_file_type varFiles[MAXLRVARIABLES], testFiles[MAXLRVARIABLES];
 };
 
 class pathwaySubject {
 public:
 	char id[MAX_ID_LENGTH+1]; 
 	int cc;
-	float totScore,score[MAX_LOCI];
+	float totScore,score[MAX_GENES];
 };
 
 #define LONGLINELENGTH 40000
@@ -87,6 +88,11 @@ int paParams::readParms(int argc, char *argv[])
 	summaryOutputFile=0;
 	geneLevelOutputThreshold=1000;
 	scoreTableFile=0;
+	do_ttest = 1;
+	do_lrtest = 0;
+	start_from_fitted = 1;
+	numVars = numVarFiles = numTestFiles = 0;
+	lamda = DEFAULT_LAMDA;
 	while (getNextArg(arg, argc, argv, &fp, &argNum))
 	{
 		if (!isArgType(arg))
@@ -152,7 +158,31 @@ int paParams::readParms(int argc, char *argv[])
 		}
 		else if (FILLARG("--gene-level-output-threshold"))
 		{
-			geneLevelOutputThreshold=atof(arg);
+			geneLevelOutputThreshold = atof(arg);
+		}
+		else if (FILLARG("--lamda"))
+		{
+			lamda = atof(arg);
+		}
+		else if (FILLARG("--dottest"))
+		{
+			do_ttest = atoi(arg);
+		}
+		else if (FILLARG("--dolrtest"))
+		{
+			do_lrtest = atoi(arg);
+		}
+		else if (FILLARG("--start-from-fitted"))
+		{
+			start_from_fitted = atoi(arg);
+		}
+		else if (FILLARG("--var-file"))
+		{
+			strcpy(varFiles[numVarFiles++].fn, arg);
+		}
+		else if (FILLARG("--test-file"))
+		{
+			strcpy(testFiles[numTestFiles++].fn, arg);
 		}
 		else
 			dcerror(1,"Did not recognise argument specifier %s\n",arg);

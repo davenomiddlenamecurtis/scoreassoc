@@ -548,7 +548,7 @@ return 1;
 int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char names[MAX_LOCI][LOCUS_NAME_LENGTH],char comments[MAX_LOCI][MAX_COMMENT_LENGTH],float func_weight[MAX_LOCI])
 {
 	char aline[1000],pos[100],effect[100],*ptr;
-	int func_pos,l,f,use;
+	int func_pos,l,f,use,s;
 	float wt;
 	std::map<std::string,float> weightMap;
 	std::map<std::string,std::string> effectMap;
@@ -637,8 +637,17 @@ int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char 
 		strncpy(names[l],comments[l],NAME_LENGTH-1);
 		names[l][NAME_LENGTH-1]='\0';
 	}
-	if (spi->numVarFiles && !readVarFiles(sub,*nsubptr,spi))
-			exit(1);
+	if (spi->numVarFiles)
+	{
+		std::map<std::string, int> subIDs;
+		if (spi->numVarFiles>0)
+		{
+			for (s = 0; s<*nsubptr; ++s)
+				subIDs[sub[s]->id] = s;
+		}
+		if (!readVarFiles(subIDs, *nsubptr, spi))
+		exit(1);
+	}
 	return 1;
 }
 
@@ -778,16 +787,10 @@ int read_ps_datafile(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr
 }
 
 #define MISSING -999
-int readVarFiles(subject **sub, int nSub, sa_par_info *spi)
+int readVarFiles(std::map<std::string, int> subIDs, int nSub, sa_par_info *spi)
 {
 	int i, s, idCol, c, colIndex[MAXLRVARIABLES], nCol;
 	char colValue[MAXLRVARIABLENAMELENGTH], *ptr, *sptr;
-	std::map<std::string, int> subIDs;
-	if (spi->numVarFiles>0)
-	{
-		for (s = 0; s<nSub; ++s)
-			subIDs[sub[s]->id] = s;
-	}
 	for (i = 0; i<spi->numVarFiles; ++i)
 	{
 		spi->varFiles[i].fp = fopen(spi->varFiles[i].fn, "r");
@@ -903,7 +906,10 @@ int readVarFiles(subject **sub, int nSub, sa_par_info *spi)
 		for (s = 0; s<nSub; ++s)
 			if (allVars[colIndex[idCol + 1]].val[s] == MISSING)
 			{
-				dcerror(1, "Missing values in variable file %s for subject %s\n", spi->varFiles[i].fn, sub[s]->id);
+				std::map<std::string, int>::iterator i1(subIDs.begin());
+				std::advance(i1,s);
+				std::string ID = i1->first;
+				dcerror(1, "Missing values in variable file %s for subject %s\n", spi->varFiles[i].fn, (char*)ID.c_str());
 				return 0;
 			}
 		fclose(spi->varFiles[i].fp);

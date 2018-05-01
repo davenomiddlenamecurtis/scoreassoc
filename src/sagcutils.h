@@ -76,7 +76,9 @@ float hap_pair_prob[MAXHAPSPERGENO];
 typedef struct geno_probs_t geno_probs;
 
 struct subject_t { 
-	char id[35]; int cc, group, skip; union { int all[MAX_LOCI][2]; float prob[MAX_LOCI][3]; }; long geno; int gc_geno;
+	char id[MAX_ID_LENGTH + 1]; 
+	int cc, group, skip; union { int all[MAX_LOCI][2]; float prob[MAX_LOCI][3]; }; 
+	long geno; int gc_geno;
 };
 
 typedef struct subject_t subject;
