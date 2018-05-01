@@ -214,6 +214,60 @@ int paParams::getNextArg(char *nextArg, int argc,char *argv[], FILE **fpp, int *
 		return 0;
 }
 
+int readSubIds(pathwaySubject **sub,paParams *pp)
+{
+	FILE *fs,*fp;
+	char gene[50],scoreFileName[200],pathwayName[1000],pathwayURL[1000];
+	int s,c;
+	if(pp->scoreTableFile)
+	{
+		s=0;
+		fseek(pp->scoreTableFile,0L,SEEK_SET);
+		fscanf(pp->scoreTableFile,"%*s"); // ID
+		while(1)
+		{
+			do {
+				c=fgetc(pp->scoreTableFile);
+			} while(c!=EOF && c!='\n' && isspace(c));
+			if(c=='\n')
+				break;
+			ungetc(c,pp->scoreTableFile);
+			assert(fscanf(pp->scoreTableFile,"%s",sub[s++]->id)==1);
+		}
+		pp->nSub=s;
+		fscanf(pp->scoreTableFile,"%*s"); // CC
+		for(s=0;s<pp->nSub;++s)
+			assert(fscanf(pp->scoreTableFile,"%d",&sub[s]->cc)==1);
+	}
+	else
+	{
+		if((fp = fopen(pp->pathwayFileName,"r")) == 0)
+		{
+			dcerror(2,"Could not open pathway file %s\n",pp->pathwayFileName);
+			return 0;
+		}
+		fgets(line,LONGLINELENGTH,fp);
+		fclose(fp);
+		if(sscanf(line,"%s %s %[^\n]",pathwayName,pathwayURL,rest)!=3)
+			{ dcerror(1,"Could not read any genes from first line in gene set file line:\n%s\n",line); return 0; }
+		do {
+			strcpy(line,rest);
+			*rest='\0';
+			if (sscanf(line,"%s %[^\n]",gene,rest)<1)
+			{
+				dcerror(1,"Could not read any valid genes first pathway\n",line); return 0;
+			}
+			sprintf(scoreFileName,"%s%s%s",pp->scoreFilePrefix,gene,pp->scoreFileSuffix);
+			fs=fopen(scoreFileName,"rb"); // because that's what I do for scoreTableFile
+		} while(fs==0);
+		for(s=0;fgets(line,1000,fs) && sscanf(line,"%s %d",sub[s]->id,&sub[s]->cc)==2;++s)
+			;
+		pp->nSub=s;
+		fclose(fs);
+	}
+	return pp->nSub;
+}
+
 float runOnePathway(char *line,pathwaySubject **sub,paParams *pp, int writeFile)
 {
 	char pathwayName[1000],pathwayURL[1000],gene[MAX_LOCI][50],scoreFileName[1000],outputFileName[1000],thisGene[50];
@@ -225,33 +279,8 @@ float runOnePathway(char *line,pathwaySubject **sub,paParams *pp, int writeFile)
 		return 0;
 	for (nGene=0;strcpy(line,rest),*rest='\0',sscanf(line,"%s %[^\n]",gene[nGene],rest)>=1;++nGene)
 		;
-	for (s=0;s<(pp->nSub==-1?MAX_SUB:pp->nSub);++s)
+	for (s=0;s<pp->nSub;++s)
 		sub[s]->totScore=0;
-	if (pp->scoreTableFile && pp->nSub==-1)
-	{
-		s=0;
-		fseek(pp->scoreTableFile,0L,SEEK_SET); 
-		fscanf(pp->scoreTableFile,"%*s"); // ID
-		while (1)
-		{
-			do {
-				c=fgetc(pp->scoreTableFile);
-			} while (c!=EOF && c!='\n' && isspace(c));
-			if (c=='\n')
-				break;
-			ungetc(c,pp->scoreTableFile);
-			assert(fscanf(pp->scoreTableFile,"%s",sub[s++]->id)==1);
-		}
-		pp->nSub=s;
-		fscanf(pp->scoreTableFile,"%*s"); // CC
-		for (s=0;s<pp->nSub;++s)
-			assert(fscanf(pp->scoreTableFile,"%d",&sub[s]->cc)==1);
-	}
-	if (pp->nSub==0)
-		{
-			dcerror(1,"Number of subjects read is 0\n");
-			return 0;
-		}
 	for (g = 0; g < nGene; ++g)
 	{
 		if (pp->scoreTableFile)
@@ -277,7 +306,10 @@ float runOnePathway(char *line,pathwaySubject **sub,paParams *pp, int writeFile)
 				missing[g]=0;
 				for (s=0;s<pp->nSub;++s)
 				{
-					assert(fscanf(pp->scoreTableFile,"%f",&sub[s]->score[g])==1);
+					if (fscanf(pp->scoreTableFile,"%f",&sub[s]->score[g])!=1)
+					{
+						dcerror(1,"Not enough entries in %s for gene %s\n",pp->scoreTableFileName,gene[g]); exit(1);
+					}
 					sub[s]->totScore+=sub[s]->score[g];
 				}
 			}
@@ -291,8 +323,18 @@ float runOnePathway(char *line,pathwaySubject **sub,paParams *pp, int writeFile)
 			else
 			{
 				missing[g]=0;
-				for (s=0;fgets(line,1000,fs) && sscanf(line,"%s %d %f",sub[s]->id,&sub[s]->cc,&sub[s]->score[g])==3;++s)
+				for(s=0;s<pp->nSub;++s)
+				{
+					if (!fgets(line,1000,fs))
+					{
+						dcerror(1,"Not enough lines in scores file %s\n",scoreFileName); exit(1);
+					}
+					if(sscanf(line,"%s %d %f",sub[s]->id,&sub[s]->cc,&sub[s]->score[g])!=3)
+					{
+						dcerror(1,"Not enough entries on this line in scores file %s:\n%s\n",scoreFileName,line); exit(1);
+					}
 					sub[s]->totScore+=sub[s]->score[g];
+				}
 				fclose(fs);
 			}
 
@@ -446,7 +488,7 @@ int main(int argc, char *argv[])
 		}
 		indexGenes(&pp);
 	}
-	pp.nSub=-1; // first time
+	readSubIds(sub,&pp);
 	while (fgets(line, LONGLINELENGTH, fp))
 	{
 		runOnePathway(line,sub,&pp,1);
