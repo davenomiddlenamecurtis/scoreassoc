@@ -92,6 +92,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);MSDOS=1;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalIncludeDirectories>../../../../dlib-19.4</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -136,12 +137,16 @@
   <ItemGroup>
     <ClInclude Include="..\..\src\cdflib.h" />
     <ClInclude Include="..\..\src\dcerror.hpp" />
+    <ClInclude Include="..\..\src\lrModel.hpp" />
+    <ClInclude Include="..\..\src\scoreassoc.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\dcdflib.c" />
     <ClCompile Include="..\..\src\dcerror.cpp" />
     <ClCompile Include="..\..\src\ipmpar.c" />
+    <ClCompile Include="..\..\src\lrModel.cpp" />
     <ClCompile Include="..\..\src\pathwayAssoc.cpp" />
+    <ClCompile Include="..\..\src\salrtests.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

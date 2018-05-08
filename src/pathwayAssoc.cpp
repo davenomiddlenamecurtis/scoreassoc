@@ -39,28 +39,32 @@ MSVC implements long with 32 bits but unix is 64 bits so use __int64
 #define FILEOFFSET long
 #endif
 
-class paParams {
+class paParams : public lr_test_par_info {
 public:
 	char scoreFilePrefix[1000],scoreFileSuffix[1000],outputFilePrefix[1000],outputFileSuffix[1000],pathwayFileName[1000],scoreTableFileName[1000];
 	std::map<std::string,FILEOFFSET> geneIndex;
 	int nSub;
-	float geneLevelOutputThreshold,lamda;
+	float geneLevelOutputThreshold;
 	int readParms(int argc,char *argv[]);
 	int getNextArg(char *nextArg,int argc,char *argv[],FILE **fpp,int *argNum);
 	FILE *summaryOutputFile,*scoreTableFile;
-	int do_ttest, do_lrtest, numVars, numVarFiles, numTestFiles, start_from_fitted;
-	sa_data_file_type varFiles[MAXLRVARIABLES], testFiles[MAXLRVARIABLES];
+	int do_ttest, do_lrtest;;
 };
 
 class pathwaySubject {
 public:
 	char id[MAX_ID_LENGTH+1]; 
 	int cc;
-	float totScore,score[MAX_GENES];
+	float score[MAX_GENES];
 };
 
+float *totScore;
+
 #define LONGLINELENGTH 40000
-char line[LONGLINELENGTH+1],rest[LONGLINELENGTH+1];
+char long_line[LONGLINELENGTH+1],rest[LONGLINELENGTH+1];
+
+lrVariable allVars[MAXLRVARIABLES];
+std::map<std::string, lrVariable *> varMap;
 
 #define isArgType(a) (a[0]=='-' && a[1]=='-')
 #define FILLARG(str) (strcmp(arg,str) ? 0 : ((getNextArg(arg, argc, argv, &fp, &argNum) && !isArgType(arg)) ? 1 : (dcerror(1,"No value provided for argument: %s\n",str), 0)))
@@ -74,6 +78,20 @@ double tstat(double t,double df)
 	dfn=1;
 	dfd=df;
 	cdff(&which,&p,&q,&f,&dfn,&dfd,&status,&bound);
+	return q;
+}
+
+double chistat(double x, double df)
+{
+	double p, q, d1 = 1.0, bound;
+	int status, which = 1;
+	if (x == 0.0) return 1.0;
+	// if (x<0.0 && x>-1.0) return 1.0; 
+	if (x<0.0) return 1.0;
+	/* do not worry about negative lrt values */
+	cdfchi(&which, &p, &q, &x, &df, &status, &bound);
+	if (status != 0)
+		dcerror(1,"cdfchi() failed in chistat(%f,%f)", x,df);
 	return q;
 }
 
@@ -176,11 +194,11 @@ int paParams::readParms(int argc, char *argv[])
 		{
 			start_from_fitted = atoi(arg);
 		}
-		else if (FILLARG("--var-file"))
+		else if (FILLARG("--varfile"))
 		{
 			strcpy(varFiles[numVarFiles++].fn, arg);
 		}
-		else if (FILLARG("--test-file"))
+		else if (FILLARG("--testfile"))
 		{
 			strcpy(testFiles[numTestFiles++].fn, arg);
 		}
@@ -243,24 +261,24 @@ int readSubIds(pathwaySubject **sub,paParams *pp)
 	{
 		if((fp = fopen(pp->pathwayFileName,"r")) == 0)
 		{
-			dcerror(2,"Could not open pathway file %s\n",pp->pathwayFileName);
+			dcerror(2,"Could not open gene set file %s\n",pp->pathwayFileName);
 			return 0;
 		}
-		fgets(line,LONGLINELENGTH,fp);
+		fgets(long_line,LONGLINELENGTH,fp);
 		fclose(fp);
-		if(sscanf(line,"%s %s %[^\n]",pathwayName,pathwayURL,rest)!=3)
-			{ dcerror(1,"Could not read any genes from first line in gene set file line:\n%s\n",line); return 0; }
+		if(sscanf(long_line,"%s %s %[^\n]",pathwayName,pathwayURL,rest)!=3)
+			{ dcerror(1,"Could not read any genes from first line in gene set file:\n%s\n",long_line); return 0; }
 		do {
-			strcpy(line,rest);
+			strcpy(long_line,rest);
 			*rest='\0';
-			if (sscanf(line,"%s %[^\n]",gene,rest)<1)
+			if (sscanf(long_line,"%s %[^\n]",gene,rest)<1)
 			{
-				dcerror(1,"Could not read any valid genes first pathway\n",line); return 0;
+				dcerror(1,"Could not read any valid genes first pathway\n",long_line); return 0;
 			}
 			sprintf(scoreFileName,"%s%s%s",pp->scoreFilePrefix,gene,pp->scoreFileSuffix);
 			fs=fopen(scoreFileName,"rb"); // because that's what I do for scoreTableFile
 		} while(fs==0);
-		for(s=0;fgets(line,1000,fs) && sscanf(line,"%s %d",sub[s]->id,&sub[s]->cc)==2;++s)
+		for(s=0;fgets(long_line,1000,fs) && sscanf(long_line,"%s %d",sub[s]->id,&sub[s]->cc)==2;++s)
 			;
 		pp->nSub=s;
 		fclose(fs);
@@ -268,117 +286,131 @@ int readSubIds(pathwaySubject **sub,paParams *pp)
 	return pp->nSub;
 }
 
-float runOnePathway(char *line,pathwaySubject **sub,paParams *pp, int writeFile)
+float runOnePathway(char *line, pathwaySubject **sub, lrModel *model,paParams *pp, int writeFile)
 {
-	char pathwayName[1000],pathwayURL[1000],gene[MAX_LOCI][50],scoreFileName[1000],outputFileName[1000],thisGene[50];
-	FILE *fs,*fo;
-	int nGene,missing[MAX_LOCI],s,g,n[2],i,cc,c;
-	float sigma_x[2],sigma_x2[2],mean[2],var[2],SLP,SE,tval,s2,score;
-	double p,pathway_p;
-	if (sscanf(line,"%s %s %[^\n]",pathwayName,pathwayURL,rest)!=3)
+	char pathwayName[1000], pathwayURL[1000], gene[MAX_LOCI][50], scoreFileName[1000], outputFileName[1000], thisGene[50];
+	FILE *fs, *fo;
+	int nGene, missing[MAX_LOCI], s, g, n[2], i, cc, c,t;
+	float sigma_x[2], sigma_x2[2], mean[2], var[2], SLP, SE, tval, s2, score;
+	double p, pathway_p;
+	fo = 0;
+	if (sscanf(line, "%s %s %[^\n]", pathwayName, pathwayURL, rest) != 3)
 		return 0;
-	for (nGene=0;strcpy(line,rest),*rest='\0',sscanf(line,"%s %[^\n]",gene[nGene],rest)>=1;++nGene)
+	for (nGene = 0; strcpy(line, rest), *rest = '\0', sscanf(line, "%s %[^\n]", gene[nGene], rest) >= 1; ++nGene)
 		;
-	for (s=0;s<pp->nSub;++s)
-		sub[s]->totScore=0;
+	for (s = 0; s < pp->nSub; ++s)
+		totScore[s] = 0;
 	for (g = 0; g < nGene; ++g)
 	{
 		if (pp->scoreTableFile)
 		{
-			std::map<std::string,FILEOFFSET>::const_iterator geneIter=pp->geneIndex.find(gene[g]);
-			if (geneIter==pp->geneIndex.end())
-				missing[g]=1;
+			std::map<std::string, FILEOFFSET>::const_iterator geneIter = pp->geneIndex.find(gene[g]);
+			if (geneIter == pp->geneIndex.end())
+				missing[g] = 1;
 			else
 			{
-				fseek(pp->scoreTableFile,geneIter->second,SEEK_SET);
-				assert(fscanf(pp->scoreTableFile,"%s",thisGene)==1);
-				if (strcmp(thisGene,gene[g]))
+				fseek(pp->scoreTableFile, geneIter->second, SEEK_SET);
+				assert(fscanf(pp->scoreTableFile, "%s", thisGene) == 1);
+				if (strcmp(thisGene, gene[g]))
 				{
 #if 0
-					dcerror(1,"Problem finding %s in %s. Tried to seek to position %" PRId64 " but got this: %s\n",
-						pp->scoreTableFileName,gene[g],geneIter->second,thisGene);
+					dcerror(1, "Problem finding %s in %s. Tried to seek to position %" PRId64 " but got this: %s\n",
+						pp->scoreTableFileName, gene[g], geneIter->second, thisGene);
 #else
-					dcerror(1,"Problem finding %s in %s. Tried to seek to position %uld but got this: %s\n",
-						pp->scoreTableFileName,gene[g],(unsigned long)geneIter->second,thisGene);
+					dcerror(1, "Problem finding %s in %s. Tried to seek to position %uld but got this: %s\n",
+						pp->scoreTableFileName, gene[g], (unsigned long)geneIter->second, thisGene);
 #endif
 					exit(1);
 				}
-				missing[g]=0;
-				for (s=0;s<pp->nSub;++s)
+				missing[g] = 0;
+				for (s = 0; s < pp->nSub; ++s)
 				{
-					if (fscanf(pp->scoreTableFile,"%f",&sub[s]->score[g])!=1)
+					if (fscanf(pp->scoreTableFile, "%f", &sub[s]->score[g]) != 1)
 					{
-						dcerror(1,"Not enough entries in %s for gene %s\n",pp->scoreTableFileName,gene[g]); exit(1);
+						dcerror(1, "Not enough entries in %s for gene %s\n", pp->scoreTableFileName, gene[g]); exit(1);
 					}
-					sub[s]->totScore+=sub[s]->score[g];
+					totScore[s] += sub[s]->score[g];
 				}
 			}
 		}
 		else
 		{
-			sprintf(scoreFileName,"%s%s%s",pp->scoreFilePrefix,gene[g],pp->scoreFileSuffix);
-			fs=fopen(scoreFileName,"r");
-			if (fs==0)
-				missing[g]=1;
+			sprintf(scoreFileName, "%s%s%s", pp->scoreFilePrefix, gene[g], pp->scoreFileSuffix);
+			fs = fopen(scoreFileName, "r");
+			if (fs == 0)
+				missing[g] = 1;
 			else
 			{
-				missing[g]=0;
-				for(s=0;s<pp->nSub;++s)
+				missing[g] = 0;
+				for (s = 0; s < pp->nSub; ++s)
 				{
-					if (!fgets(line,1000,fs))
+					if (!fgets(line, 1000, fs))
 					{
-						dcerror(1,"Not enough lines in scores file %s\n",scoreFileName); exit(1);
+						dcerror(1, "Not enough lines in scores file %s\n", scoreFileName); exit(1);
 					}
-					if(sscanf(line,"%s %d %f",sub[s]->id,&sub[s]->cc,&sub[s]->score[g])!=3)
+					if (sscanf(line, "%s %d %f", sub[s]->id, &sub[s]->cc, &sub[s]->score[g]) != 3)
 					{
-						dcerror(1,"Not enough entries on this line in scores file %s:\n%s\n",scoreFileName,line); exit(1);
+						dcerror(1, "Not enough entries on this line in scores file %s:\n%s\n", scoreFileName, line); exit(1);
 					}
-					sub[s]->totScore+=sub[s]->score[g];
+					totScore[s] += sub[s]->score[g];
 				}
 				fclose(fs);
 			}
 
 		}
 	}
-	if (pp->nSub==-1)
-		pp->nSub=s;
-	for (i=0;i<2;++i)
-		sigma_x[i]=sigma_x2[i]=n[i]=0;
-	for (s=0;s<pp->nSub;++s)
-    {
-		 cc=sub[s]->cc;
-		 ++n[cc];
-		 score=sub[s]->totScore;
-		 sigma_x[cc]+=score;
-		 sigma_x2[cc]+=score*score;
-    }
+	if (writeFile)
+	{
+		if (pp->summaryOutputFile != 0)
+			fprintf(pp->summaryOutputFile, "%s\t%s\t", pathwayName, pathwayURL);
+		sprintf(line, "%s%s%s", pp->outputFilePrefix, pathwayName, pp->outputFileSuffix);
+		fo = fopen(line, "w");
+		if (fo == 0)
+		{
+			dcerror(2, "Could not open output file %s\n", line);
+		}
+		else
+			fprintf(fo, "%s\n%s\n\n", pathwayName, pathwayURL);
+	}
+
+	if (pp->do_ttest)
+	{
+	for (i = 0; i < 2; ++i)
+		sigma_x[i] = sigma_x2[i] = n[i] = 0;
+	for (s = 0; s < pp->nSub; ++s)
+	{
+		cc = sub[s]->cc;
+		++n[cc];
+		score = totScore[s];
+		sigma_x[cc] += score;
+		sigma_x2[cc] += score * score;
+	}
 	for (i = 0; i < 2; ++i)
 	{
 		var[i] = (sigma_x2[i] - sigma_x[i] * sigma_x[i] / n[i]) / (n[i] - 1);
 		mean[i] = sigma_x[i] / n[i];
 	}
 
-	s2=((n[0]-1)*var[0]+(n[1]-1)*var[1])/(n[0]+n[1]-2);
-    SE=sqrt(s2*(1/(float)n[0]+1/(float)n[1]));
-	if (SE==0)
-		tval=0;
+	s2 = ((n[0] - 1)*var[0] + (n[1] - 1)*var[1]) / (n[0] + n[1] - 2);
+	SE = sqrt(s2*(1 / (float)n[0] + 1 / (float)n[1]));
+	if (SE == 0)
+		tval = 0;
 	else
-		tval=(mean[1]-mean[0])/SE;
-	pathway_p=tstat(tval,n[0]+n[1]-2.0)/2; // one-tailed
-	SLP=log10(2*pathway_p)*(mean[0]>=mean[1]?1:-1);
+		tval = (mean[1] - mean[0]) / SE;
+	pathway_p = tstat(tval, n[0] + n[1] - 2.0) / 2; // one-tailed
+	SLP = log10(2 * pathway_p)*(mean[0] >= mean[1] ? 1 : -1);
 	if (writeFile)
 	{
-		sprintf(line,"%s%s%s",pp->outputFilePrefix,pathwayName,pp->outputFileSuffix);
-		fo=fopen(line,"w");
+		sprintf(line, "%s%s%s", pp->outputFilePrefix, pathwayName, pp->outputFileSuffix);
+		fo = fopen(line, "w");
 		if (fo == 0)
 		{
-			dcerror(2,"Could not open output file %s\n",line);
+			dcerror(2, "Could not open output file %s\n", line);
 		}
 
 	}
 	if (fo != NULL)
 	{
-		fprintf(fo,"%s\n%s\n\n",pathwayName,pathwayURL);
 		fprintf(fo, "             Controls  Cases     \n"
 			"N            %9d %9d\n"
 			"Mean score   %9.3f %9.3f\n"
@@ -386,54 +418,75 @@ float runOnePathway(char *line,pathwaySubject **sub,paParams *pp, int writeFile)
 			"p = %10.8f\n"
 			"SLP = %8.2f (signed log10(p), positive if cases score higher than controls)\n",
 			n[0], n[1], mean[0], mean[1], n[0] + n[1] - 2, tval, 2 * pathway_p, SLP);
-		if (pp->summaryOutputFile!=0)
-					fprintf(pp->summaryOutputFile,"%s\t%s\t%f\n",pathwayName,pathwayURL,SLP);
+		if (pp->summaryOutputFile != 0)
+			fprintf(pp->summaryOutputFile, "%f\t", SLP);
 		if (SLP > pp->geneLevelOutputThreshold)
 		{
-			fprintf(fo,"\n\nSLPs for individual genes above threshold:\n");
-			for (g=0;g<nGene;++g)
+			fprintf(fo, "\n\nSLPs for individual genes above threshold:\n");
+			for (g = 0; g < nGene; ++g)
 			{
-				if (missing[g]==1)
+				if (missing[g] == 1)
 					continue;
-	for (i=0;i<2;++i)
-		sigma_x[i]=sigma_x2[i]=n[i]=0;
-	for (s=0;s<pp->nSub;++s)
-    {
-		 cc=sub[s]->cc;
-		 ++n[cc];
-		 score=sub[s]->score[g];
-		 sigma_x[cc]+=score;
-		 sigma_x2[cc]+=score*score;
-    }
-	for (i = 0; i < 2; ++i)
-	{
-		var[i] = (sigma_x2[i] - sigma_x[i] * sigma_x[i] / n[i]) / (n[i] - 1);
-		mean[i] = sigma_x[i] / n[i];
-	}
+				for (i = 0; i < 2; ++i)
+					sigma_x[i] = sigma_x2[i] = n[i] = 0;
+				for (s = 0; s < pp->nSub; ++s)
+				{
+					cc = sub[s]->cc;
+					++n[cc];
+					score = sub[s]->score[g];
+					sigma_x[cc] += score;
+					sigma_x2[cc] += score * score;
+				}
+				for (i = 0; i < 2; ++i)
+				{
+					var[i] = (sigma_x2[i] - sigma_x[i] * sigma_x[i] / n[i]) / (n[i] - 1);
+					mean[i] = sigma_x[i] / n[i];
+				}
 
-	s2=((n[0]-1)*var[0]+(n[1]-1)*var[1])/(n[0]+n[1]-2);
-    SE=sqrt(s2*(1/(float)n[0]+1/(float)n[1]));
-	if (SE==0)
-		tval=0;
-	else
-		tval=(mean[1]-mean[0])/SE;
-    p=tstat(tval,n[0]+n[1]-2.0)/2; // one-tailed
-	SLP=log10(2*p)*(mean[0]>=mean[1]?1:-1);
-	
-			if (SLP > pp->geneLevelOutputThreshold)
-				fprintf(fo,"%s %8.2f\n",gene[g],SLP);
+				s2 = ((n[0] - 1)*var[0] + (n[1] - 1)*var[1]) / (n[0] + n[1] - 2);
+				SE = sqrt(s2*(1 / (float)n[0] + 1 / (float)n[1]));
+				if (SE == 0)
+					tval = 0;
+				else
+					tval = (mean[1] - mean[0]) / SE;
+				p = tstat(tval, n[0] + n[1] - 2.0) / 2; // one-tailed
+				SLP = log10(2 * p)*(mean[0] >= mean[1] ? 1 : -1);
+
+				if (SLP > pp->geneLevelOutputThreshold)
+					fprintf(fo, "%s %8.2f\n", gene[g], SLP);
 			}
-			fprintf(fo,"\n\nList of genes for which no score file was found:\n");
-			for (g=0;g<nGene;++g)
-				if (missing[g]==1)
-					fprintf(fo,"%s\n",gene[g]);
+			fprintf(fo, "\n\nList of genes for which no score file was found:\n");
+			for (g = 0; g < nGene; ++g)
+				if (missing[g] == 1)
+					fprintf(fo, "%s\n", gene[g]);
 		}
-		
-		fclose(fo);
+
 	}
-	if (mean[0]>mean[1])
-		pathway_p=1.0-pathway_p;
-	return pathway_p;
+	if (mean[0] > mean[1])
+		pathway_p = 1.0 - pathway_p;
+	}
+	if(pp->do_lrtest||pp->numTestFiles>0)
+		fillModelWithVars(model,pp->nSub,pp,pp->scoreCol);
+	if (pp->do_lrtest)
+	{
+		SLP = do_onetailed_LRT(fo, model, pp);
+		if (writeFile &&pp->summaryOutputFile != 0)
+			fprintf(pp->summaryOutputFile, "%f\t", SLP);
+	}
+	if (pp->numTestFiles > 0)
+	{
+		for (t = 0; t < pp->numTestFiles; ++t)
+		{
+			SLP = runTestFile(fo, pp->testFiles[t].fn, model, pp);
+			if (writeFile &&pp->summaryOutputFile != 0)
+				fprintf(pp->summaryOutputFile, "%f\t", SLP);
+		}
+	}
+	if (fo)
+		fclose(fo);
+	if (writeFile && pp->summaryOutputFile != 0)
+		fprintf(pp->summaryOutputFile, "\n");
+	return SLP;
 }
 
 int indexGenes(paParams *pp)
@@ -465,7 +518,8 @@ int main(int argc, char *argv[])
 	paParams pp;
 	FILE *fp;
 	pathwaySubject **sub;
-	int s;
+	int s,filledModel;
+	lrRidgePenaltyModel model;
 	printf("%s v%s\n",PROGRAM,PAVERSION);
 	printf("MAX_LOCI=%d\nMAX_SUB=%d\n",MAX_LOCI,MAX_SUB);
 	if (!pp.readParms(argc,argv))
@@ -475,13 +529,13 @@ int main(int argc, char *argv[])
 		assert(sub[s]=(pathwaySubject *)calloc(1,sizeof(pathwaySubject)));
 	if ((fp = fopen(pp.pathwayFileName,"r")) == 0)
 	{
-		dcerror(2,"Could not open pathway file %s\n",pp.pathwayFileName);
+		dcerror(2,"Could not open gene set file %s\n",pp.pathwayFileName);
 		return 1;
 	}
-	if (pp.scoreTableFileName[0])
+	if(pp.scoreTableFileName[0])
 	{
 		pp.scoreTableFile=fopen(pp.scoreTableFileName,"rb"); //  see if fseek() works OK with binary mode
-		if (pp.scoreTableFile==0)
+		if(pp.scoreTableFile==0)
 		{
 			dcerror(1,"Could not open score table file %s\n",pp.scoreTableFileName);
 			return 1;
@@ -489,11 +543,36 @@ int main(int argc, char *argv[])
 		indexGenes(&pp);
 	}
 	readSubIds(sub,&pp);
-	while (fgets(line, LONGLINELENGTH, fp))
+	if(pp.numVarFiles)
 	{
-		runOnePathway(line,sub,&pp,1);
+		std::map<std::string,int> subIDs;
+		for(s = 0; s<pp.nSub; ++s)
+			subIDs[sub[s]->id] = s;
+		if(!readVarFiles(subIDs,pp.nSub,&pp))
+			exit(1);
+	}
+	totScore = (float*)calloc(pp.nSub,sizeof(float));
+	assert(totScore != 0);
+	pp.scoreCol = pp.numVars;
+	strcpy(allVars[pp.scoreCol].name,"score");
+	allVars[pp.scoreCol].val = totScore;
+	varMap["score"] = &allVars[pp.scoreCol];
+	++pp.numVars;
+	if (pp.do_lrtest || pp.numTestFiles > 0)
+	{
+		model.lamda = pp.lamda;
+		fillModelWithVars(&model, pp.nSub, &pp);
+		for (s = 0; s < pp.nSub; ++s)
+			model.Y[s] = sub[s]->cc;
+		filledModel = 1;
+	}
+
+	while (fgets(long_line, LONGLINELENGTH, fp))
+	{
+		runOnePathway(long_line,sub,&model,&pp,1);
 	}
 	if (pp.summaryOutputFile!=0)
 		fclose(pp.summaryOutputFile);
+//	free(totScore); will be done by the~lrVariable()
 	return 0;
 }

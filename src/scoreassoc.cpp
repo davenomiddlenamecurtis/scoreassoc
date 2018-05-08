@@ -76,8 +76,9 @@ set_weights(spi.df[OUTFILE].fp,weight,missing_score,rarer,sub,nsub,&pi,&spi,func
 get_scores(score,weight,missing_score,rarer,sub,nsub,&pi,&spi);
 filledModel=0;
 strcpy(allVars[spi.numVars].name, "score");
-allVars[spi.numVars].val = score;
-varMap["score"] = allVars+spi.numVars;
+spi.scoreCol=spi.numVars;
+allVars[spi.scoreCol].val = score;
+varMap["score"] = &allVars[spi.numVars];
 ++spi.numVars;
 
 if (spi.do_ttest)
@@ -88,20 +89,24 @@ if(spi.do_lrtest)
 {
 	if (!filledModel)
 	{
-		fillModelWithVars(&model, sub, nsub, &pi, &spi);
+		fillModelWithVars(&model, nsub, &spi);
+		for (s = 0; s < nsub; ++s)
+			model.Y[s] = sub[s]->cc;
 		filledModel = 1;
 	}
-	SLP = do_onetailed_LRT(spi.df[OUTFILE].fp,&model,&pi,&spi);
+	SLP = do_onetailed_LRT(spi.df[OUTFILE].fp,&model,&spi);
 }
 if (spi.numTestFiles>0)
 {
 	if (!filledModel)
 	{
-		fillModelWithVars(&model, sub, nsub, &pi, &spi);
+		fillModelWithVars(&model, nsub, &spi);
+		for (s = 0; s < nsub; ++s)
+			model.Y[s] = sub[s]->cc;
 		filledModel = 1;
 	}
 	for (t = 0; t < spi.numTestFiles;++t)
-		p= runTestFile(spi.df[OUTFILE].fp, spi.testFiles[t].fn,&model, &pi, &spi);
+		p= runTestFile(spi.df[OUTFILE].fp, spi.testFiles[t].fn,&model, &spi);
 
 }
 

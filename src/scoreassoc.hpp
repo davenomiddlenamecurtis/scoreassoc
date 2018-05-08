@@ -43,15 +43,20 @@ public:
 	~sa_data_file_type() { if (fp != 0 && fp != stdout) fclose(fp); }
 };
 
-struct sa_par_info_t {
-sa_data_file_type df[NUMDATAFILETYPES];
-float wfactor,LD_threshold,weight_threshold,lamda;
-int use_func_weights,use_cc_freqs[2],use_locus_names,use_comments,do_recessive_test,use_haplotypes,use_trios,use_probs;
-int do_ttest, do_lrtest,numVars,numVarFiles,numTestFiles,start_from_fitted;
-sa_data_file_type varFiles[MAXLRVARIABLES],testFiles[MAXLRVARIABLES];
+class lr_test_par_info {
+public:
+	float lamda;
+	int numVars, numVarFiles, numTestFiles, start_from_fitted,scoreCol;
+	sa_data_file_type varFiles[MAXLRVARIABLES], testFiles[MAXLRVARIABLES];
 };
 
-typedef struct sa_par_info_t sa_par_info;
+class sa_par_info : public lr_test_par_info {
+public:
+sa_data_file_type df[NUMDATAFILETYPES];
+float wfactor,LD_threshold,weight_threshold;
+int use_func_weights,use_cc_freqs[2],use_locus_names,use_comments,do_recessive_test,use_haplotypes,use_trios,use_probs;
+int do_ttest, do_lrtest;
+};
 
 enum { DE_NOVO=0, NON_MENDELIAN };
 struct non_mendelian_t {
@@ -89,16 +94,16 @@ extern int sort_trios(subject **sub,int nsub,par_info *pi, sa_par_info *spi, sub
 extern int output_nm_report(FILE *fp, par_info *pi, char *non_mendelian_report);
 int read_all_gen_subjects(FILE *fi,subject **s,int *nsub,par_info *pi);
 int read_freqs_datafile(par_info *pi,sa_par_info *spi,int cc,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2]);
-float do_onetailed_LRT(FILE *fo,lrModel *m,par_info *pi,sa_par_info *spi);
-void fillModelWithVars(lrModel *m,subject **sub,int nsub,par_info *pi,sa_par_info *spi);
+float do_onetailed_LRT(FILE *fo,lrModel *m,lr_test_par_info *spi);
+void fillModelWithVars(lrModel *m,int nsub, lr_test_par_info *spi,int which=-1);
 void printModel(FILE *fo, char *LLstr, double LL, lrModel *m);
 extern double cumulBinom(int N,int k,double p);
 float evaluateModel(FILE *fo, lrModel *m, int *toUse, float *startBetas, int *toFit, char *name);
-float runTestFile(FILE *fo, char *fn, lrModel *m, par_info *pi, sa_par_info *spi);
+float runTestFile(FILE *fo, char *fn, lrModel *m, lr_test_par_info *spi);
 char *skip_word(char *ptr);
 int read_ps_datafile(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr, char names[MAX_LOCI][LOCUS_NAME_LENGTH], char comments[MAX_LOCI][MAX_COMMENT_LENGTH], float func_weight[MAX_LOCI],
 	std::map<std::string, float> weightMap, std::map<std::string, std::string> effectMap);
-int readVarFiles(std::map<std::string, int> subIDs, int nSub, sa_par_info *spi);
+int readVarFiles(std::map<std::string, int> subIDs, int nSub, lr_test_par_info *spi);
 
 extern float weight[MAX_LOCI],missing_score[MAX_LOCI],func_weight[MAX_LOCI],cc_freq[2][MAX_LOCI],cc_count[2][MAX_LOCI],cc_genocount[2][3][MAX_LOCI];
 extern int rarer[MAX_LOCI],max_cc[2];
