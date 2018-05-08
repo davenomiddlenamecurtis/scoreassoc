@@ -71,8 +71,8 @@ combineCohorts: combineCohorts.o dcdflib.o ipmpar.o dcerror.o
 makeScoreTable: makeScoreTable.o dcerror.o 
 	$(CC) ${DEBUGFLAG} -o makeScoreTable makeScoreTable.o dcerror.o -lm
 
-pathwayAssoc: pathwayAssoc.o dcdflib.o ipmpar.o dcerror.o 
-	$(CC) ${DEBUGFLAG} -o pathwayAssoc pathwayAssoc.o dcdflib.o ipmpar.o dcerror.o -lm
+pathwayAssoc: pathwayAssoc.o dcdflib.o ipmpar.o dcerror.o sainit.o salrtests.o lrModel.o 
+	$(CC) ${DEBUGFLAG} -o pathwayAssoc pathwayAssoc.o dcdflib.o ipmpar.o dcerror.o sainit.o salrtests.o lrModel.o -lm
 
 permPathwayAssoc: permPathwayAssoc.o dcdflib.o ipmpar.o dcerror.o 
 	$(CC) ${DEBUGFLAG} -o permPathwayAssoc permPathwayAssoc.o dcdflib.o ipmpar.o dcerror.o -lm
