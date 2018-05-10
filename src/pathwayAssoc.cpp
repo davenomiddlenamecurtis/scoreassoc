@@ -290,7 +290,7 @@ float runOnePathway(char *line, pathwaySubject **sub, lrModel *model,paParams *p
 {
 	char pathwayName[1000], pathwayURL[1000], gene[MAX_LOCI][50], scoreFileName[1000], outputFileName[1000], thisGene[50];
 	FILE *fs, *fo;
-	int nGene, missing[MAX_LOCI], s, g, n[2], i, cc, c,t;
+	int nGene, missing[MAX_LOCI], s, g, n[2], i, cc, c,t,nValidGenes;
 	float sigma_x[2], sigma_x2[2], mean[2], var[2], SLP, SE, tval, s2, score;
 	double p, pathway_p;
 	fo = 0;
@@ -300,6 +300,7 @@ float runOnePathway(char *line, pathwaySubject **sub, lrModel *model,paParams *p
 		;
 	for (s = 0; s < pp->nSub; ++s)
 		totScore[s] = 0;
+	nValidGenes = 0;
 	for (g = 0; g < nGene; ++g)
 	{
 		if (pp->scoreTableFile)
@@ -323,6 +324,7 @@ float runOnePathway(char *line, pathwaySubject **sub, lrModel *model,paParams *p
 					exit(1);
 				}
 				missing[g] = 0;
+				++nValidGenes;
 				for (s = 0; s < pp->nSub; ++s)
 				{
 					if (fscanf(pp->scoreTableFile, "%f", &sub[s]->score[g]) != 1)
@@ -342,6 +344,7 @@ float runOnePathway(char *line, pathwaySubject **sub, lrModel *model,paParams *p
 			else
 			{
 				missing[g] = 0;
+				++nValidGenes;
 				for (s = 0; s < pp->nSub; ++s)
 				{
 					if (!fgets(line, 1000, fs))
@@ -359,6 +362,8 @@ float runOnePathway(char *line, pathwaySubject **sub, lrModel *model,paParams *p
 
 		}
 	}
+	for (s = 0; s < pp->nSub; ++s)
+		totScore[s] /= nValidGenes; // use average score not total score
 	if (writeFile)
 	{
 		if (pp->summaryOutputFile != 0)
