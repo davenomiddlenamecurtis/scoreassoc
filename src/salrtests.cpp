@@ -50,6 +50,7 @@ float runTestFile(FILE *fo, char *fn, lrModel *m, lr_test_par_info *spi)
 			scoreVar = b;
 		df += t1 - t0;
 	}
+	fclose(ft);
 	L0 = evaluateModel(fo, m, toUse, startBetas, toFit0, "L0");
 	if (spi->start_from_fitted)
 		for (b = 0; b < m->nCol + 1; ++b)
