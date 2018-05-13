@@ -404,16 +404,6 @@ float runOnePathway(char *line, pathwaySubject **sub, lrModel *model,paParams *p
 		tval = (mean[1] - mean[0]) / SE;
 	pathway_p = tstat(tval, n[0] + n[1] - 2.0) / 2; // one-tailed
 	SLP = log10(2 * pathway_p)*(mean[0] >= mean[1] ? 1 : -1);
-	if (writeFile)
-	{
-		sprintf(line, "%s%s%s", pp->outputFilePrefix, pathwayName, pp->outputFileSuffix);
-		fo = fopen(line, "w");
-		if (fo == 0)
-		{
-			dcerror(2, "Could not open output file %s\n", line);
-		}
-
-	}
 	if (fo != NULL)
 	{
 		fprintf(fo, "             Controls  Cases     \n"
