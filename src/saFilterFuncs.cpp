@@ -37,7 +37,7 @@ dcexpr_val *r1;
 int f;
 EVAL_R1;
 f=double(*r1);
-double rv=weight[currentLocus];
+double rv=func_weight[currentLocus];
 delete r1;
 return new dcexpr_double(rv);
 }
