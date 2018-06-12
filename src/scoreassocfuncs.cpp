@@ -408,11 +408,18 @@ if (spi->use_comments)
 		c=0;
 		while(!isspace(*ptr))
 		{
-			if (c==MAX_COMMENT_LENGTH-1)
-				comments[l][c]='\0';
+			if (c == MAX_COMMENT_LENGTH - 1)
+			{
+				comments[l][c] = '\0';
+				while (*ptr && !isspace(*ptr))
+					++ptr;
+				break;
+			}
 			else
-				comments[l][c++]=*ptr;
-			++ptr;
+			{
+				comments[l][c++] = *ptr;
+				++ptr;
+			}
 		}
 		comments[l][c]='\0';
 	}

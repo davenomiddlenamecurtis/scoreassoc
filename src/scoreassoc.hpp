@@ -13,7 +13,7 @@ extern "C" {
 #include "sagcutils.h"
 };
 
-#define MAX_COMMENT_LENGTH 1000
+#define MAX_COMMENT_LENGTH 1500
 #define NAME_LENGTH 20
 #define MAXLRVARIABLES 50
 #define MAXLRVARIABLENAMELENGTH 100
