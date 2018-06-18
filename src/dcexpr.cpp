@@ -29,7 +29,8 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #include <ctype.h>
 #include <assert.h>
 
-#ifndef MSDOS
+// change code to make all expressions case sensitive
+#if 0
 #define _stricmp strcasecmp
 #define _strnicmp strncasecmp
 #define _strupr mystrupr
@@ -312,7 +313,7 @@ dcexpr_val *r1,*r2;
 EVAL_BOTH;
 double rv;
 if (r1->is_string_really() && r2->is_string_really())
-  rv=!strncmp(_strupr((char*)(*r1)),_strupr((char*)(*r2)),strlen((char*)(*r2)));
+  rv=!strncmp(((char*)(*r1)),((char*)(*r2)),strlen((char*)(*r2)));
 else
   rv=double(*r1) == double(*r2);
 delete r1; delete r2;
@@ -525,7 +526,7 @@ char *express::vbin_op(char *s,vnode **br,int level)
       {
       if ((s=vbin_op(s,br,level+1))==NULL) return NULL;
       for (int i=0;i<n_bin_ops[level];++i)
-         if (!_stricmp(bin_ch[level][i].str,token))
+         if (!strcmp(bin_ch[level][i].str,token))
            {
            if ((s=get_next(s))==NULL) return NULL;
            if ((s=vbin_op(s,&tempbr,level+1))==NULL) return NULL;
@@ -547,7 +548,7 @@ char *express::vun_op(char*s,vnode **br)
     int i;
     int op=0;
     for (i=0;i<n_un_ops;++i)
-     if (!_stricmp(un_ch[i].str,token))
+     if (!strcmp(un_ch[i].str,token))
        {
        op=1;
        if ((s=get_next(s))==NULL) return NULL;
@@ -603,7 +604,7 @@ char *express::get_next(char *s)
  while (isspace(*s)) ++s;
  strcpy(token,"");
  for (i=0;i<n_all_ops;++i)
-   if (!_strnicmp(s,all_op[i],strlen(all_op[i])))
+   if (!strncmp(s,all_op[i],strlen(all_op[i])))
     {
     strcpy(token,all_op[i]);
     return s+strlen(all_op[i]);

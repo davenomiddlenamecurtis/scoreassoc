@@ -22,8 +22,8 @@
 --vep 'perl /share/ref/VEP/ensembl-tools-release-87/scripts/variant_effect_predictor/variant_effect_predictor.pl --cache --dir /share/ref/VEP/Cache --merged --offline'
 --weight-expression ' ((ANNOT"VEP")GETWEIGHT"../reference/allVarWeights.txt")+((GETSIFT("CSQ"VCFLOOKUP"../vcf/SSS2/SSS2.vars.annot.vcf.gz"))GETWEIGHT"../reference/allVarWeights.txt")+((GETPOLYPHEN("CSQ"VCFLOOKUP"../vcf/SSS2/SSS2.vars.annot.vcf.gz"))GETWEIGHT"../reference/allVarWeights.txt") '
 --exclusion-list -
-freq(0)=0 & freq(1)=0
-freq(0)>0.01 & freq(1)=0.01
-nsub(0)<5834-583 | nsub(1)<4225-423
-(0 genocount 0) > (0 genocount 1) & (0 genocount 2) > (0 genocount 1) & (1 genocount 0) > (1 genocount 1) & (1 genocount 2) > (1 genocount 1)     
+FREQ(0)=0 & FREQ(1)=0
+FREQ(0)>0.01 & FREQ(1)=0.01
+NSUB(0)<5834-583 | NSUB(1)<4225-423
+(0 GENOCOUNT 0) > (0 GENOCOUNT 1) & (0 GENOCOUNT 2) > (0 GENOCOUNT 1) & (1 GENOCOUNT 0) > (1 GENOCOUNT 1) & (1 GENOCOUNT 2) > (1 GENOCOUNT 1)     
 

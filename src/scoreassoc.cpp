@@ -28,7 +28,7 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #include "safilterfuncs.hpp"
 
 #define PROGRAM "scoreassoc"
-#define SAVERSION "5.0"
+#define SAVERSION "5.1"
 
 int main(int argc, char *argv[])
 {
