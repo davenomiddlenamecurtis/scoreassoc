@@ -15,7 +15,8 @@ MAX_LOCI_MAK = 12000
 MAX_ALL_MAK = 40
 MAX_SUB_MAK = 15000
 
-MYFLAGS = $(CFLAGS) -DMAX_LOCI=$(MAX_LOCI_MAK) -DMAX_ALL=$(MAX_ALL_MAK) -DMAX_SUB=$(MAX_SUB_MAK)  -std=c++14 # -std=gnu++0x
+MYFLAGS = $(CFLAGS) -DMAX_LOCI=$(MAX_LOCI_MAK) -DMAX_ALL=$(MAX_ALL_MAK) -DMAX_SUB=$(MAX_SUB_MAK)  # -std=gnu++0x
+CPPFLAGS = -std=c++14 
 OURFLAGS = $(MYFLAGS) $(EXTRAFLAGS)
 
 # so to compile for debugging use make -f scoreassoc.mak DEBUGFLAG=-g
@@ -44,7 +45,7 @@ clean:
 VPATH=../src
 	
 %.o: ../src/%.cpp $(HEADERS)
-	$(CC) $(OURFLAGS) ${DEBUGFLAG} -c $< -o ../obj/$@
+	$(CC) $(OURFLAGS) ${DEBUGFLAG} ${CPPFLAGS} -c $< -o ../obj/$@
 	
 %.o: ../src/%.c $(HEADERS)
 	$(C) $(OURFLAGS) ${DEBUGFLAG} -c $< -o ../obj/$@
