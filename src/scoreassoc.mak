@@ -17,7 +17,7 @@ MAX_SUB_MAK = 15000
 
 MYFLAGS = $(CFLAGS) -DMAX_LOCI=$(MAX_LOCI_MAK) -DMAX_ALL=$(MAX_ALL_MAK) -DMAX_SUB=$(MAX_SUB_MAK)  # -std=gnu++0x
 CPPFLAGS = -std=c++14 
-OURFLAGS = $(MYFLAGS) $(EXTRAFLAGS)
+OURFLAGS = $(MYFLAGS) ${CPPFLAGS} $(EXTRAFLAGS)
 
 # so to compile for debugging use make -f scoreassoc.mak DEBUGFLAG=-g
 
