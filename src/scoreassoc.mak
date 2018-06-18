@@ -1,11 +1,12 @@
 # Makefile for all programs relating to scoreassoc
-# You must edit the line below so that it points to the righht folder for your installation of DLIB
+# You must edit the line below so that it points to the righht folder for your installation of DLIB (obtainable from dlib.net)
 DLIB = /home/rejudcu/dlib-19.4
 
 # Destination for executables, change this if you want
 DCBIN = ../bin
 # on cluster must enter this to get right compiler versiion:
-#  scl enable devtoolset-3 bash
+# scl enable devtoolset-3 bash
+# DLIB will only compile with later versions of C/C++
 
 C = gcc
 CC = g++
