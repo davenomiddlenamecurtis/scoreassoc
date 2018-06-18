@@ -17,7 +17,7 @@ MAX_SUB_MAK = 15000
 
 MYFLAGS = $(CFLAGS) -DMAX_LOCI=$(MAX_LOCI_MAK) -DMAX_ALL=$(MAX_ALL_MAK) -DMAX_SUB=$(MAX_SUB_MAK)  # -std=gnu++0x
 CPPFLAGS = -std=c++14 
-OURFLAGS = $(MYFLAGS) ${CPPFLAGS} $(EXTRAFLAGS)
+OURFLAGS = $(MYFLAGS) $(EXTRAFLAGS)
 
 # so to compile for debugging use make -f scoreassoc.mak DEBUGFLAG=-g
 
@@ -51,13 +51,13 @@ VPATH=../src
 	$(C) $(OURFLAGS) ${DEBUGFLAG} -c $< -o ../obj/$@
 	
 lrModel.o: ../src/lrModel.cpp ${DLIB}/dlib/optimization.h
-	$(CC) $(OURFLAGS) ${DEBUGFLAG} -c ../src/lrModel.cpp  -o ../obj/lrModel.o -I ${DLIB}
+	$(CC) $(OURFLAGS) $(CPPFLAGS) ${DEBUGFLAG} -c ../src/lrModel.cpp  -o ../obj/lrModel.o -I ${DLIB}
 	
 combineGeneScores: combineGeneScores.o dcerror.o
 	$(CC) ${DEBUGFLAG} -o combineGeneScores combineGeneScores.o dcerror.o -lm
 
 fitScoresWithDlib.o: ../src/fitScores.cpp ${DLIB}/dlib/optimization.h
-	$(CC) $(OURFLAGS) ${DEBUGFLAG} -c ../src/fitScores.cpp  -o ../obj/fitScoresWithDlib.o -I ${DLIB}
+	$(CC) $(OURFLAGS) $(CPPFLAGS) ${DEBUGFLAG} -c ../src/fitScores.cpp  -o ../obj/fitScoresWithDlib.o -I ${DLIB}
 
 fitScores: fitScoresWithDlib.o dcerror.o
 	$(CC) ${DEBUGFLAG} -o fitScores ../obj/fitScoresWithDlib.o ../obj/dcerror.o -lm
