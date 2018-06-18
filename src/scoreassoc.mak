@@ -1,4 +1,6 @@
 # Makefile for all programs relating to scoreassoc
+# You must edit the line below so that it points to the righht folder for your installation of DLIB
+DLIB = /home/rejudcu/dlib-19.4
 
 # Destination for executables, change this if you want
 DCBIN = ../bin
@@ -21,7 +23,6 @@ HEADERS = cdflib.h  dcerror.hpp  dcexpr.hpp  fisher.h  sagcutils.h  safilterfunc
 # cheat and just assume all code dependent on all of these
 
 EXES = scoreassoc pathwayAssoc permPathwayAssoc makeScoreTable # fitScores combineGeneScores getVarScores combineCohorts 
-DLIB = /home/rejudcu/dlib-19.4
 
 ifdef INOBJ
 all: ${EXES}
