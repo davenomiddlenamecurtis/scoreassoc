@@ -135,6 +135,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization.h" />
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\find_max_factor_graph_nmplp.h" />
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\find_max_factor_graph_viterbi.h" />
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\find_max_parse_cky.h" />
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\max_cost_assignment.h" />
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\max_sum_submatrix.h" />
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\optimization.h" />
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\optimization_bobyqa.h" />
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\optimization_least_squares.h" />
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\optimization_oca.h" />
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\optimization_solve_qp2_using_smo.h" />
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\optimization_solve_qp3_using_smo.h" />
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\optimization_solve_qp_using_smo.h" />
     <ClInclude Include="..\..\src\cdflib.h" />
     <ClInclude Include="..\..\src\dcerror.hpp" />
     <ClInclude Include="..\..\src\dcexpr.hpp" />

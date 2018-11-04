@@ -128,6 +128,7 @@ int sort_trios(subject **sub, int nsub, par_info *pi, sa_par_info *spi,subject *
 					if (parent_ptr[p]->all[l][a]!=1)
 						goto not_de_novo;
 			}
+			// both parents are 11
 			if (child_ptr->all[l][0] == 1 && child_ptr->all[l][1] == 1)
 			{
 				case_ptr->all[l][0]=case_ptr->all[l][1]=cont_ptr->all[l][0]=cont_ptr->all[l][1]=1;
@@ -272,6 +273,7 @@ int sort_trios(subject **sub, int nsub, par_info *pi, sa_par_info *spi,subject *
 				error("Made an error in sorting out case genotype in trio containing: ", child_ptr->id);
 				return 0;
 			}
+			// the case alleles are now phased to indicate parental origin
 			if (parent_ptr[0]->all[l][0]+parent_ptr[0]->all[l][1]+parent_ptr[1]->all[l][0]+parent_ptr[1]->all[l][1] != 
 				case_ptr->all[l][0]+case_ptr->all[l][1]+cont_ptr->all[l][0]+cont_ptr->all[l][1]
 				&& is_non_mendelian[0]==0 && is_non_mendelian[1]==0 && is_de_novo==0)

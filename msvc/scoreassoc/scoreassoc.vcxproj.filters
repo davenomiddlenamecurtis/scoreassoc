@@ -39,6 +39,45 @@
     <ClInclude Include="..\..\src\lrModel.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\find_max_factor_graph_nmplp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\find_max_factor_graph_viterbi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\find_max_parse_cky.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\max_cost_assignment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\max_sum_submatrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\optimization.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\optimization_bobyqa.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\optimization_least_squares.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\optimization_oca.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\optimization_solve_qp_using_smo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\optimization_solve_qp2_using_smo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\optimization_solve_qp3_using_smo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\dcdflib.c">
