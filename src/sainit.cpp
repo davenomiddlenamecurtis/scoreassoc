@@ -44,7 +44,7 @@ option opt[]=
 	{ "triofile", TRIOFILE },
 	{ "outfile", OUTFILE },
 	{ "scorefile", SCOREFILE },
-	{ "nostringtomatchthis", NUMDATAFILETYPES },
+	{ "nostringtomatchthis", NUMDATAFILETYPES }, // data files above must be in same order as enum in header
 	{ "numloci", NUMLOCI },
 // need this if using gc files
 	{ "ldthreshold", LDTHRESHOLD },
@@ -241,7 +241,7 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 		case OUTFILE:
 		case SCOREFILE:
 		case TRIOFILE:
-			if (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num) == 0 || arg[0]=='-' || sscanf(arg, "%s",spi->df[opt[a].o].fn) != 1)
+			if (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num) == 0 || arg[0]=='-' || sscanf(arg, "%s",spi->df[a].fn) != 1)
 				error=1;
 			break;
 		}
