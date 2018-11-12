@@ -63,7 +63,9 @@ if (spi.use_trios)
 	if (atoi(comments[0])>22 || toupper(comments[0][0]) == 'X' || toupper(comments[0][0]) == 'Y' ||
 		toupper(comments[0][0]) == 'C'&&toupper(comments[0][1]) == 'H'&&toupper(comments[0][2]) == 'R' && (atoi(comments[0] + 3) > 22 || toupper(comments[0][3]) == 'X' || toupper(comments[0][3]) == 'Y'))
 	{
-		error("Cannot at present use trios for genes on X or Y chromosome", "");
+		fprintf(spi.df[OUTFILE].fp, "Cannot at present use trios for genes on X or Y chromosome, but have this comment: %s", comments[0]);
+		fclose(spi.df[OUTFILE].fp);
+		error("Cannot at present use trios for genes on X or Y chromosome, but have this comment: ", comments[0]);
 		return 1;
 	}
 }
