@@ -126,7 +126,7 @@ void perm_subs(subject **s,int nsub);
 void get_means_ll(float *means_ll,int *found_hap,gc_res *cont_res,gc_res *case_res,gc_res *all_res,int maxhap);
 void fill_res(char *root,gc_res *res,subject **s,int nsub,int cc,int gr,par_info *pi,int maxhap);
 
-#define LONG_LINE_LENGTH MAX_LOCI*200
+#define LONG_LINE_LENGTH MAX_LOCI*1000
 extern char long_line[]; /* for thousands of markers */
 #endif
 
