@@ -37,7 +37,6 @@ int main(int argc, char *argv[])
 	float *score,SLP,p;
 	int s,n_non_mendelian,t;
 	non_mendelian *non_mendelians;
-	char *non_mendelian_report;
 	par_info pi;
 	sa_par_info spi;
 	subject **sub,**new_sub,**real_sub;
@@ -82,11 +81,9 @@ if (spi.use_trios)
 		sub=new_sub;
 		real_nsub=nsub;
 		nsub=n_new_sub;
-		assert(non_mendelian_report=(char*)malloc(strlen(long_line)+1));
-		strcpy(non_mendelian_report,long_line);
 	}
 else
-	non_mendelian_report=0;
+	non_mendelians=0;
 	// not used, compiler error otherwise
 fprintf(spi.df[OUTFILE].fp,"scoreassoc output\n"
 "Locus                                             contAA  contAB  contBB  contFreq  caseAA  caseAB  caseBB  caseFreq  MAF       rarer  weight   %s\n",
@@ -132,7 +129,7 @@ if (spi.numTestFiles>0)
 }
 
 if (spi.use_trios)
-	output_nm_report(spi.df[OUTFILE].fp,&pi,non_mendelian_report);
+	output_nm_report(spi.df[OUTFILE].fp, &pi, n_non_mendelian, non_mendelians);
 
 if (spi.df[SCOREFILE].fp)
 {

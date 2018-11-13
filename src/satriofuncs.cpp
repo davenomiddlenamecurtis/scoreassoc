@@ -18,25 +18,23 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 #include "scoreassoc.hpp"
+#include <assert.h>
 
-int output_nm_report(FILE *fp, par_info *pi, char *non_mendelian_report)
+int output_nm_report(FILE *fp, par_info *pi, int n_non_mendelians, non_mendelian *non_mendelians)
 {
-	char *ptr,*sptr;
-	int l, pl;
+	int l, pl,m;
 	fprintf(fp, "\nDe novo and non-Mendelian transmission list:\n");
-	sptr = non_mendelian_report;
-	while ((ptr=strchr(sptr,'\n'))!=0 && sscanf(sptr,"Locus %d",&l)==1)
+	for (m=0;m<n_non_mendelians;++m)
 	{
-		*ptr='\0';
+		sscanf(non_mendelians[m].report, "Locus %d", &l);
 		for (pl = 0; pl < pi->n_loci_to_use; ++pl)
 		{
 			if (l==pi->loci_to_use[pl])
 			{
-				fprintf(fp,"%s\n",strchr(sptr,':')+2);
+				fprintf(fp,"%s\n",strchr(non_mendelians[m].report,':')+2);
 				break;
 			}
 		}
-		sptr=ptr+1;
 	}
 	fprintf(fp,"\n");
 	return 1;
@@ -283,7 +281,7 @@ int sort_trios(subject **sub, int nsub, par_info *pi, sa_par_info *spi,subject *
 			}
 			if (is_de_novo)
 			{
-				sprintf(strchr(non_mendelian_report, '\0'),"Locus %d: De novo mutation detected in transmissions from %s and %s to %s, genotypes: %s:%d%d %s:%d%d %s:%d%d  %s\n",
+				sprintf(non_mendelian_report,"Locus %d: De novo mutation detected in transmissions from %s and %s to %s, genotypes: %s:%d%d %s:%d%d %s:%d%d  %s",
 					l,parent_ptr[0]->id, parent_ptr[1]->id, child_ptr->id,
 					child_ptr->id,child_ptr->all[l][0],child_ptr->all[l][1],
 					parent_ptr[0]->id,parent_ptr[0]->all[l][0],parent_ptr[0]->all[l][1],
@@ -292,6 +290,8 @@ int sort_trios(subject **sub, int nsub, par_info *pi, sa_par_info *spi,subject *
 				non_mendelians[*n_non_mendelian].sub=child_num;
 				non_mendelians[*n_non_mendelian].loc=l;
 				non_mendelians[*n_non_mendelian].nd=DE_NOVO;
+				assert((non_mendelians[*n_non_mendelian].report = (char*)malloc(strlen(non_mendelian_report) + 1)) != 0);
+				strcpy(non_mendelians[*n_non_mendelian].report, non_mendelian_report);
 				++*n_non_mendelian;
 			}
 			else for (p = 0; p < 2; ++p)

@@ -81,6 +81,7 @@ int do_ttest, do_lrtest;
 enum { DE_NOVO=0, NON_MENDELIAN };
 struct non_mendelian_t {
 	int loc,sub,nd;
+	char *report;
 };
 typedef struct non_mendelian_t non_mendelian;
 
@@ -111,7 +112,7 @@ void write_scores(FILE *fs,subject **sub,int nsub,float *score);
 void do_recessive_HWE_test(FILE *fo,float *score,subject **sub,int nsub,par_info *pi,sa_par_info *spi,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],float *weight,float *missing,int *old_rarer,char names[MAX_LOCI][LOCUS_NAME_LENGTH]);
 void do_recessive_HWE_test_with_haplotypes(FILE *fo, float *score, subject **sub, int nsub, par_info *pi,sa_par_info *spi, float cc_freq[2][MAX_LOCI], float cc_count[2][MAX_LOCI], int max_cc[2], float *weight, float *missing, int *old_rarer, char names[MAX_LOCI][LOCUS_NAME_LENGTH]);
 extern int sort_trios(subject **sub,int nsub,par_info *pi, sa_par_info *spi, subject **new_sub,non_mendelian *nm,int *n_non_mendelian,char *non_mendelian_report);
-extern int output_nm_report(FILE *fp, par_info *pi, char *non_mendelian_report);
+extern int output_nm_report(FILE *fp, par_info *pi, int n_non_mendelians, non_mendelian *non_mendelians);
 int read_all_gen_subjects(FILE *fi,subject **s,int *nsub,par_info *pi);
 int read_freqs_datafile(par_info *pi,sa_par_info *spi,int cc,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2]);
 float do_onetailed_LRT(FILE *fo,lrModel *m,lr_test_par_info *spi);
