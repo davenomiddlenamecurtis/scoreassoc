@@ -298,7 +298,7 @@ int sort_trios(subject **sub, int nsub, par_info *pi, sa_par_info *spi,subject *
 			{
 				if (is_non_mendelian[p])
 				{
-					sprintf(strchr(non_mendelian_report, '\0'),"Locus %d: Non-mendelian transmission from %s to %s, genotypes: %s:%d%d %s:%d%d %s:%d%d  %s\n",
+					sprintf(non_mendelian_report,"Locus %d: Non-mendelian transmission from %s to %s, genotypes: %s:%d%d %s:%d%d %s:%d%d  %s\n",
 						l,parent_ptr[p]->id, child_ptr->id,
 						child_ptr->id,child_ptr->all[l][0],child_ptr->all[l][1],
 						parent_ptr[0]->id,parent_ptr[0]->all[l][0],parent_ptr[0]->all[l][1],
@@ -307,6 +307,8 @@ int sort_trios(subject **sub, int nsub, par_info *pi, sa_par_info *spi,subject *
 					non_mendelians[*n_non_mendelian].sub=child_num;
 					non_mendelians[*n_non_mendelian].loc=l;
 					non_mendelians[*n_non_mendelian].nd=NON_MENDELIAN;
+					assert((non_mendelians[*n_non_mendelian].report = (char*)malloc(strlen(non_mendelian_report) + 1)) != 0);
+					strcpy(non_mendelians[*n_non_mendelian].report, non_mendelian_report);
 					++*n_non_mendelian;
 				}
 			}
