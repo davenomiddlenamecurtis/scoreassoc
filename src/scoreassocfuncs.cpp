@@ -645,10 +645,40 @@ int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char 
 	if (spi->df[LOCUSNAMEFILE].fp)
 	{
 		for (l = 0; l < pi->nloci; ++l)
+#if 1
+		{
+			int ch,c;
+			while ((ch = fgetc(spi->df[LOCUSNAMEFILE].fp)) != EOF && isspace(ch))
+				;
+			if (ch == EOF)
+			{
+				error("Could not read all locus names/comments from ", spi->df[LOCUSNAMEFILE].fn);
+				return 0;
+			}
+			c = 0;
+			while (ch!=EOF && !isspace(ch))
+			{
+				if (c == MAX_COMMENT_LENGTH - 1)
+				{
+					comments[l][c] = '\0';
+					while ((ch = fgetc(spi->df[LOCUSNAMEFILE].fp)) != EOF && !isspace(ch))
+						;
+					break;
+				}
+				else
+				{
+					comments[l][c++] = ch;
+					ch = fgetc(spi->df[LOCUSNAMEFILE].fp);
+				}
+			}
+			comments[l][c] = '\0';
+		}
+#else
 			if (fscanf(spi->df[LOCUSNAMEFILE].fp,"%s ",&comments[l])!=1)
 			{
 				dcerror(1, "Not enough values in locusnamefile %s\n", spi->df[LOCUSNAMEFILE].fn); exit(1);
 			}
+#endif
 	}
 	if(spi->df[CONTFREQFILE].fp)
 	{
