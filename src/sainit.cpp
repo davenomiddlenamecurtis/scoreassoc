@@ -54,6 +54,7 @@ option opt[]=
 	{ "dolrtest",DOLRTEST },
 	{ "start-from-fitted",STARTFROMFITTED },
 	{ "usehaps", USEHAPS },
+	{ "showhaplocusnames", SHOWHAPLOCUSNAMES },
 	{ "weightfactor", WEIGHTFACTOR },
 	{"lamda",LAMDA},
 	{"varfile",VARFILE},
@@ -132,7 +133,7 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 	spi->wfactor=10;
 	spi->do_recessive_test=0;
 	spi->LD_threshold=0.9;
-	spi->use_haplotypes=spi->use_trios=0;
+	spi->show_hap_locus_names=spi->use_haplotypes=spi->use_trios=0;
 	spi->use_cc_freqs[0]=spi->use_cc_freqs[1]=0;
 	spi->use_probs=0;
 	spi->do_ttest = 1;
@@ -213,10 +214,14 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 		case STARTFROMFITTED:
 			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->start_from_fitted) != 1)
 				error = 1;
-			break;
+			break; 
 		case USEHAPS:
-			if(getNextArg(arg,argc,argv,fp,&arg_depth,&arg_num) == 0 || sscanf(arg,"%d",&spi->use_haplotypes)!=1)
-				error=1;
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->use_haplotypes) != 1)
+				error = 1;
+			break;
+		case SHOWHAPLOCUSNAMES:
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->show_hap_locus_names) != 1)
+				error = 1;
 			break;
 		case VARFILE:
 			if(getNextArg(arg,argc,argv,fp,&arg_depth,&arg_num) == 0 || sscanf(arg,"%s",spi->varFiles[spi->numVarFiles++].fn)!=1)

@@ -326,6 +326,7 @@ spi->use_func_weights=spi->use_cc_freqs[0]=spi->use_cc_freqs[1]=spi->use_locus_n
 spi->weight_threshold=0;
 spi->LD_threshold=1;
 spi->use_haplotypes=0;
+spi->show_hap_locus_names = 0;
 if (fgets(long_line,LONG_LINE_LENGTH,fp)) // extra info is optional
 {
 	sscanf(long_line,"%d %d %d %d %d %d %f %f %d",

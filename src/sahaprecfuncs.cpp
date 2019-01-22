@@ -75,7 +75,10 @@ void do_recessive_HWE_test_with_haplotypes(FILE *fo, float *score, subject **sub
 				fprintf(fo, "RECESSIVE_HAPLOTYPE_%d ", a);
 				for (l = 0; l < rec_pi.n_loci_to_use; ++l)
 				{
-					fprintf(fo,"%d ",1+(sub[s]->all[rec_pi.loci_to_use[l]][a] == rec_rarer[rec_pi.loci_to_use[l]]));
+					if (spi->show_hap_locus_names == 0)
+						fprintf(fo, "%d ", 1 + (sub[s]->all[rec_pi.loci_to_use[l]][a] == rec_rarer[rec_pi.loci_to_use[l]]));
+					else if (sub[s]->all[rec_pi.loci_to_use[l]][a] == rec_rarer[rec_pi.loci_to_use[l]])
+						fprintf(fo, "%s ", names[rec_pi.loci_to_use[l]]);
 				}
 				fprintf(fo,"\n");
 			}
