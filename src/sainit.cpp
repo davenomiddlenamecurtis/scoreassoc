@@ -90,6 +90,7 @@ void usage()
 "--varfile file\n"
 "--testfile file\n"
 "--usehaps x\n"
+"--showhaplocinames x\n"
 "--numloci x (needed with --gcdatafile or --gendatafile)\n"
 "--argfile file (additional arguments)\n"
 );
