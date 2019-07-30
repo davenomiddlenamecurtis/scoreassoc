@@ -26,7 +26,7 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #include <math.h>
 #include <string>
 #include <map>
-#include "lrModel.hpp"
+#include "glModel.hpp"
 
 extern "C" {
 #include "sagcutils.h"
@@ -115,12 +115,12 @@ extern int sort_trios(subject **sub,int nsub,par_info *pi, sa_par_info *spi, sub
 extern int output_nm_report(FILE *fp, par_info *pi, int n_non_mendelians, non_mendelian *non_mendelians);
 int read_all_gen_subjects(FILE *fi,subject **s,int *nsub,par_info *pi);
 int read_freqs_datafile(par_info *pi,sa_par_info *spi,int cc,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2]);
-float do_onetailed_LRT(FILE *fo,lrModel *m,lr_test_par_info *spi);
-void fillModelWithVars(lrModel *m,int nsub, lr_test_par_info *spi,int which=-1);
-void printModel(FILE *fo, char *LLstr, double LL, lrModel *m);
+float do_onetailed_LRT(FILE *fo,glModel *m,lr_test_par_info *spi);
+void fillModelWithVars(glModel *m,int nsub, lr_test_par_info *spi,int which=-1);
+void printModel(FILE *fo, char *LLstr, double LL, glModel *m);
 extern double cumulBinom(int N,int k,double p);
-float evaluateModel(FILE *fo, lrModel *m, int *toUse, float *startBetas, int *toFit, char *name);
-float runTestFile(FILE *fo, char *fn, lrModel *m, lr_test_par_info *spi);
+float evaluateModel(FILE *fo, glModel *m, int *toUse, float *startBetas, int *toFit, char *name);
+float runTestFile(FILE *fo, char *fn, glModel *m, lr_test_par_info *spi);
 char *skip_word(char *ptr);
 int read_ps_datafile(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr, char names[MAX_LOCI][LOCUS_NAME_LENGTH], char comments[MAX_LOCI][MAX_COMMENT_LENGTH], float func_weight[MAX_LOCI],
 	std::map<std::string, float> weightMap, std::map<std::string, std::string> effectMap);

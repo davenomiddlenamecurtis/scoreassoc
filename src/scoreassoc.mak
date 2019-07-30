@@ -50,6 +50,9 @@ VPATH=../src
 %.o: ../src/%.c $(HEADERS)
 	$(C) $(OURFLAGS) ${DEBUGFLAG} -c $< -o ../obj/$@
 	
+glModel.o: ../src/glModel.cpp ${DLIB}/dlib/optimization.h
+	$(CC) $(OURFLAGS) $(CPPFLAGS) ${DEBUGFLAG} -c ../src/lrModel.cpp  -o ../obj/lrModel.o -I ${DLIB}
+	
 lrModel.o: ../src/lrModel.cpp ${DLIB}/dlib/optimization.h
 	$(CC) $(OURFLAGS) $(CPPFLAGS) ${DEBUGFLAG} -c ../src/lrModel.cpp  -o ../obj/lrModel.o -I ${DLIB}
 	
@@ -65,8 +68,8 @@ fitScores: fitScoresWithDlib.o dcerror.o
 getVarScores: getVarScores.o saglobals.o scoreassocfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o 
 	$(CC) ${DEBUGFLAG} -o getVarScores getVarScores.o saglobals.o scoreassocfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o -lm
 
-scoreassoc: scoreassoc.o sainit.o salrtests.o lrModel.o saglobals.o scoreassocfuncs.o sarecfuncs.o sahaprecfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o 
-	$(CC) ${DEBUGFLAG} -o scoreassoc scoreassoc.o sainit.o salrtests.o lrModel.o saglobals.o scoreassocfuncs.o sarecfuncs.o sahaprecfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o -lm
+scoreassoc: scoreassoc.o sainit.o salrtests.o glModel.o saglobals.o scoreassocfuncs.o sarecfuncs.o sahaprecfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o 
+	$(CC) ${DEBUGFLAG} -o scoreassoc scoreassoc.o sainit.o salrtests.o glModel.o saglobals.o scoreassocfuncs.o sarecfuncs.o sahaprecfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o -lm
 
 combineCohorts: combineCohorts.o dcdflib.o ipmpar.o dcerror.o 
 	$(CC) ${DEBUGFLAG} -o combineCohorts combineCohorts.o dcdflib.o ipmpar.o dcerror.o -lm

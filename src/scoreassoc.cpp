@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 	par_info pi;
 	sa_par_info spi;
 	subject **sub,**new_sub,**real_sub;
-	lrRidgePenaltyModel model;
+	glRidgePenaltyModel model;
 	pi.use_cc=1;
 	printf("%s v%s\n",PROGRAM,SAVERSION);
 	printf("MAX_LOCI=%d\nMAX_SUB=%d\n",MAX_LOCI,MAX_SUB);

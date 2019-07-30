@@ -36,9 +36,6 @@
     <ClInclude Include="..\..\src\scoreassoc.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\lrModel.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -76,6 +73,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\dlib-19.4\dlib\optimization\optimization_solve_qp3_using_smo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\glModel.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -125,7 +125,7 @@
     <ClCompile Include="..\..\src\salrtests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\lrModel.cpp">
+    <ClCompile Include="..\..\src\glModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

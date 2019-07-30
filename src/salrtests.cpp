@@ -23,12 +23,12 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #include <math.h>
 #include <assert.h>
 #include "scoreassoc.hpp"
-#include "lrModel.hpp"
+#include "glModel.hpp"
 #include "dcerror.hpp"
 
 char *intercept="intercept";
 
-float runTestFile(FILE *fo, char *fn, lrModel *m, lr_test_par_info *spi)
+float runTestFile(FILE *fo, char *fn, glModel *m, lr_test_par_info *spi)
 {
 	FILE *ft;
 	int b, scoreVar, toUse[MAXLRVARIABLES + 1], toFit0[MAXLRVARIABLES + 1], toFit1[MAXLRVARIABLES + 1],t0,t1;
@@ -95,7 +95,7 @@ float runTestFile(FILE *fo, char *fn, lrModel *m, lr_test_par_info *spi)
 	return SLP;
 }
 
-void fillModelWithVars(lrModel *m, int nsub, lr_test_par_info *spi,int which)
+void fillModelWithVars(glModel *m, int nsub, lr_test_par_info *spi,int which)
 {
 	int s, b;
 	if (which == -1)
@@ -115,7 +115,7 @@ void fillModelWithVars(lrModel *m, int nsub, lr_test_par_info *spi,int which)
 			m->X[s][which] = allVars[which].val[s];
 }
 
-float evaluateModel(FILE *fo, lrModel *m, int *toUse, float *startBetas, int *toFit,char *name)
+float evaluateModel(FILE *fo, glModel *m, int *toUse, float *startBetas, int *toFit,char *name)
 {
 	float lnL;
 	int b;
@@ -134,7 +134,7 @@ float evaluateModel(FILE *fo, lrModel *m, int *toUse, float *startBetas, int *to
 	return lnL;
 }
 
-void printModel(FILE *fo, char *LLstr,double LL,lrModel *m)
+void printModel(FILE *fo, char *LLstr,double LL,glModel *m)
 {
 	// change this to be row-wise and use names
 	int b,bb,c;
@@ -176,7 +176,7 @@ void printModel(FILE *fo, char *LLstr,double LL,lrModel *m)
 	free(realSE);
 }
 
-float do_onetailed_LRT(FILE *fo, lrModel *m,lr_test_par_info *spi)
+float do_onetailed_LRT(FILE *fo, glModel *m,lr_test_par_info *spi)
 {
 	double L0, L1, p, SLP,chisq;
 	int b,scoreVar,toUse[MAXLRVARIABLES+1],toFit[MAXLRVARIABLES+1];
