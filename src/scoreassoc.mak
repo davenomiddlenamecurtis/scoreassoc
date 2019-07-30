@@ -51,7 +51,7 @@ VPATH=../src
 	$(C) $(OURFLAGS) ${DEBUGFLAG} -c $< -o ../obj/$@
 	
 glModel.o: ../src/glModel.cpp ${DLIB}/dlib/optimization.h
-	$(CC) $(OURFLAGS) $(CPPFLAGS) ${DEBUGFLAG} -c ../src/lrModel.cpp  -o ../obj/lrModel.o -I ${DLIB}
+	$(CC) $(OURFLAGS) $(CPPFLAGS) ${DEBUGFLAG} -c ../src/glModel.cpp  -o ../obj/glModel.o -I ${DLIB}
 	
 lrModel.o: ../src/lrModel.cpp ${DLIB}/dlib/optimization.h
 	$(CC) $(OURFLAGS) $(CPPFLAGS) ${DEBUGFLAG} -c ../src/lrModel.cpp  -o ../obj/lrModel.o -I ${DLIB}
