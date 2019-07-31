@@ -52,6 +52,7 @@ option opt[]=
 	{ "dorecessive", DORECESSIVE },
 	{ "dottest",DOTTEST },
 	{ "dolrtest",DOLRTEST },
+	{ "dolinrtest",DOLINRTEST },
 	{ "start-from-fitted",STARTFROMFITTED },
 	{ "usehaps", USEHAPS },
 	{ "showhaplocusnames", SHOWHAPLOCUSNAMES },
@@ -210,6 +211,10 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 			break;
 		case DOLRTEST:
 			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->do_lrtest) != 1)
+				error = 1;
+			break;
+		case DOLINRTEST:
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->do_linrtest) != 1)
 				error = 1;
 			break;
 		case STARTFROMFITTED:

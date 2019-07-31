@@ -67,7 +67,7 @@ public:
 	int readParms(int argc,char *argv[]);
 	int getNextArg(char *nextArg,int argc,char *argv[],FILE **fpp,int *argNum);
 	FILE *summaryOutputFile,*scoreTableFile;
-	int do_ttest, do_lrtest;;
+	int do_ttest, do_lrtest,do_linrtest;
 };
 
 class pathwaySubject {
@@ -126,7 +126,7 @@ int paParams::readParms(int argc, char *argv[])
 	geneLevelOutputThreshold=1000;
 	scoreTableFile=0;
 	do_ttest = 1;
-	do_lrtest = 0;
+	do_lrtest = do_linrtest=0;
 	start_from_fitted = 1;
 	numVars = numVarFiles = numTestFiles = 0;
 	lamda = DEFAULT_LAMDA;
@@ -208,6 +208,10 @@ int paParams::readParms(int argc, char *argv[])
 		else if (FILLARG("--dolrtest"))
 		{
 			do_lrtest = atoi(arg);
+		}
+		else if (FILLARG("--dolinrtest"))
+		{
+			do_linrtest = atoi(arg);
 		}
 		else if (FILLARG("--start-from-fitted"))
 		{
@@ -479,12 +483,18 @@ float runOnePathway(char *line, pathwaySubject **sub, lrModel *model,paParams *p
 	if (mean[0] > mean[1])
 		pathway_p = 1.0 - pathway_p;
 	}
-	if(pp->do_lrtest||pp->numTestFiles>0)
+	if(pp->do_lrtest || pp->do_linrtest || pp->numTestFiles>0)
 		fillModelWithVars(model,pp->nSub,pp,pp->scoreCol);
 	if (pp->do_lrtest)
 	{
 		SLP = do_onetailed_LRT(fo, model, pp);
-		if (writeFile &&pp->summaryOutputFile != 0)
+		if (writeFile && pp->summaryOutputFile != 0)
+			fprintf(pp->summaryOutputFile, "%f\t", SLP);
+	}
+	if (pp->do_linrtest)
+	{
+		SLP = do_onetailed_LRT(fo, model, pp);
+		if (writeFile && pp->summaryOutputFile != 0)
 			fprintf(pp->summaryOutputFile, "%f\t", SLP);
 	}
 	if (pp->numTestFiles > 0)

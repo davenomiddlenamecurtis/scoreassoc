@@ -28,7 +28,16 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 
 char *intercept="intercept";
 
-float runTestFile(FILE *fo, char *fn, glModel *m, lr_test_par_info *spi)
+float runLinTestFile(FILE* fo, char* fn, glModel* m, lr_test_par_info* spi)
+{
+	float f;
+	m->useLinearRegression(1);
+	f=runTestFile(fo, fn, m, spi);
+	m->useLinearRegression(0);
+	return f;
+}
+
+float runTestFile(FILE* fo, char* fn, glModel* m, lr_test_par_info* spi)
 {
 	FILE *ft;
 	int b, scoreVar, toUse[MAXLRVARIABLES + 1], toFit0[MAXLRVARIABLES + 1], toFit1[MAXLRVARIABLES + 1],t0,t1;
@@ -176,11 +185,12 @@ void printModel(FILE *fo, char *LLstr,double LL,glModel *m)
 	free(realSE);
 }
 
-float do_onetailed_LRT(FILE *fo, glModel *m,lr_test_par_info *spi)
+float do_onetailed_LRT(FILE *fo, glModel *m,lr_test_par_info *spi,int do_linear)
 {
 	double L0, L1, p, SLP,chisq;
 	int b,scoreVar,toUse[MAXLRVARIABLES+1],toFit[MAXLRVARIABLES+1];
 	float startBetas[MAXLRVARIABLES+1];
+	m->useLinearRegression(do_linear);
 	for(b=0;b<spi->numVars;++b)
 		if(!strcmp(allVars[b].name,"score"))
 			break;
@@ -210,7 +220,8 @@ float do_onetailed_LRT(FILE *fo, glModel *m,lr_test_par_info *spi)
 	if (fo)
 		fprintf(fo,
 			"chisq = %.2f, 1 df, p = %10.8f\n"
-			"lrSLP = %8.2f (signed log10(p), positive if cases have more variants than controls)\n",chisq,p,SLP);
+			"%s = %8.2f (signed log10(p), positive if cases have more variants than controls)\n",chisq,p,do_linear?"lrSLP":"linrSLP",SLP);
+	m->useLinearRegression(0);
 	return SLP;
 }
 

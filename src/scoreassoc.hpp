@@ -41,7 +41,7 @@ extern "C" {
 #define DEFAULT_LAMDA 1
 
 enum OPT {
-	PSDATAFILE=0,GCDATAFILE,GENDATAFILE,WEIGHTFILE,ANNOTFILE,FILTERFILE,LOCUSFILTERFILE,LOCUSNAMEFILE,LOCUSWEIGHTFILE,TRIOFILE,SAMPLEFILE,CASEFREQFILE,CONTFREQFILE,OUTFILE,SCOREFILE,NUMDATAFILETYPES,NUMLOCI,LDTHRESHOLD,WEIGHTTHRESHOLD,DORECESSIVE,DOTTEST,DOLRTEST,STARTFROMFITTED,USEHAPS,SHOWHAPLOCUSNAMES,WEIGHTFACTOR,LAMDA,VARFILE,TESTFILE,ARGFILE,NUMOPTS, FLAGFILE
+	PSDATAFILE=0,GCDATAFILE,GENDATAFILE,WEIGHTFILE,ANNOTFILE,FILTERFILE,LOCUSFILTERFILE,LOCUSNAMEFILE,LOCUSWEIGHTFILE,TRIOFILE,SAMPLEFILE,CASEFREQFILE,CONTFREQFILE,OUTFILE,SCOREFILE,NUMDATAFILETYPES,NUMLOCI,LDTHRESHOLD,WEIGHTTHRESHOLD,DORECESSIVE,DOTTEST,DOLRTEST,DOLINRTEST,STARTFROMFITTED,USEHAPS,SHOWHAPLOCUSNAMES,WEIGHTFACTOR,LAMDA,VARFILE,TESTFILE,ARGFILE,NUMOPTS, FLAGFILE
 };
 // must begin with datafiles followed by output files
 
@@ -75,7 +75,7 @@ public:
 sa_data_file_type df[NUMDATAFILETYPES];
 float wfactor,LD_threshold,weight_threshold;
 int use_func_weights,use_cc_freqs[2],use_locus_names,use_comments,do_recessive_test,use_haplotypes,show_hap_locus_names,use_trios,use_probs;
-int do_ttest, do_lrtest;
+int do_ttest, do_lrtest,do_linrtest;
 };
 
 enum { DE_NOVO=0, NON_MENDELIAN };
@@ -115,7 +115,7 @@ extern int sort_trios(subject **sub,int nsub,par_info *pi, sa_par_info *spi, sub
 extern int output_nm_report(FILE *fp, par_info *pi, int n_non_mendelians, non_mendelian *non_mendelians);
 int read_all_gen_subjects(FILE *fi,subject **s,int *nsub,par_info *pi);
 int read_freqs_datafile(par_info *pi,sa_par_info *spi,int cc,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2]);
-float do_onetailed_LRT(FILE *fo,glModel *m,lr_test_par_info *spi);
+float do_onetailed_LRT(FILE *fo,glModel *m,lr_test_par_info *spi,int do_linear);
 void fillModelWithVars(glModel *m,int nsub, lr_test_par_info *spi,int which=-1);
 void printModel(FILE *fo, char *LLstr, double LL, glModel *m);
 extern double cumulBinom(int N,int k,double p);

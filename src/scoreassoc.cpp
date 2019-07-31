@@ -103,7 +103,7 @@ if (spi.do_ttest)
 	SLP=do_score_onetailed_ttest(spi.df[OUTFILE].fp,score,sub,nsub,&pi,&spi,cc_freq,cc_count,max_cc,weight,missing_score,rarer);
 
 model.lamda = spi.lamda;
-if(spi.do_lrtest)
+if (spi.do_lrtest)
 {
 	if (!filledModel)
 	{
@@ -112,7 +112,18 @@ if(spi.do_lrtest)
 			model.Y[s] = sub[s]->cc;
 		filledModel = 1;
 	}
-	SLP = do_onetailed_LRT(spi.df[OUTFILE].fp,&model,&spi);
+	SLP = do_onetailed_LRT(spi.df[OUTFILE].fp, &model, &spi, 0);
+}
+if (spi.do_linrtest)
+{
+	if (!filledModel)
+	{
+		fillModelWithVars(&model, nsub, &spi);
+		for (s = 0; s < nsub; ++s)
+			model.Y[s] = sub[s]->cc;
+		filledModel = 1;
+	}
+	SLP = do_onetailed_LRT(spi.df[OUTFILE].fp, &model, &spi, 1);
 }
 if (spi.numTestFiles>0)
 {
