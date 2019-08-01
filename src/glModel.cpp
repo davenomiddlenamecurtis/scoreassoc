@@ -375,8 +375,10 @@ double glModel::getLnL()
 			sigmaX2 += diff * diff;
 		}
 		m = sigmaX / nRow;
-		s2 = sigmaX2 / nRow - m * m;
-		lnL = -nRow / 2 * (LN2PI+log(s2)+1);
+		s2 = sigmaX2 / nRow - m * m; // do not use either of these
+		// lnL = -nRow / 2 * (LN2PI + log(s2) + 1);
+		lnL = -nRow / 2 * (LN2PI + log(sigmaX2/nRow) + 1);
+		// we are using the MLE of the variance given mean is t[r], which is sigmaX2/nRow, hence the last term is 1
 	}
 	return lnL;
 }

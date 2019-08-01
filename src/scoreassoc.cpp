@@ -116,6 +116,7 @@ if (spi.do_lrtest)
 }
 if (spi.do_linrtest)
 {
+	model.lamda = 0;
 	if (!filledModel)
 	{
 		fillModelWithVars(&model, nsub, &spi);
@@ -124,6 +125,7 @@ if (spi.do_linrtest)
 		filledModel = 1;
 	}
 	SLP = do_onetailed_LRT(spi.df[OUTFILE].fp, &model, &spi, 1);
+	model.lamda = spi.lamda;
 }
 if (spi.numTestFiles>0)
 {
