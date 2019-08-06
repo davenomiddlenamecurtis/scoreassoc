@@ -309,7 +309,7 @@ int readSubIds(pathwaySubject **sub,paParams *pp)
 	return pp->nSub;
 }
 
-float runOnePathway(char *line, pathwaySubject **sub, lrModel *model,paParams *pp, int writeFile)
+float runOnePathway(char *line, pathwaySubject **sub, glModel *model,paParams *pp, int writeFile)
 {
 	char pathwayName[1000], pathwayURL[1000], gene[MAX_LOCI][50], scoreFileName[1000], outputFileName[1000], thisGene[50];
 	FILE *fs, *fo;
@@ -487,13 +487,13 @@ float runOnePathway(char *line, pathwaySubject **sub, lrModel *model,paParams *p
 		fillModelWithVars(model,pp->nSub,pp,pp->scoreCol);
 	if (pp->do_lrtest)
 	{
-		SLP = do_onetailed_LRT(fo, model, pp);
+		SLP = do_onetailed_LRT(fo, model, pp,0);
 		if (writeFile && pp->summaryOutputFile != 0)
 			fprintf(pp->summaryOutputFile, "%f\t", SLP);
 	}
 	if (pp->do_linrtest)
 	{
-		SLP = do_onetailed_LRT(fo, model, pp);
+		SLP = do_onetailed_LRT(fo, model, pp,1);
 		if (writeFile && pp->summaryOutputFile != 0)
 			fprintf(pp->summaryOutputFile, "%f\t", SLP);
 	}
@@ -543,7 +543,7 @@ int main(int argc, char *argv[])
 	FILE *fp;
 	pathwaySubject **sub;
 	int s,filledModel;
-	lrRidgePenaltyModel model;
+	glRidgePenaltyModel model;
 	printf("%s v%s\n",PROGRAM,PAVERSION);
 	printf("MAX_LOCI=%d\nMAX_SUB=%d\n",MAX_LOCI,MAX_SUB);
 	if (!pp.readParms(argc,argv))
