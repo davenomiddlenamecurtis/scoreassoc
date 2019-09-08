@@ -32,7 +32,7 @@ extern "C" {
 #include "sagcutils.h"
 };
 
-#define MAX_COMMENT_LENGTH 1500
+#define MAX_COMMENT_LENGTH 15000 // this was set to 1500 but this would miss off some of the VEP annotation
 #define NAME_LENGTH 20
 #define MAXLRVARIABLES 50
 #define MAXLRVARIABLENAMELENGTH 100

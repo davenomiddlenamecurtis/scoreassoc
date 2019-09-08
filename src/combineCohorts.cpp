@@ -279,7 +279,7 @@ int main(int argc,char *argv[])
 	if (cp.scoreFileSpec[0]=='\0')
 		dcerror(1,"Need to specify --score-file-spec");
 	if (cp.outputFileName=='\0')
-		dcerror(1,"Need to specify --output-file-name");
+		dcerror(1,"Need to specify --output-file");
 	fo=fopen(cp.outputFileName,"w");
 	if (fo==0)
 		dcerror(1,"Could not open output file %s",cp.outputFileName);
