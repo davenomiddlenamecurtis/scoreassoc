@@ -34,7 +34,9 @@ extern "C" {
 
 #define MAX_COMMENT_LENGTH 15000 // this was set to 1500 but this would miss off some of the VEP annotation
 #define NAME_LENGTH 20
+#ifndef MAXLRVARIABLES
 #define MAXLRVARIABLES 50
+#endif
 #define MAXLRVARIABLENAMELENGTH 100
 #define LOCUS_NAME_LENGTH 40
 #define LOCUS_NAME_LENGTH_STR "40"

@@ -285,6 +285,12 @@ int readVarFiles(std::map<std::string, int> subIDs, int nSub, lr_test_par_info  
 					dcerror(1, "Variable file %s contains a column headed %s but that variable name is already in use\n", spi->varFiles[i].fn, colValue);
 					return 0;
 				}
+				if (spi->numVars >= MAXLRVARIABLES)
+				{
+					dcerror(1, "Variable file %s contains a column headed %s but the maximum number of variables as specified by MAXLRVARIABLES is %d and has already been reached.\nPlease increase MAXLRVARIABLES then recompile.\n", 
+						spi->varFiles[i].fn, colValue,MAXLRVARIABLES);
+					return 0;
+				}
 				strcpy(allVars[spi->numVars].name, colValue);
 				assert((allVars[spi->numVars].val = (float*)calloc(nSub, sizeof(float))) != 0);
 				for (s = 0; s<nSub; ++s)
