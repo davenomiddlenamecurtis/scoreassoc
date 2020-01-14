@@ -27,8 +27,7 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 int initExclusions(FILE *fp,char *extras[]=0);
-int applyExclusions(par_info *pi);
+int applyExclusions(subject * *sub, int nsub, par_info *pi);
 int stateExclusions(FILE *fp);
 
-extern subject **global_sub;
 #endif

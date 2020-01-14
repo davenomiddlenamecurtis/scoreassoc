@@ -25,7 +25,7 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #define MAXEXCLUSIONS 20
 #define MAXEXCLUSIONSTRLENGTH 200
 
-int currentLocus,nExc;
+static int currentLocus,nExc,nSample[2];
 
 char exclusionStr[MAXEXCLUSIONS][MAXEXCLUSIONSTRLENGTH];
 
@@ -34,21 +34,6 @@ express exclusion[MAXEXCLUSIONS];
 if ((r1=b1->eval())==NULL) return NULL; 
 #define EVAL_R1_R2 \
 if ((r1=b1->eval())==NULL || (r2=b2->eval())==NULL) return NULL; 
-
-dcexpr_val *alt_count_op(vnode *b1)
-{
-dcexpr_val *r1;
-int s,i,c;
-EVAL_R1;
-s=double(*r1);
-double rv=0;
-for (i=0;i<2;++i)
-//	if (global_sub[s-1]->all[currentLocus][i]==rarer[currentLocus]) rarer not set yet
-	if (global_sub[s-1]->all[currentLocus][i]==2)
-		++rv;
-delete r1;
-return new dcexpr_double(rv);
-}
 
 dcexpr_val *weight_op(vnode *b1)
 {
@@ -85,15 +70,26 @@ delete r2;
 return new dcexpr_double(rv);
 }
 
-dcexpr_val *nsub_op(vnode *b1)
+dcexpr_val* nsub_op(vnode* b1)
 {
-dcexpr_val *r1;
-int f;
-EVAL_R1;
-f=double(*r1);
-double rv=cc_count[f][currentLocus];
-delete r1;
-return new dcexpr_double(rv);
+	dcexpr_val* r1;
+	int f;
+	EVAL_R1;
+	f = double(*r1);
+	double rv = cc_count[f][currentLocus];
+	delete r1;
+	return new dcexpr_double(rv);
+}
+
+dcexpr_val* nsample_op(vnode* b1)
+{
+	dcexpr_val* r1;
+	int f;
+	EVAL_R1;
+	f = double(*r1);
+	double rv = nSample[f];
+	delete r1;
+	return new dcexpr_double(rv);
 }
 
 int stateExclusions(FILE *fp)
@@ -112,8 +108,8 @@ int initExclusions(FILE *fp,char *extras[])
 {
 	int e;
 	add_un_op("FREQ",freq_op); // frequency of this variant in controls or cases (0 or 1)
-	add_un_op("NSUB",nsub_op); // number of control or case subjects (0 or 1) typed for this variant 
-	add_un_op("ALTCOUNT",alt_count_op);	// number of ALT alleles possessed by subject s
+	add_un_op("NSUB", nsub_op); // number of control or case subjects (0 or 1) typed for this variant 
+	add_un_op("NSAMPLE", nsample_op); // number of control or case subjects (0 or 1) in the sample
 	add_un_op("WEIGHT",weight_op);	// weight of variant - this is the supplied functional weight because exclusions applied before frequency weights are calculated
 	add_bin_op_next("GENOCOUNT",geno_count_op); // number of case or control subjects who are have genototype - cc GENOCOUNT g AA (0 or 1, 0, 1 or 2)
 	for (nExc=0;fgets(long_line,LONG_LINE_LENGTH,fp) && sscanf(long_line,"%[^\n]",exclusionStr[nExc])==1;++nExc)
@@ -133,10 +129,13 @@ int initExclusions(FILE *fp,char *extras[])
 	return 1;
 }
 
-int applyExclusions(par_info *pi)
+int applyExclusions(subject** sub, int nsub, par_info *pi)
 {
-	int l,ll,e;
-for (l=0;l<pi->n_loci_to_use;++l)
+	int l,ll,e,s;
+	nSample[0] = nSample[1] = 0;
+	for (s = 0; s < nsub; ++s)
+		++nSample[sub[s]->cc];
+	for (l=0;l<pi->n_loci_to_use;++l)
 {
 	currentLocus=pi->loci_to_use[l];
 	for (e=0;e<nExc;++e)

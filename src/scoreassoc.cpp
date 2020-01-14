@@ -89,7 +89,7 @@ fprintf(spi.df[OUTFILE].fp,"scoreassoc output\n"
 "Locus                                             contAA  contAB  contBB  contFreq  caseAA  caseAB  caseBB  caseFreq  MAF       rarer  weight   %s\n",
 	spi.use_comments ? "comment" : "");
 get_freqs(sub,nsub,&pi,&spi,cc_freq,cc_count,cc_genocount);
-applyExclusions(&pi);
+applyExclusions(sub, nsub,&pi);
 set_weights(spi.df[OUTFILE].fp,weight,missing_score,rarer,sub,nsub,&pi,&spi,func_weight,cc_freq,cc_count,max_cc,names,comments);
 get_scores(score,weight,missing_score,rarer,sub,nsub,&pi,&spi);
 filledModel=0;
