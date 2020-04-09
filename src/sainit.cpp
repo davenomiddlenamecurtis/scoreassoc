@@ -49,6 +49,7 @@ option opt[]=
 // need this if using gc files
 	{ "ldthreshold", LDTHRESHOLD },
 	{ "minweight", WEIGHTTHRESHOLD },
+	{ "isquantitative",ISQUANTITATIVE },
 	{ "dorecessive", DORECESSIVE },
 	{ "dottest",DOTTEST },
 	{ "dolrtest",DOLRTEST },
@@ -81,6 +82,7 @@ void usage()
 "--casefreqfile file (provide allele frequency for each locus in cases)\n"
 "--contfreqfile file (provide allele frequency for each locus in controls)\n"
 "--triofile file\n"
+"--isquantitative x (quantitative phenotype)"
 "--ldthreshold x (to discard variants in LD for recessive analysis, default 0.9)\n"
 "--minweight x (to include in recessive analysis, default 0, i.e. all variants)\n"
 "--lamda x\n"
@@ -130,6 +132,8 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 	FILE *fp[MAXDEPTH];
 	arg_depth=-1;
 	arg_num=1;
+	pi->use_cc = 1;
+	pi->is_quantitative = 0;
 	pi->nloci=0;
 	spi->use_locus_names=spi->use_comments=1;
 	spi->wfactor=10;
@@ -140,6 +144,7 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 	spi->use_probs=0;
 	spi->do_ttest = 1;
 	spi->do_lrtest = 0;
+	spi->do_linrtest = 0;
 	spi->start_from_fitted = 1;
 	spi->numVars=spi->numVarFiles=spi->numTestFiles=0;
 	spi->lamda=DEFAULT_LAMDA;
@@ -201,9 +206,13 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 			if (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num) == 0 || sscanf(arg,"%f",&spi->weight_threshold)!=1)
 				error=1;
 			break;
+		case ISQUANTITATIVE:
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &pi->is_quantitative) != 1)
+				error = 1;
+			break;
 		case DORECESSIVE:
-			if(getNextArg(arg,argc,argv,fp,&arg_depth,&arg_num) == 0 || sscanf(arg,"%d",&spi->do_recessive_test)!=1)
-				error=1;
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->do_recessive_test) != 1)
+				error = 1;
 			break;
 		case DOTTEST:
 			if(getNextArg(arg,argc,argv,fp,&arg_depth,&arg_num) == 0 || sscanf(arg,"%d",&spi->do_ttest)!=1)

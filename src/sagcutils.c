@@ -38,6 +38,7 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 int ISTEMP;
+int FSTEMP;
 
 #ifdef USEDCASSERT
 // catch assertion failures so Windows does not do something clever with them
@@ -205,7 +206,16 @@ int read_subject(char *line,subject *s,par_info *pi)
 char *ptr;
 int i,found_error,n_to_skip;
 found_error=0;
-switch (pi->use_cc)
+if (pi->is_quantitative)
+{
+    if (sscanf(line, "%s %f", s->id, &s->pheno) != 2)
+    {
+        error("Syntax error in subject line: ", line); return 0;
+    }
+    n_to_skip = 2;
+}
+else
+  switch (pi->use_cc)
   {
   case 3:
   if (sscanf(line,"%s %d %d",s->id,&s->cc,&s->group)!=3)
@@ -600,8 +610,9 @@ int i,k;
 for (i=nsub-1;i>=1;--i)
   {
   k=rand()%(i+1);
-  INT_SWAP(s[i]->cc,s[k]->cc);
-  }
+  INT_SWAP(s[i]->cc, s[k]->cc);
+  FLOAT_SWAP(s[i]->pheno, s[k]->pheno);
+}
 }
 
 void get_means_ll(float *means_ll,int *found_hap,gc_res *cont_res,gc_res *case_res,gc_res *all_res,int maxhap)

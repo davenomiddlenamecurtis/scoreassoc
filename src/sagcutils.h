@@ -45,7 +45,9 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 
 
 extern int ISTEMP;
-#define INT_SWAP(x,y) (ISTEMP=x,x=y,y=ISTEMP)
+#define INT_SWAP(x,y) (ISTEMP=x,x=y,y=ISTEMP);
+extern float FSTEMP;
+#define FLOAT_SWAP(x,y) (FSTEMP=x,x=y,y=FSTEMP)
 
 
 #define error(s,t) error_func(__LINE__,__FILE__,s,t)
@@ -56,6 +58,7 @@ enum TEST_TYPE {TEST_CC=1,TEST_GROUP};
 
 struct par_info_t {
 int loci_to_use[MAX_LOCI],n_alls[MAX_LOCI],n_loci_to_use,nloci,use_cc,skip_missing;
+int is_quantitative; // phenotype is a trait, every subject is a "case"
 int do_perms,permseed;
 long n_perms,target_for_perms;
 int n_window;
@@ -97,6 +100,7 @@ typedef struct geno_probs_t geno_probs;
 struct subject_t { 
 	char id[MAX_ID_LENGTH + 1]; 
 	int cc, group, skip; union { int all[MAX_LOCI][2]; float prob[MAX_LOCI][3]; }; 
+	float pheno;
 	long geno; int gc_geno;
 };
 

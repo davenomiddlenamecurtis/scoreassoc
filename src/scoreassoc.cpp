@@ -28,7 +28,7 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #include "safilterfuncs.hpp"
 
 #define PROGRAM "scoreassoc"
-#define SAVERSION "5.2"
+#define SAVERSION "5.3"
 
 int main(int argc, char *argv[])
 {
@@ -41,7 +41,6 @@ int main(int argc, char *argv[])
 	sa_par_info spi;
 	subject **sub,**new_sub,**real_sub;
 	glRidgePenaltyModel model;
-	pi.use_cc=1;
 	printf("%s v%s\n",PROGRAM,SAVERSION);
 	printf("MAX_LOCI=%d\nMAX_SUB=%d\n",MAX_LOCI,MAX_SUB);
 
@@ -57,6 +56,11 @@ int main(int argc, char *argv[])
 	if (spi.df[FILTERFILE].fp)
 		initExclusions(spi.df[FILTERFILE].fp);
 	read_all_data(&pi,&spi,sub,&nsub,names,comments,func_weight);
+	if (nsub == 0)
+	{
+		error("There were zero subjects to input","");
+		return 1;
+	}
 if (spi.use_trios)
 {
 	if (atoi(comments[0])>22 || toupper(comments[0][0]) == 'X' || toupper(comments[0][0]) == 'Y' ||
@@ -85,8 +89,13 @@ if (spi.use_trios)
 else
 	non_mendelians=0;
 	// not used, compiler error otherwise
+if (pi.is_quantitative)
+fprintf(spi.df[OUTFILE].fp, "scoreassoc output\n"
+	"Locus                                   contAA : contAB : contBB  contFreq  meanAA   : meanAB   : meanBB    rarer  weight  %s\n",
+	spi.use_comments ? "comment" : "");
+else
 fprintf(spi.df[OUTFILE].fp,"scoreassoc output\n"
-"Locus                                             contAA  contAB  contBB  contFreq  caseAA  caseAB  caseBB  caseFreq  MAF       rarer  weight   %s\n",
+"Locus                                   contAA : contAB : contBB  contFreq  caseAA : caseAB : caseBB  caseFreq  MAF       rarer  weight  %s\n",
 	spi.use_comments ? "comment" : "");
 get_freqs(sub,nsub,&pi,&spi,cc_freq,cc_count,cc_genocount);
 applyExclusions(sub, nsub,&pi);
@@ -120,8 +129,12 @@ if (spi.do_linrtest)
 	if (!filledModel)
 	{
 		fillModelWithVars(&model, nsub, &spi);
-		for (s = 0; s < nsub; ++s)
-			model.Y[s] = sub[s]->cc;
+		if (pi.is_quantitative)
+			for (s = 0; s < nsub; ++s)
+				model.Y[s] = sub[s]->pheno;
+		else
+			for (s = 0; s < nsub; ++s)
+				model.Y[s] = sub[s]->cc;
 		filledModel = 1;
 	}
 	SLP = do_onetailed_LRT(spi.df[OUTFILE].fp, &model, &spi, 1);
@@ -132,8 +145,12 @@ if (spi.numTestFiles>0)
 	if (!filledModel)
 	{
 		fillModelWithVars(&model, nsub, &spi);
-		for (s = 0; s < nsub; ++s)
-			model.Y[s] = sub[s]->cc;
+		if (pi.is_quantitative)
+			for (s = 0; s < nsub; ++s)
+				model.Y[s] = sub[s]->pheno;
+		else
+			for (s = 0; s < nsub; ++s)
+				model.Y[s] = sub[s]->cc;
 		filledModel = 1;
 	}
 	for (t = 0; t < spi.numTestFiles;++t)

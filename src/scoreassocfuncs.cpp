@@ -231,21 +231,28 @@ float get_zero_based_quadratic_weight(float freq,float wfactor)
 void set_weights(FILE *f,float *weight,float *missing_score,int *rarer,subject **sub,int nsub,par_info *pi,sa_par_info *spi,float *func_weight,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],char names[MAX_LOCI][LOCUS_NAME_LENGTH],char comments[MAX_LOCI][MAX_COMMENT_LENGTH])
 {
 	int l,ll,s,nh[2],cc,i,g;
-	float freq,ccfreq[2],vcount[2],gencount[2][3];
+	float freq,ccfreq[2],vcount[2],gencount[2][3],qtot[3];
 
 	for (l=0;l<pi->n_loci_to_use;++l)
 	{		
 		nh[0]=nh[1]=vcount[0]=vcount[1]=0;
-		for (i=0;i<3;++i)
-			for (cc=0;cc<2;++cc)
-				gencount[cc][i]=0;
+		for (i = 0; i < 3; ++i)
+		{
+			qtot[i] = 0;
+			for (cc = 0; cc < 2; ++cc)
+				gencount[cc][i] = 0;
+		}
 		ll=pi->loci_to_use[l];
 		for (s = 0; s < nsub; ++s)
 		{
 			if (spi->use_probs)
 			{
-				for (g=0;g<3;++g)
-					gencount[sub[s]->cc][g]+=sub[s]->prob[ll][g];
+				for (g = 0; g < 3; ++g)
+				{
+					gencount[sub[s]->cc][g] += sub[s]->prob[ll][g];
+					if (pi->is_quantitative)
+						qtot[g] += sub[s]->prob[ll][g] * sub[s]->pheno;
+				}
 				vcount[sub[s]->cc] += sub[s]->prob[ll][1]+sub[s]->prob[ll][2]*2;
 				nh[sub[s]->cc]+=(sub[s]->prob[ll][0]+sub[s]->prob[ll][1]+sub[s]->prob[ll][2])*2;
 			}
@@ -255,6 +262,8 @@ void set_weights(FILE *f,float *weight,float *missing_score,int *rarer,subject *
 				{
 					i = (sub[s]->all[ll][0] == 2) + (sub[s]->all[ll][1] == 2);
 					++gencount[sub[s]->cc][i];
+					if (pi->is_quantitative)
+						qtot[i] += sub[s]->pheno;
 					vcount[sub[s]->cc] += (sub[s]->all[ll][0] == 2) + (sub[s]->all[ll][1] == 2);
 					nh[sub[s]->cc] += 2;
 				}
@@ -298,10 +307,23 @@ void set_weights(FILE *f,float *weight,float *missing_score,int *rarer,subject *
 		if (!spi->use_locus_names)
 			sprintf(names[ll],"LOC%05d",ll+1);
 		fprintf(f,"%-" LOCUS_NAME_LENGTH_STR "s",names[ll]);
-		fprintf(f,
+		if (pi->is_quantitative)
+			fprintf(f,
+				spi->use_probs ?
+				"%6.2f : %6.2f : %6.2f  %8.6f  %8.3f : %8.3f : %8.3f  %d     %7.2f  %s\n" :
+				"%6.0f : %6.0f : %6.0f  %8.6f  %8.3f : %8.3f : %8.3f  %d     %7.2f  %s\n",
+				gencount[0][0], gencount[0][1], gencount[0][2],
+				ccfreq[0],
+				gencount[0][0]?qtot[0]/gencount[0][0]:0, 
+				gencount[0][1] ? qtot[1] / gencount[0][1]:0,
+				gencount[0][2] ? qtot[2] / gencount[0][2]:0,
+				rarer[l], weight[l],
+				spi->use_comments ? comments[ll] : "");
+		else
+			fprintf(f,
 			spi->use_probs ?
-			"%6.2f : %6.2f : %6.2f  %8.6f  %6.2f : %6.2f : %6.2f  %8.6f  %8.6f  %d      %5.2f  %s\n" :
-			"%6.0f : %6.0f : %6.0f  %8.6f  %6.0f : %6.0f : %6.0f  %8.6f  %8.6f  %d      %5.2f  %s\n",
+			"%6.2f : %6.2f : %6.2f  %8.6f  %6.2f : %6.2f : %6.2f  %8.6f  %8.6f  %d     %7.2f  %s\n" :
+			"%6.0f : %6.0f : %6.0f  %8.6f  %6.0f : %6.0f : %6.0f  %8.6f  %8.6f  %d     %7.2f  %s\n",
 			gencount[0][0],gencount[0][1],gencount[0][2],
 			ccfreq[0],
 			gencount[1][0],gencount[1][1],gencount[1][2],
