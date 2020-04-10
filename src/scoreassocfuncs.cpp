@@ -21,11 +21,15 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #include "dcerror.hpp"
 #include "scoreassoc.hpp"
 
-void write_scores(FILE *fs,subject **sub,int nsub,float *score)
+void write_scores(FILE *fs,subject **sub,int nsub,float *score,par_info *pi)
 {
 	int s;
-	for (s=0;s<nsub;++s)
-		fprintf(fs,"%20s %d %8.4f\n",sub[s]->id,sub[s]->cc,score[s]);
+	if (pi->is_quantitative)
+		for (s = 0; s < nsub; ++s)
+			fprintf(fs, "%20s %f %8.4f\n", sub[s]->id, sub[s]->pheno, score[s]);
+	else
+		for (s = 0; s < nsub; ++s)
+			fprintf(fs, "%20s %d %8.4f\n", sub[s]->id, sub[s]->cc, score[s]);
 }
 
 double do_score_onetailed_ttest(FILE *fo, float *score, subject **sub, int nsub, par_info *pi, sa_par_info *spi, float cc_freq[2][MAX_LOCI], float cc_count[2][MAX_LOCI], int max_cc[2], float *weight, float *missing, int *rarer)

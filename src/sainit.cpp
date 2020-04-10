@@ -61,6 +61,7 @@ option opt[]=
 	{"lamda",LAMDA},
 	{"varfile",VARFILE},
 	{"testfile",TESTFILE},
+	{"lintestfile",TESTFILE},
 	{"argfile",ARGFILE},
 {"", NUMOPTS}
 };
@@ -82,16 +83,18 @@ void usage()
 "--casefreqfile file (provide allele frequency for each locus in cases)\n"
 "--contfreqfile file (provide allele frequency for each locus in controls)\n"
 "--triofile file\n"
-"--isquantitative x (quantitative phenotype)"
+"--isquantitative x (quantitative phenotype, 0 or 1, default 0)"
 "--ldthreshold x (to discard variants in LD for recessive analysis, default 0.9)\n"
 "--minweight x (to include in recessive analysis, default 0, i.e. all variants)\n"
 "--lamda x\n"
 "--dorecessive x\n"
 "--dottest x\n"
 "--dolrtest x\n"
+"--dolinrtest x\n"
 "--start-from-fitted x\n"
 "--varfile file\n"
 "--testfile file\n"
+"--lintestfile file\n"
 "--usehaps x\n"
 "--showhaplocinames x\n"
 "--numloci x (needed with --gcdatafile or --gendatafile)\n"
@@ -243,8 +246,12 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 				error=1;
 			break;
 		case TESTFILE:
-			if(getNextArg(arg,argc,argv,fp,&arg_depth,&arg_num) == 0 || sscanf(arg,"%s",spi->testFiles[spi->numTestFiles++].fn)!=1)
-				error=1;
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%s", spi->testFiles[spi->numTestFiles++].fn) != 1)
+				error = 1;
+			break;
+		case LINTESTFILE:
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%s", spi->linTestFiles[spi->numLinTestFiles++].fn) != 1)
+				error = 1;
 			break;
 		case PSDATAFILE:
 		case GCDATAFILE:

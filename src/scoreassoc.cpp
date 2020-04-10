@@ -28,7 +28,7 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #include "safilterfuncs.hpp"
 
 #define PROGRAM "scoreassoc"
-#define SAVERSION "5.3"
+#define SAVERSION "6.0"
 
 int main(int argc, char *argv[])
 {
@@ -140,7 +140,8 @@ if (spi.do_linrtest)
 	SLP = do_onetailed_LRT(spi.df[OUTFILE].fp, &model, &spi, 1);
 	model.lamda = spi.lamda;
 }
-if (spi.numTestFiles>0)
+
+if (spi.numTestFiles > 0)
 {
 	if (!filledModel)
 	{
@@ -153,9 +154,25 @@ if (spi.numTestFiles>0)
 				model.Y[s] = sub[s]->cc;
 		filledModel = 1;
 	}
-	for (t = 0; t < spi.numTestFiles;++t)
-		p= runTestFile(spi.df[OUTFILE].fp, spi.testFiles[t].fn,&model, &spi);
+	for (t = 0; t < spi.numTestFiles; ++t)
+		p = runTestFile(spi.df[OUTFILE].fp, spi.testFiles[t].fn, &model, &spi);
+}
 
+if (spi.numLinTestFiles > 0)
+{
+	if (!filledModel)
+	{
+		fillModelWithVars(&model, nsub, &spi);
+		if (pi.is_quantitative)
+			for (s = 0; s < nsub; ++s)
+				model.Y[s] = sub[s]->pheno;
+		else
+			for (s = 0; s < nsub; ++s)
+				model.Y[s] = sub[s]->cc;
+		filledModel = 1;
+	}
+	for (t = 0; t < spi.numLinTestFiles; ++t)
+		p = runLinTestFile(spi.df[OUTFILE].fp, spi.linTestFiles[t].fn, &model, &spi);
 }
 
 if (spi.use_trios)
@@ -163,7 +180,7 @@ if (spi.use_trios)
 
 if (spi.df[SCOREFILE].fp)
 {
-	write_scores(spi.df[SCOREFILE].fp,sub,nsub,score);
+	write_scores(spi.df[SCOREFILE].fp,sub,nsub,score,&pi);
 	fclose(spi.df[SCOREFILE].fp);
 	spi.df[SCOREFILE].fp=0;
 }

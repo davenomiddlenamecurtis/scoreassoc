@@ -32,7 +32,7 @@ extern "C"
 #include <map>
 
 #define PROGRAM "pathwayAssoc"
-#define PAVERSION "1.2"
+#define PAVERSION "2.0"
 
 #ifndef MAX_GENES
 #define MAX_GENES 12000
@@ -67,13 +67,14 @@ public:
 	int readParms(int argc,char *argv[]);
 	int getNextArg(char *nextArg,int argc,char *argv[],FILE **fpp,int *argNum);
 	FILE *summaryOutputFile,*scoreTableFile;
-	int do_ttest, do_lrtest,do_linrtest;
+	int do_ttest, do_lrtest,do_linrtest,is_quantitative;
 };
 
 class pathwaySubject {
 public:
 	char id[MAX_ID_LENGTH+1]; 
 	int cc;
+	float pheno;
 	float score[MAX_GENES];
 };
 
@@ -126,9 +127,9 @@ int paParams::readParms(int argc, char *argv[])
 	geneLevelOutputThreshold=1000;
 	scoreTableFile=0;
 	do_ttest = 1;
-	do_lrtest = do_linrtest=0;
+	do_lrtest = do_linrtest=is_quantitative=0;
 	start_from_fitted = 1;
-	numVars = numVarFiles = numTestFiles = 0;
+	numVars = numVarFiles = numTestFiles = numLinTestFiles = 0;
 	lamda = DEFAULT_LAMDA;
 	while (getNextArg(arg, argc, argv, &fp, &argNum))
 	{
@@ -209,6 +210,10 @@ int paParams::readParms(int argc, char *argv[])
 		{
 			do_lrtest = atoi(arg);
 		}
+		else if (FILLARG("--isquantitative"))
+		{
+			is_quantitative = atoi(arg);
+		}
 		else if (FILLARG("--dolinrtest"))
 		{
 			do_linrtest = atoi(arg);
@@ -224,6 +229,10 @@ int paParams::readParms(int argc, char *argv[])
 		else if (FILLARG("--testfile"))
 		{
 			strcpy(testFiles[numTestFiles++].fn, arg);
+		}
+		else if (FILLARG("--lintestfile"))
+		{
+			strcpy(linTestFiles[numLinTestFiles++].fn, arg);
 		}
 		else
 			dcerror(1,"Did not recognise argument specifier %s\n",arg);
@@ -277,8 +286,12 @@ int readSubIds(pathwaySubject **sub,paParams *pp)
 		}
 		pp->nSub=s;
 		fscanf(pp->scoreTableFile,"%*s"); // CC
-		for(s=0;s<pp->nSub;++s)
-			assert(fscanf(pp->scoreTableFile,"%d",&sub[s]->cc)==1);
+		if (pp->is_quantitative)
+			for (s = 0; s < pp->nSub; ++s)
+				assert(fscanf(pp->scoreTableFile, "%f", &sub[s]->pheno) == 1);
+		else 
+			for(s=0;s<pp->nSub;++s)
+				assert(fscanf(pp->scoreTableFile,"%d",&sub[s]->cc)==1);
 	}
 	else
 	{
@@ -301,7 +314,11 @@ int readSubIds(pathwaySubject **sub,paParams *pp)
 			sprintf(scoreFileName,"%s%s%s",pp->scoreFilePrefix,gene,pp->scoreFileSuffix);
 			fs=fopen(scoreFileName,"rb"); // because that's what I do for scoreTableFile
 		} while(fs==0);
-		for(s=0;fgets(long_line,1000,fs) && sscanf(long_line,"%s %d",sub[s]->id,&sub[s]->cc)==2;++s)
+		if (pp->is_quantitative)
+			for (s = 0; fgets(long_line, 1000, fs) && sscanf(long_line, "%s %f", sub[s]->id, &sub[s]->pheno) == 2; ++s)
+			;
+		else
+			for (s = 0; fgets(long_line, 1000, fs) && sscanf(long_line, "%s %d", sub[s]->id, &sub[s]->cc) == 2; ++s)
 			;
 		pp->nSub=s;
 		fclose(fs);
@@ -374,9 +391,17 @@ float runOnePathway(char *line, pathwaySubject **sub, glModel *model,paParams *p
 					{
 						dcerror(1, "Not enough lines in scores file %s\n", scoreFileName); exit(1);
 					}
-					if (sscanf(line, "%s %d %f", sub[s]->id, &sub[s]->cc, &sub[s]->score[g]) != 3)
-					{
-						dcerror(1, "Not enough entries on this line in scores file %s:\n%s\n", scoreFileName, line); exit(1);
+					if (pp->is_quantitative) {
+						if (sscanf(line, "%s %f %f", sub[s]->id, &sub[s]->pheno, &sub[s]->score[g]) != 3)
+						{
+							dcerror(1, "Not enough entries on this line in scores file %s:\n%s\n", scoreFileName, line); exit(1);
+						}
+					}
+					else {
+						if (sscanf(line, "%s %d %f", sub[s]->id, &sub[s]->cc, &sub[s]->score[g]) != 3)
+						{
+							dcerror(1, "Not enough entries on this line in scores file %s:\n%s\n", scoreFileName, line); exit(1);
+						}
 					}
 					totScore[s] += sub[s]->score[g];
 				}
@@ -483,7 +508,7 @@ float runOnePathway(char *line, pathwaySubject **sub, glModel *model,paParams *p
 	if (mean[0] > mean[1])
 		pathway_p = 1.0 - pathway_p;
 	}
-	if(pp->do_lrtest || pp->do_linrtest || pp->numTestFiles>0)
+	if(pp->do_lrtest || pp->do_linrtest || pp->numTestFiles > 0 || pp->numLinTestFiles > 0)
 		fillModelWithVars(model,pp->nSub,pp,pp->scoreCol);
 	if (pp->do_lrtest)
 	{
@@ -502,7 +527,16 @@ float runOnePathway(char *line, pathwaySubject **sub, glModel *model,paParams *p
 		for (t = 0; t < pp->numTestFiles; ++t)
 		{
 			SLP = runTestFile(fo, pp->testFiles[t].fn, model, pp);
-			if (writeFile &&pp->summaryOutputFile != 0)
+			if (writeFile && pp->summaryOutputFile != 0)
+				fprintf(pp->summaryOutputFile, "%f\t", SLP);
+		}
+	}
+	if (pp->numLinTestFiles > 0)
+	{
+		for (t = 0; t < pp->numLinTestFiles; ++t)
+		{
+			SLP = runLinTestFile(fo, pp->linTestFiles[t].fn, model, pp);
+			if (writeFile && pp->summaryOutputFile != 0)
 				fprintf(pp->summaryOutputFile, "%f\t", SLP);
 		}
 	}
@@ -582,12 +616,12 @@ int main(int argc, char *argv[])
 	allVars[pp.scoreCol].val = totScore;
 	varMap["score"] = &allVars[pp.scoreCol];
 	++pp.numVars;
-	if (pp.do_lrtest || pp.numTestFiles > 0)
+	if (pp.do_lrtest || pp.do_linrtest || pp.numTestFiles > 0 || pp.numLinTestFiles > 0)
 	{
 		model.lamda = pp.lamda;
 		fillModelWithVars(&model, pp.nSub, &pp);
 		for (s = 0; s < pp.nSub; ++s)
-			model.Y[s] = sub[s]->cc;
+			model.Y[s] = pp.is_quantitative?sub[s]->pheno:sub[s]->cc;
 		filledModel = 1;
 	}
 

@@ -43,7 +43,7 @@ extern "C" {
 #define DEFAULT_LAMDA 1
 
 enum OPT {
-	PSDATAFILE=0,GCDATAFILE,GENDATAFILE,WEIGHTFILE,ANNOTFILE,FILTERFILE,LOCUSFILTERFILE,LOCUSNAMEFILE,LOCUSWEIGHTFILE,TRIOFILE,SAMPLEFILE,CASEFREQFILE,CONTFREQFILE,OUTFILE,SCOREFILE,NUMDATAFILETYPES,NUMLOCI,LDTHRESHOLD,WEIGHTTHRESHOLD,ISQUANTITATIVE,DORECESSIVE,DOTTEST,DOLRTEST,DOLINRTEST,STARTFROMFITTED,USEHAPS,SHOWHAPLOCUSNAMES,WEIGHTFACTOR,LAMDA,VARFILE,TESTFILE,ARGFILE,NUMOPTS, FLAGFILE
+	PSDATAFILE=0,GCDATAFILE,GENDATAFILE,WEIGHTFILE,ANNOTFILE,FILTERFILE,LOCUSFILTERFILE,LOCUSNAMEFILE,LOCUSWEIGHTFILE,TRIOFILE,SAMPLEFILE,CASEFREQFILE,CONTFREQFILE,OUTFILE,SCOREFILE,NUMDATAFILETYPES,NUMLOCI,LDTHRESHOLD,WEIGHTTHRESHOLD,ISQUANTITATIVE,DORECESSIVE,DOTTEST,DOLRTEST,DOLINRTEST,STARTFROMFITTED,USEHAPS,SHOWHAPLOCUSNAMES,WEIGHTFACTOR,LAMDA,VARFILE, TESTFILE, LINTESTFILE, ARGFILE,NUMOPTS, FLAGFILE
 };
 // must begin with datafiles followed by output files
 
@@ -68,8 +68,8 @@ public:
 class lr_test_par_info {
 public:
 	float lamda;
-	int numVars, numVarFiles, numTestFiles, start_from_fitted,scoreCol;
-	sa_data_file_type varFiles[MAXLRVARIABLES], testFiles[MAXLRVARIABLES];
+	int numVars, numVarFiles, numTestFiles, numLinTestFiles, start_from_fitted,scoreCol;
+	sa_data_file_type varFiles[MAXLRVARIABLES], testFiles[MAXLRVARIABLES], linTestFiles[MAXLRVARIABLES];
 };
 
 class sa_par_info : public lr_test_par_info {
@@ -111,7 +111,7 @@ void set_weights(FILE *fo,float *weight,float *missing_score,int *rarer,subject 
 // int read_score_assoc_par(FILE *fp,par_info *pi,float *wfactor,int *use_func_weights,int use_cc_freqs[2],float *func_weight,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],int *use_locus_names,char names[MAX_LOCI][LOCUS_NAME_LENGTH],int *use_comments,char comments[MAX_LOCI][MAX_COMMENT_LENGTH], int *do_recessive_test,float *weight_threshold,float *LD_threshold,int *use_haplotypes);
 // int read_sa_par(FILE *fp,par_info *pi,sa_par_info *spi,float *func_weight,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],char names[MAX_LOCI][LOCUS_NAME_LENGTH],char comments[MAX_LOCI][MAX_COMMENT_LENGTH]);
 void get_freqs(subject **sub,int nsub,par_info *pi,sa_par_info *spi,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],float cc_gencount[2][3][MAX_LOCI]);
-void write_scores(FILE *fs,subject **sub,int nsub,float *score);
+void write_scores(FILE *fs,subject **sub,int nsub,float *score,par_info* pi);
 void do_recessive_HWE_test(FILE *fo,float *score,subject **sub,int nsub,par_info *pi,sa_par_info *spi,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],float *weight,float *missing,int *old_rarer,char names[MAX_LOCI][LOCUS_NAME_LENGTH]);
 void do_recessive_HWE_test_with_haplotypes(FILE *fo, float *score, subject **sub, int nsub, par_info *pi,sa_par_info *spi, float cc_freq[2][MAX_LOCI], float cc_count[2][MAX_LOCI], int max_cc[2], float *weight, float *missing, int *old_rarer, char names[MAX_LOCI][LOCUS_NAME_LENGTH]);
 extern int sort_trios(subject **sub,int nsub,par_info *pi, sa_par_info *spi, subject **new_sub,non_mendelian *nm,int *n_non_mendelian,char *non_mendelian_report);
@@ -123,7 +123,8 @@ void fillModelWithVars(glModel *m,int nsub, lr_test_par_info *spi,int which=-1);
 void printModel(FILE *fo, char *LLstr, double LL, glModel *m);
 extern double cumulBinom(int N,int k,double p);
 float evaluateModel(FILE *fo, glModel *m, int *toUse, float *startBetas, int *toFit, char *name);
-float runTestFile(FILE *fo, char *fn, glModel *m, lr_test_par_info *spi);
+float runTestFile(FILE* fo, char* fn, glModel* m, lr_test_par_info* spi);
+float runLinTestFile(FILE* fo, char* fn, glModel* m, lr_test_par_info* spi);
 char *skip_word(char *ptr);
 int read_ps_datafile(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr, char names[MAX_LOCI][LOCUS_NAME_LENGTH], char comments[MAX_LOCI][MAX_COMMENT_LENGTH], float func_weight[MAX_LOCI],
 	std::map<std::string, float> weightMap, std::map<std::string, std::string> effectMap);

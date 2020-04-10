@@ -38,7 +38,7 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 int ISTEMP;
-int FSTEMP;
+float FSTEMP;
 
 #ifdef USEDCASSERT
 // catch assertion failures so Windows does not do something clever with them
@@ -212,6 +212,7 @@ if (pi->is_quantitative)
     {
         error("Syntax error in subject line: ", line); return 0;
     }
+    s->cc = 0;
     n_to_skip = 2;
 }
 else
