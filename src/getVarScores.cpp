@@ -510,7 +510,7 @@ else
 	non_mendelian_report=0;
 	// not used, compiler error otherwise
 get_freqs(sub,nsub,&pi,&spi,cc_freq,cc_count,cc_genocount);
-applyExclusions(&pi);
+applyExclusions(sub, nsub ,&pi);
 spi.use_func_weights=0; // this is a trick to prevent the rarity weight being multiplied by the functional weight
 set_weights(0,weight,missing_score,rarer,sub,nsub,&pi,&spi,func_weight,cc_freq,cc_count,max_cc,names,comments);
 nVarTypes=readFlagTable(varFlagTable,&spi);
@@ -537,4 +537,8 @@ return 0;
 
 }
 
-
+int readVarFiles(std::map<std::string, int> subIDs, int nSub, lr_test_par_info* spi)
+{
+	dcerror(5, "readVarFiles() has been called in getVarScores but this function is not supported.");
+	return 0;
+}
