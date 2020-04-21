@@ -61,7 +61,7 @@ option opt[]=
 	{"lamda",LAMDA},
 	{"varfile",VARFILE},
 	{"testfile",TESTFILE},
-	{"lintestfile",TESTFILE},
+	{"lintestfile",LINTESTFILE},
 	{"argfile",ARGFILE},
 {"", NUMOPTS}
 };
@@ -149,7 +149,7 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 	spi->do_lrtest = 0;
 	spi->do_linrtest = 0;
 	spi->start_from_fitted = 1;
-	spi->numVars=spi->numVarFiles=spi->numTestFiles=0;
+	spi->numVars=spi->numVarFiles= spi->numTestFiles = spi->numLinTestFiles = 0;
 	spi->lamda=DEFAULT_LAMDA;
 	while (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num))
 	{
