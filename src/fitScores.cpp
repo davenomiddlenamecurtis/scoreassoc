@@ -71,7 +71,7 @@ param par[MAXPARAMS];
 int testTrain[2][MAXSUB],nVarType,nGeneSet,nSub,whichTotScore,paramToFit[MAXPARAMS],nParamToFit,tt;
 double fittedPar[MAXPARAMS];
 #define LONGLINELENGTH 20000
-char line[LONGLINELENGTH+1],rest[LONGLINELENGTH+1];
+char fsline[LONGLINELENGTH+1],rest[LONGLINELENGTH+1];
 FILE *resultsFile,*logFile;
 
 class powell_function
@@ -239,12 +239,12 @@ int readParams(fsParams *fs,FILE *readParamsFile,param *par,int nGeneSet,int nVa
 {
 	int p;
 	for (p=0;p<nGeneSet;++p)
-		if (!fgets(line,200,readParamsFile) || sscanf(line,"%lf %s %d",&par[p].val,par[p].name,&par[p].toFit)!=3)
+		if (!fgets(fsline,200,readParamsFile) || sscanf(fsline,"%lf %s %d",&par[p].val,par[p].name,&par[p].toFit)!=3)
 		{
 			dcerror(1,"Could not read all geneList values\n"); return 0;
 		}
 	for (p=0;p<nVarType;++p)
-		if (!fgets(line,200,readParamsFile) || sscanf(line,"%lf %s %d",&par[nGeneSet+p].val,par[nGeneSet+p].name,&par[nGeneSet+p].toFit)!=3)
+		if (!fgets(fsline,200,readParamsFile) || sscanf(fsline,"%lf %s %d",&par[nGeneSet+p].val,par[nGeneSet+p].name,&par[nGeneSet+p].toFit)!=3)
 		{
 			dcerror(1,"Could not read all varType values\n"); return 0;
 		}
@@ -366,7 +366,7 @@ int writeParams(fsParams *fs,FILE *writeParamsFile,param *par,int nGeneSet,int n
 int readTestTrain(fsParams *fs,FILE *testTrainFile,int testTrain[2][MAXSUB])
 {
 	int s;
-	for (s=0;fgets(line,200,testTrainFile) && sscanf(line,"%d %d",&testTrain[0][s],&testTrain[1][s])==2;++s)
+	for (s=0;fgets(fsline,200,testTrainFile) && sscanf(fsline,"%d %d",&testTrain[0][s],&testTrain[1][s])==2;++s)
 		;
 	return s;
 }
@@ -374,7 +374,7 @@ int readTestTrain(fsParams *fs,FILE *testTrainFile,int testTrain[2][MAXSUB])
 int readVarScores(fsParams *fs,FILE *varScoresFile,subject *sub,int nSub,int nGeneSet,int nVarType)
 {
 	int s,t,v;
-	if (!fgets(line,LONGLINELENGTH,varScoresFile)) // dump first line
+	if (!fgets(fsline,LONGLINELENGTH,varScoresFile)) // dump first line
 		{ dcerror(1,"Could not read enough lines from --var-scores-file\n"); return 1; }
 #if 1
 	for (s=0;s<nSub;++s)
@@ -393,17 +393,17 @@ int readVarScores(fsParams *fs,FILE *varScoresFile,subject *sub,int nSub,int nGe
 #else
 	for (s=0;s<nSub;++s)
 	{
-		if (!fgets(line,LONGLINELENGTH,varScoresFile))
+		if (!fgets(fsline,LONGLINELENGTH,varScoresFile))
 			{ dcerror(1,"Could not read enough lines from --var-scores-file\n"); return 1; }
-		if (sscanf(line,"%s %d %[^\n]",sub[s].ID,&sub[s].cc,rest)!=3)
-			{ dcerror(1,"Incomplete line in --var-scores-file:\n%s\n",line); return 1; }
-		strcpy(line,rest);
+		if (sscanf(fsline,"%s %d %[^\n]",sub[s].ID,&sub[s].cc,rest)!=3)
+			{ dcerror(1,"Incomplete line in --var-scores-file:\n%s\n",fsline); return 1; }
+		strcpy(fsline,rest);
 		for (t=0;t<nGeneSet;++t)
 			for (v=0;v<nVarType;++v)
-				if (sscanf(line,"%f %[^\n]",&sub[s].varScore[t][v],rest)<1)
-					{ dcerror(1,"Incomplete line in --var-scores-file:\n%s\n",line); return 1; }
+				if (sscanf(fsline,"%f %[^\n]",&sub[s].varScore[t][v],rest)<1)
+					{ dcerror(1,"Incomplete line in --var-scores-file:\n%s\n",fsline); return 1; }
 				else
-					strcpy(line,rest);
+					strcpy(fsline,rest);
 
 	}
 #endif

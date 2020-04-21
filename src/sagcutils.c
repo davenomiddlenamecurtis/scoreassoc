@@ -230,7 +230,13 @@ else
   break;
   case 1:
   if (sscanf(line,"%s %d",s->id,&s->cc)!=2)
-    { error("Syntax error in subject line: ",line); return 0; }
+  {
+      error("Syntax error in subject line: ", line); return 0;
+  }
+  if (s->cc!=0 && s->cc!=1)
+  {
+      error("Bad case-control status in subject line: ", line); return 0;
+  }
   n_to_skip=2;
   break;
   case 0:

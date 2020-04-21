@@ -278,7 +278,7 @@ int main(int argc,char *argv[])
 		dcerror(1,"Need to specify --gene-list-file");
 	if (cp.scoreFileSpec[0]=='\0')
 		dcerror(1,"Need to specify --score-file-spec");
-	if (cp.outputFileName=='\0')
+	if (cp.outputFileName[0]=='\0')
 		dcerror(1,"Need to specify --output-file");
 	fo=fopen(cp.outputFileName,"w");
 	if (fo==0)
