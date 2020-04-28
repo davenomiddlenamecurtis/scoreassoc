@@ -24,7 +24,7 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #include "dcerror.hpp"
 
 #define PROGRAM "makeScoreTable"
-#define MSTVERSION "1.1"
+#define MSTVERSION "1.2"
 
 void usage()
 {
@@ -35,8 +35,8 @@ void usage()
 int main(int argc,char *argv[])
 {
 	FILE *fi,*fo;
-	char geneName[100],*ptr,fn[400],ID[100],line[400];
-	int a,first,cc;
+	char geneName[100],*ptr,fn[400],ID[100],line[400],pheno[100];
+	int a,first;
 	float score;
 	printf("%s v%s\n",PROGRAM,MSTVERSION);
 	if (argc<3)
@@ -80,14 +80,14 @@ int main(int argc,char *argv[])
 			fprintf(fo,"\n");
 			fseek(fi,SEEK_SET,0L);
 			fprintf(fo,"CC\t");
-			while (fgets(line,399,fi) && sscanf(line,"%*s %d",&cc)==1)
-				fprintf(fo,"%d\t",cc);
+			while (fgets(line,399,fi) && sscanf(line,"%*s %s",pheno)==1)
+				fprintf(fo,"%s\t",pheno);
 			fprintf(fo,"\n");
 			fseek(fi,SEEK_SET,0L);
 		}
 
 		fprintf(fo,"%s\t",geneName);
-		while (fgets(line,399,fi) && sscanf(line,"%*s %*d %f",&score)==1)
+		while (fgets(line,399,fi) && sscanf(line,"%*s %*s %f",&score)==1)
 			fprintf(fo,"%f\t",score);
 		fprintf(fo,"\n");
 		fclose(fi);
