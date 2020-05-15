@@ -58,6 +58,7 @@ option opt[]=
 	{ "usehaps", USEHAPS },
 	{ "showhaplocusnames", SHOWHAPLOCUSNAMES },
 	{ "weightfactor", WEIGHTFACTOR },
+	{ "maxmaf", MAXMAF},
 	{"lamda",LAMDA},
 	{"varfile",VARFILE},
 	{"testfile",TESTFILE},
@@ -72,6 +73,7 @@ void usage()
 	printf("scoreassoc --psdatafile file || --gendatafile file || --gcdatafile file     [options]\n\nOptions:\n"
 "--samplefile file (sample file to match IMPUTE2 datafile)\n"
 "--weightfactor x (weight for very rare variants, default 10)\n"
+"--maxmaf x (MAF threshold to weight variants, default 0.5)\n"
 "--outfile file\n"
 "--scorefile file (optionallly output scores for each subject)"
 "--weightfile file (specify functional weights)\n"
@@ -139,7 +141,8 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 	pi->is_quantitative = 0;
 	pi->nloci=0;
 	spi->use_locus_names=spi->use_comments=1;
-	spi->wfactor=10;
+	spi->wfactor = 10;
+	spi->max_MAF = 0.5;
 	spi->do_recessive_test=0;
 	spi->LD_threshold=0.9;
 	spi->show_hap_locus_names=spi->use_haplotypes=spi->use_trios=0;
@@ -194,8 +197,12 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 				error=1;
 			break;
 		case WEIGHTFACTOR:
-			if(getNextArg(arg,argc,argv,fp,&arg_depth,&arg_num) == 0 || sscanf(arg,"%f",&spi->wfactor) != 1)
-				error=1;
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%f", &spi->wfactor) != 1)
+				error = 1;
+			break;
+		case MAXMAF:
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%f", &spi->max_MAF) != 1)
+				error = 1;
 			break;
 		case LAMDA:
 			if(getNextArg(arg,argc,argv,fp,&arg_depth,&arg_num) == 0 || sscanf(arg,"%f",&spi->lamda) != 1)

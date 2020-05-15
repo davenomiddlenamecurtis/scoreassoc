@@ -235,7 +235,7 @@ float get_zero_based_quadratic_weight(float freq,float wfactor)
 void set_weights(FILE *f,float *weight,float *missing_score,int *rarer,subject **sub,int nsub,par_info *pi,sa_par_info *spi,float *func_weight,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],char names[MAX_LOCI][LOCUS_NAME_LENGTH],char comments[MAX_LOCI][MAX_COMMENT_LENGTH])
 {
 	int l,ll,s,nh[2],cc,i,g;
-	float freq,ccfreq[2],vcount[2],gencount[2][3],qtot[3];
+	float freq,ccfreq[2],vcount[2],gencount[2][3],qtot[3],fixedfreq;
 
 	for (l=0;l<pi->n_loci_to_use;++l)
 	{		
@@ -302,7 +302,15 @@ void set_weights(FILE *f,float *weight,float *missing_score,int *rarer,subject *
 		if (freq==0.0) /* monomorphic */
 			weight[l]=0;
 		else
-			weight[l]=get_quadratic_weight(freq,spi->wfactor);
+		{
+			if (spi->max_MAF >= 0.5)
+				fixedfreq = freq;
+			else if (freq > spi->max_MAF)
+				fixedfreq = 0.5;
+			else
+				fixedfreq = freq * 0.5/spi->max_MAF;
+			weight[l] = get_quadratic_weight(fixedfreq, spi->wfactor);
+		}
 		if (spi->use_func_weights)
 			weight[l]*=func_weight[pi->loci_to_use[l]];
 		missing_score[l]=weight[l]*freq; // I think

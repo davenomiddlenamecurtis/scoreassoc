@@ -220,7 +220,12 @@ float do_onetailed_LRT(FILE *fo, glModel *m,lr_test_par_info *spi,int do_linear)
 	if (fo)
 		fprintf(fo,
 			"chisq = %.2f, 1 df, p = %10.8f\n"
-			"%s = %8.2f (signed log10(p), positive if cases have more variants than controls)\n",chisq,p,do_linear?"linrSLP":"lrSLP",SLP);
+			"%s = %8.2f %s",
+			chisq,p,
+			do_linear ? "linrSLP" : "lrSLP",
+			SLP,
+			do_linear ? "(signed log10(p), positive if weighted burden of variants correlates positively with phenotype)\n" 
+			: "(signed log10(p), positive if cases have more variants than controls)\n");
 	m->useLinearRegression(0);
 	return SLP;
 }
