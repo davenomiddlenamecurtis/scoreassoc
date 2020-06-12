@@ -379,6 +379,8 @@ double glModel::getLnL()
 		// lnL = -nRow / 2 * (LN2PI + log(s2) + 1);
 		lnL = -nRow / 2 * (LN2PI + log(sigmaX2/nRow) + 1);
 		// we are using the MLE of the variance given mean is t[r], which is sigmaX2/nRow, hence the last term is 1
+		// https://en.wikipedia.org/wiki/Maximum_likelihood_estimation
+		// lnL = -n/2*log(2pi*s2)-1/(2*s2)*sigma((xi-m)^2)
 	}
 	return lnL;
 }

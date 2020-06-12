@@ -34,7 +34,7 @@ OURFLAGS = $(MYFLAGS) $(EXTRAFLAGS)
 HEADERS = cdflib.h  dcerror.hpp  dcexpr.hpp  fisher.h  sagcutils.h  safilterfuncs.hpp  scoreassoc.hpp
 # cheat and just assume all code dependent on all of these
 
-EXES = scoreassoc pathwayAssoc permPathwayAssoc makeScoreTable # fitScores combineGeneScores getVarScores combineCohorts 
+EXES = scoreassoc pathwayAssoc permPathwayAssoc makeScoreTable testGeneSets # fitScores combineGeneScores getVarScores combineCohorts 
 
 ifdef INOBJ
 all: ${EXES}
@@ -75,6 +75,9 @@ combineGeneScores: combineGeneScores.o dcerror.o
 
 fitScoresWithDlib.o: ../src/fitScores.cpp ${DLIB}/dlib/optimization.h
 	$(CC) $(OURFLAGS) $(CPPFLAGS) ${DEBUGFLAG} ${DLIBFLAGS} -c ../src/fitScores.cpp  -o ../obj/fitScoresWithDlib.o
+
+testGeneSets: testGeneSets.o dcerror.o dcdflib.o ipmpar.o
+	$(CC) ${DEBUGFLAG} -o testGeneSets testGeneSets.o dcerror.o dcdflib.o ipmpar.o -lm
 
 fitScores: fitScoresWithDlib.o dcerror.o source.o
 	$(CC) ${DEBUGFLAG} -o fitScores ../obj/fitScoresWithDlib.o ../obj/dcerror.o source.o -lm -lpthread
