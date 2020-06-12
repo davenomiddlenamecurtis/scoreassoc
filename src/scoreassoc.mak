@@ -43,7 +43,7 @@ all:
 	if [ ! -e ../obj ] ; then mkdir ../obj ; fi ; \
 	if [ ! -e ${DCBIN} ] ; then mkdir ${DCBIN} ; fi ; \
 	cd ../obj; \
-	make -f ../src/scoreassoc.nitro.mak INOBJ=INOBJ ; \
+	make -f ../src/scoreassoc.mak INOBJ=INOBJ ; \
 	cp ${EXES} ${DCBIN} ; \
 	echo copied executables to ${DCBIN} ; \
 	cd ../src
