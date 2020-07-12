@@ -72,6 +72,7 @@ option opt[]=
 void usage()
 {
 	printf("scoreassoc --psdatafile file || --gendatafile file || --gcdatafile file|| --inputscorefile file     [options]\n\nOptions:\n"
+"--IDphenotypefile file (assign different phenotypes)\n"
 "--weightfactor x (weight for very rare variants, default 10)\n"
 "--maxmaf x (MAF threshold to weight variants, default 0.5)\n"
 "--outfile file\n"
@@ -278,6 +279,7 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 		case CASEFREQFILE:
 		case CONTFREQFILE:
 		case INPUTSCOREFILE:
+		case IDPHENOTYPEFILE:
 		case OUTFILE:
 		case SCOREFILE:
 			if (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num) == 0 || arg[0]=='-' || sscanf(arg, "%s",spi->df[a].fn) != 1)
