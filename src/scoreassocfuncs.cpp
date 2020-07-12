@@ -900,20 +900,19 @@ int read_all_subject_scores(FILE* fi, subject** s, int* nsub, float* score)
 	return 1;
 }
 
-typedef std::pair<std::string, float> TStrFloatPair; 
-typedef std::map<std::string, float> TStrFloatMap;
+#define MISSINGPHENOTYPECODE -999 // this should never be used
 int read_phenotypes(FILE* fi, subject** s, int nsub)
 {
-	TStrFloatMap subPhenos;
+	std::map<std::string, float> subPhenos;
 	char id[MAX_ID_LENGTH + 1];
 	float pheno;
 	int ss;
-	while (fgets(long_line, LONG_LINE_LENGTH, fi) && sscanf(long_line, "%s %f", id, &pheno)==2) 
-		subPhenos.insert(TStrFloatPair(id, pheno));
-	TStrFloatMap::iterator it;
+	fgets(long_line, LONG_LINE_LENGTH, fi); // skip first line
+	while (pheno=MISSINGPHENOTYPECODE, fgets(long_line, LONG_LINE_LENGTH, fi) && sscanf(long_line, "%s %f", id, &pheno)>=1)
+		subPhenos.insert(std::pair<std::string, float>(id, pheno));
 	for (ss = 0; ss < nsub; ++ss)
 	{
-		it = subPhenos.find(s[ss]->id);
+		std::map<std::string, float>::const_iterator it = subPhenos.find(s[ss]->id);
 		if (it == subPhenos.end())
 		{
 			dcerror(2, "No phenotype found for subject %s\n", s[ss]->id);
