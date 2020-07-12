@@ -606,7 +606,7 @@ if (*use_comments)
 return 1;
 }
 
-int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char names[MAX_LOCI][LOCUS_NAME_LENGTH],char comments[MAX_LOCI][MAX_COMMENT_LENGTH],float func_weight[MAX_LOCI])
+int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char names[MAX_LOCI][LOCUS_NAME_LENGTH],char comments[MAX_LOCI][MAX_COMMENT_LENGTH],float func_weight[MAX_LOCI],float *score)
 {
 	char aline[1000],pos[100],effect[100],*ptr;
 	int func_pos,l,f,use,s;
@@ -644,9 +644,9 @@ int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char 
 	if (spi->df[PSDATAFILE].fp)
 		read_ps_datafile(pi,spi,sub,nsubptr,names,comments, func_weight,weightMap,effectMap);
 	else if (spi->df[GCDATAFILE].fp)
-		read_all_subjects(spi->df[GCDATAFILE].fp,sub,nsubptr,pi);
-	else if (spi->df[GENDATAFILE].fp)
-		read_all_gen_subjects(spi->df[GENDATAFILE].fp,sub,nsubptr,pi);
+		read_all_subjects(spi->df[GCDATAFILE].fp, sub, nsubptr, pi);
+	else if (spi->df[INPUTSCOREFILE].fp)
+		read_all_subject_scores(spi->df[INPUTSCOREFILE].fp, sub, nsubptr, score);
 	if (spi->df[LOCUSFILTERFILE].fp)
 	{
 		pi->n_loci_to_use=0;
@@ -739,6 +739,9 @@ int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char 
 		if (!readVarFiles(subIDs, *nsubptr, spi))
 		exit(1);
 	}
+	if (spi->df[IDPHENOTYPEFILE].fp)
+		read_phenotypes(spi->df[IDPHENOTYPEFILE].fp, sub, *nsubptr);
+	// do this last so it will overwrite previously read phenotypes
 	return 1;
 }
 
@@ -877,5 +880,49 @@ int read_ps_datafile(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr
 	return 1;
 }
 
+int read_all_subject_scores(FILE* fi, subject** s, int* nsub, float* score)
+{
+	char id[MAX_ID_LENGTH + 1];
+	float pheno, sc;
+	*nsub = 0;
+	while (fgets(long_line, LONG_LINE_LENGTH, fi) && sscanf(long_line, "%s %f %f", id, &pheno, &sc) == 3)
+		if (*nsub == MAX_SUB)
+		{
+			error("Number of subjects exceeds MAX_SUB", ""); return 0;
+		}
+		else
+		{
+			strcpy(s[*nsub]->id, id);
+			s[*nsub]->pheno = pheno;
+			score[*nsub] = sc;
+			++(*nsub);
+		}
+	return 1;
+}
+
+typedef std::pair<std::string, float> TStrFloatPair; 
+typedef std::map<std::string, float> TStrFloatMap;
+int read_phenotypes(FILE* fi, subject** s, int nsub)
+{
+	TStrFloatMap subPhenos;
+	char id[MAX_ID_LENGTH + 1];
+	float pheno;
+	int ss;
+	while (fgets(long_line, LONG_LINE_LENGTH, fi) && sscanf(long_line, "%s %f", id, &pheno)==2) 
+		subPhenos.insert(TStrFloatPair(id, pheno));
+	TStrFloatMap::iterator it;
+	for (ss = 0; ss < nsub; ++ss)
+	{
+		it = subPhenos.find(s[ss]->id);
+		if (it == subPhenos.end())
+		{
+			dcerror(2, "No phenotype found for subject %s\n", s[ss]->id);
+			return 0;
+		}
+		else
+			s[ss]->pheno= it->second;
+	}
+	return 1;
+}
 
 

@@ -38,10 +38,11 @@ option opt[]=
 	{ "locusfilterfile", LOCUSFILTERFILE },
 	{ "locusnamefile", LOCUSNAMEFILE },
 	{ "locusweightfile", LOCUSWEIGHTFILE },
-	{"triofile",TRIOFILE},
-	{"samplefile",SAMPLEFILE},
-	{ "casefreqfile", CASEFREQFILE },
+	{ "triofile",TRIOFILE},
+	{ "casefreqfile", CASEFREQFILE },	
 	{ "contfreqfile", CONTFREQFILE },
+	{ "inputscorefile", INPUTSCOREFILE},
+	{ "IDphenotypefile", IDPHENOTYPEFILE},	
 	{ "outfile", OUTFILE },
 	{ "scorefile", SCOREFILE },
 	{ "nostringtomatchthis", NUMDATAFILETYPES }, // data files above must be in same order as enum in header
@@ -70,8 +71,7 @@ option opt[]=
 
 void usage()
 {
-	printf("scoreassoc --psdatafile file || --gendatafile file || --gcdatafile file     [options]\n\nOptions:\n"
-"--samplefile file (sample file to match IMPUTE2 datafile)\n"
+	printf("scoreassoc --psdatafile file || --gendatafile file || --gcdatafile file|| --inputscorefile file     [options]\n\nOptions:\n"
 "--weightfactor x (weight for very rare variants, default 10)\n"
 "--maxmaf x (MAF threshold to weight variants, default 0.5)\n"
 "--outfile file\n"
@@ -154,6 +154,11 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 	spi->start_from_fitted = 1;
 	spi->numVars=spi->numVarFiles= spi->numTestFiles = spi->numLinTestFiles = 0;
 	spi->lamda=DEFAULT_LAMDA;
+	for (a = 0; a < NUMDATAFILETYPES;++a)
+	{
+		spi->df[a].fn[0] = '\0';
+		spi->df[a].fp = 0;
+	}
 	while (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num))
 	{
 		if (strncmp(arg, "--", 2))
@@ -263,18 +268,18 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 		case PSDATAFILE:
 		case GCDATAFILE:
 		case GENDATAFILE:
+		case TRIOFILE:
 		case WEIGHTFILE:
 		case ANNOTFILE:
 		case FILTERFILE:
 		case LOCUSFILTERFILE:
 		case LOCUSWEIGHTFILE:
 		case LOCUSNAMEFILE:
-		case SAMPLEFILE:
 		case CASEFREQFILE:
 		case CONTFREQFILE:
+		case INPUTSCOREFILE:
 		case OUTFILE:
 		case SCOREFILE:
-		case TRIOFILE:
 			if (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num) == 0 || arg[0]=='-' || sscanf(arg, "%s",spi->df[a].fn) != 1)
 				error=1;
 			break;
@@ -290,9 +295,9 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 int process_options(par_info *pi, sa_par_info *spi)
 {
 	int a,l;
-	if ((spi->df[PSDATAFILE].fn[0]==0)+(spi->df[GCDATAFILE].fn[0]==0)+(spi->df[GENDATAFILE].fn[0]==0) < 2)
+	if ((spi->df[PSDATAFILE].fn[0]==0)+(spi->df[GCDATAFILE].fn[0]==0) + (spi->df[GENDATAFILE].fn[0] == 0) + (spi->df[INPUTSCOREFILE].fn[0] == 0) != 3)
 	{
-		dcerror(1,"Must specify only one of --psdatafile, --gcdatafile or --gendatafile"); exit(1);
+		dcerror(1,"Must specify only one of --psdatafile, --gcdatafile, --gendatafile or --inputscorefile"); exit(1);
 	}
 	if ((spi->df[GCDATAFILE].fn[0]!='\0' || spi->df[GENDATAFILE].fn[0]!='\0' ) && pi->nloci==0)
 	{

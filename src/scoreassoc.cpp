@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 	process_options(&pi,&spi);
 	if (spi.df[FILTERFILE].fp)
 		initExclusions(spi.df[FILTERFILE].fp);
-	read_all_data(&pi,&spi,sub,&nsub,names,comments,func_weight);
+	read_all_data(&pi,&spi,sub,&nsub,names,comments,func_weight,score);
 	if (nsub == 0)
 	{
 		error("There were zero subjects to input","");
@@ -89,18 +89,22 @@ if (spi.use_trios)
 else
 	non_mendelians=0;
 	// not used, compiler error otherwise
-if (pi.is_quantitative)
-fprintf(spi.df[OUTFILE].fp, "scoreassoc output\n"
-	"Locus                                   contAA : contAB : contBB  contFreq  meanAA   : meanAB   : meanBB    rarer  weight  %s\n",
-	spi.use_comments ? "comment" : "");
-else
-fprintf(spi.df[OUTFILE].fp,"scoreassoc output\n"
-"Locus                                   contAA : contAB : contBB  contFreq  caseAA : caseAB : caseBB  caseFreq  MAF       rarer  weight  %s\n",
-	spi.use_comments ? "comment" : "");
-get_freqs(sub,nsub,&pi,&spi,cc_freq,cc_count,cc_genocount);
-applyExclusions(sub, nsub,&pi);
-set_weights(spi.df[OUTFILE].fp,weight,missing_score,rarer,sub,nsub,&pi,&spi,func_weight,cc_freq,cc_count,max_cc,names,comments);
-get_scores(score,weight,missing_score,rarer,sub,nsub,&pi,&spi);
+fprintf(spi.df[OUTFILE].fp, "scoreassoc output\n");
+if (spi.df[INPUTSCOREFILE].fp==0)
+{
+	if (pi.is_quantitative)
+		fprintf(spi.df[OUTFILE].fp, 
+			"Locus                                   contAA : contAB : contBB  contFreq  meanAA   : meanAB   : meanBB    rarer  weight  %s\n",
+			spi.use_comments ? "comment" : "");
+	else
+		fprintf(spi.df[OUTFILE].fp, 
+			"Locus                                   contAA : contAB : contBB  contFreq  caseAA : caseAB : caseBB  caseFreq  MAF       rarer  weight  %s\n",
+			spi.use_comments ? "comment" : "");
+	get_freqs(sub, nsub, &pi, &spi, cc_freq, cc_count, cc_genocount);
+	applyExclusions(sub, nsub, &pi);
+	set_weights(spi.df[OUTFILE].fp, weight, missing_score, rarer, sub, nsub, &pi, &spi, func_weight, cc_freq, cc_count, max_cc, names, comments);
+	get_scores(score, weight, missing_score, rarer, sub, nsub, &pi, &spi);
+}
 filledModel=0;
 strcpy(allVars[spi.numVars].name, "score");
 spi.scoreCol=spi.numVars;

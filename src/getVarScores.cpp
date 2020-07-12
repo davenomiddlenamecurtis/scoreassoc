@@ -51,7 +51,6 @@ option opt[]=
 	{ "locusfilterfile", LOCUSFILTERFILE },
 	{ "locusnamefile", LOCUSNAMEFILE },
 	{ "locusweightfile", LOCUSWEIGHTFILE },
-	{ "samplefile", SAMPLEFILE },
 	{ "triofile", TRIOFILE },
 	{ "outfile", OUTFILE },
 	{ "scorefile", SCOREFILE },
@@ -69,7 +68,6 @@ void usage()
 {
 	printf("getVarScores --psdatafile file || --gendatafile file || --gcdatafile file     [options]\n\nOptions:\n"
 		"--flagfile (binary flags for variant types)"
-"--samplefile file (sample file to match IMPUTE2 datafile)\n"
 "--flagfile file (attribute flags with binary codes)\n"
 "--weightfactor x (weight for very rare variants, default 10)\n"
 "--outfile file\n"
@@ -246,7 +244,6 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 		case LOCUSFILTERFILE:
 		case LOCUSWEIGHTFILE:
 		case LOCUSNAMEFILE:
-		case SAMPLEFILE:
 		case OUTFILE:
 		case SCOREFILE:
 		case TRIOFILE:

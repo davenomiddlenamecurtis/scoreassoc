@@ -43,7 +43,7 @@ extern "C" {
 #define DEFAULT_LAMDA 1
 
 enum OPT {
-	PSDATAFILE=0,GCDATAFILE,GENDATAFILE,WEIGHTFILE,ANNOTFILE,FILTERFILE,LOCUSFILTERFILE,LOCUSNAMEFILE,LOCUSWEIGHTFILE,TRIOFILE,SAMPLEFILE,CASEFREQFILE,CONTFREQFILE,OUTFILE,SCOREFILE,NUMDATAFILETYPES,NUMLOCI,LDTHRESHOLD,WEIGHTTHRESHOLD,ISQUANTITATIVE,DORECESSIVE,DOTTEST,DOLRTEST,DOLINRTEST,STARTFROMFITTED,USEHAPS,SHOWHAPLOCUSNAMES,WEIGHTFACTOR,MAXMAF,LAMDA,VARFILE, TESTFILE, LINTESTFILE, ARGFILE,NUMOPTS, FLAGFILE
+	PSDATAFILE=0,GCDATAFILE,GENDATAFILE,WEIGHTFILE,ANNOTFILE,FILTERFILE,LOCUSFILTERFILE,LOCUSNAMEFILE,LOCUSWEIGHTFILE,TRIOFILE,CASEFREQFILE,CONTFREQFILE,INPUTSCOREFILE,IDPHENOTYPEFILE,OUTFILE,SCOREFILE,NUMDATAFILETYPES,NUMLOCI,LDTHRESHOLD,WEIGHTTHRESHOLD,ISQUANTITATIVE,DORECESSIVE,DOTTEST,DOLRTEST,DOLINRTEST,STARTFROMFITTED,USEHAPS,SHOWHAPLOCUSNAMES,WEIGHTFACTOR,MAXMAF,LAMDA,VARFILE, TESTFILE, LINTESTFILE, ARGFILE,NUMOPTS, FLAGFILE
 };
 // must begin with datafiles followed by output files
 
@@ -103,7 +103,7 @@ extern std::map<std::string,lrVariable *> varMap;
 void usage();
 int read_all_args(char *argv[], int argc, par_info *pi, sa_par_info *spi);
 int process_options(par_info *pi, sa_par_info *spi);
-int read_all_data(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr, char names[MAX_LOCI][LOCUS_NAME_LENGTH], char comments[MAX_LOCI][MAX_COMMENT_LENGTH], float func_weight[MAX_LOCI]);
+int read_all_data(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr, char names[MAX_LOCI][LOCUS_NAME_LENGTH], char comments[MAX_LOCI][MAX_COMMENT_LENGTH], float func_weight[MAX_LOCI],float *scores);
 
 double do_score_onetailed_ttest(FILE *fo,float *score,subject **sub,int nsub,par_info *pi,sa_par_info *spi,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],float *weight,float *missing,int *rarer);
 void get_scores(float *score,float *weight,float *missing_score,int *rarer,subject **sub,int nsub,par_info *pi,sa_par_info *spi);
@@ -129,6 +129,8 @@ char *skip_word(char *ptr);
 int read_ps_datafile(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr, char names[MAX_LOCI][LOCUS_NAME_LENGTH], char comments[MAX_LOCI][MAX_COMMENT_LENGTH], float func_weight[MAX_LOCI],
 	std::map<std::string, float> weightMap, std::map<std::string, std::string> effectMap);
 int readVarFiles(std::map<std::string, int> subIDs, int nSub, lr_test_par_info *spi);
+int read_all_subject_scores(FILE* fi, subject** s, int* nsub, float *score);
+int read_phenotypes(FILE* fi, subject** s, int nsub);
 
 extern float weight[MAX_LOCI],missing_score[MAX_LOCI],func_weight[MAX_LOCI],cc_freq[2][MAX_LOCI],cc_count[2][MAX_LOCI],cc_genocount[2][3][MAX_LOCI];
 extern int rarer[MAX_LOCI],max_cc[2];
