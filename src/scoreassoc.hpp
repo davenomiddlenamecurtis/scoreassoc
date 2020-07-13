@@ -78,7 +78,6 @@ sa_data_file_type df[NUMDATAFILETYPES];
 float wfactor,LD_threshold,weight_threshold,max_MAF;
 int use_func_weights,use_cc_freqs[2],use_locus_names,use_comments,do_recessive_test,use_haplotypes,show_hap_locus_names,use_trios,use_probs;
 int do_ttest, do_lrtest,do_linrtest;
-int is_quantitative; // phenotype is a trait, every subject is a "case"
 };
 
 enum { DE_NOVO=0, NON_MENDELIAN };
@@ -130,7 +129,7 @@ int read_ps_datafile(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr
 	std::map<std::string, float> weightMap, std::map<std::string, std::string> effectMap);
 int readVarFiles(std::map<std::string, int> subIDs, int nSub, lr_test_par_info *spi);
 int read_all_subject_scores(FILE* fi, subject** s, int* nsub, float *score);
-int read_phenotypes(FILE* fi, subject** s, int nsub);
+int read_phenotypes(FILE* fi, subject** s, int *nsub, float* score, int isquantitative);
 
 extern float weight[MAX_LOCI],missing_score[MAX_LOCI],func_weight[MAX_LOCI],cc_freq[2][MAX_LOCI],cc_count[2][MAX_LOCI],cc_genocount[2][3][MAX_LOCI];
 extern int rarer[MAX_LOCI],max_cc[2];

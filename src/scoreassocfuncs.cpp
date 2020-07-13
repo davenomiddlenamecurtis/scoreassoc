@@ -740,7 +740,7 @@ int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char 
 		exit(1);
 	}
 	if (spi->df[IDPHENOTYPEFILE].fp)
-		read_phenotypes(spi->df[IDPHENOTYPEFILE].fp, sub, *nsubptr);
+		read_phenotypes(spi->df[IDPHENOTYPEFILE].fp, sub, nsubptr,score,pi->is_quantitative);
 	// do this last so it will overwrite previously read phenotypes
 	return 1;
 }
@@ -901,16 +901,15 @@ int read_all_subject_scores(FILE* fi, subject** s, int* nsub, float* score)
 }
 
 #define MISSINGPHENOTYPECODE -999 // this should never be used
-int read_phenotypes(FILE* fi, subject** s, int nsub)
+int read_phenotypes(FILE* fi, subject** s, int *nsub, float* score,int isquantitative)
 {
 	std::map<std::string, float> subPhenos;
 	char id[MAX_ID_LENGTH + 1];
 	float pheno;
-	int ss;
-	fgets(long_line, LONG_LINE_LENGTH, fi); // skip first line
+	int ss,sss;
 	while (pheno=MISSINGPHENOTYPECODE, fgets(long_line, LONG_LINE_LENGTH, fi) && sscanf(long_line, "%s %f", id, &pheno)>=1)
 		subPhenos.insert(std::pair<std::string, float>(id, pheno));
-	for (ss = 0; ss < nsub; ++ss)
+	for (ss = 0; ss < *nsub; ++ss)
 	{
 		std::map<std::string, float>::const_iterator it = subPhenos.find(s[ss]->id);
 		if (it == subPhenos.end())
@@ -918,8 +917,22 @@ int read_phenotypes(FILE* fi, subject** s, int nsub)
 			dcerror(2, "No phenotype found for subject %s\n", s[ss]->id);
 			return 0;
 		}
-		else
+		else if (isquantitative)
 			s[ss]->pheno= it->second;
+		else
+			s[ss]->cc = it->second;
+	}
+	for (ss = *nsub - 1; ss >= 0; --ss)
+	{
+		if (s[ss]->pheno == MISSINGPHENOTYPECODE || (isquantitative == 0 && s[ss]->cc != 0 && s[ss]->cc != 1))
+		{
+			for (sss = ss; sss < *nsub - 2; ++sss)
+			{
+				s[sss] = s[sss + 1];
+				score[sss] = score[sss + 1];
+			}
+			--*nsub;
+		}
 	}
 	return 1;
 }
