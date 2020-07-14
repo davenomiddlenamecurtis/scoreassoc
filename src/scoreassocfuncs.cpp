@@ -926,7 +926,7 @@ int read_phenotypes(FILE* fi, subject** s, int *nsub, float* score,int isquantit
 	{
 		if (s[ss]->pheno == MISSINGPHENOTYPECODE || (isquantitative == 0 && s[ss]->cc != 0 && s[ss]->cc != 1))
 		{
-			for (sss = ss; sss < *nsub - 2; ++sss)
+			for (sss = ss; sss < *nsub - 1; ++sss)
 			{
 				s[sss] = s[sss + 1];
 				score[sss] = score[sss + 1];
