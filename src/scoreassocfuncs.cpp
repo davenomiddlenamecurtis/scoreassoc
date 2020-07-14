@@ -647,6 +647,9 @@ int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char 
 		read_all_subjects(spi->df[GCDATAFILE].fp, sub, nsubptr, pi);
 	else if (spi->df[INPUTSCOREFILE].fp)
 		read_all_subject_scores(spi->df[INPUTSCOREFILE].fp, sub, nsubptr, score);
+	if (spi->df[IDPHENOTYPEFILE].fp)
+		read_phenotypes(spi->df[IDPHENOTYPEFILE].fp, sub, nsubptr, score, pi->is_quantitative);
+	// overwrite previously defined phenotypes
 	if (spi->df[LOCUSFILTERFILE].fp)
 	{
 		pi->n_loci_to_use=0;
@@ -739,9 +742,6 @@ int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char 
 		if (!readVarFiles(subIDs, *nsubptr, spi))
 		exit(1);
 	}
-	if (spi->df[IDPHENOTYPEFILE].fp)
-		read_phenotypes(spi->df[IDPHENOTYPEFILE].fp, sub, nsubptr,score,pi->is_quantitative);
-	// do this last so it will overwrite previously read phenotypes
 	return 1;
 }
 
