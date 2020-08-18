@@ -104,12 +104,6 @@
     <ClCompile Include="..\..\src\saglobals.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\sahaprecfuncs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\sarecfuncs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\satriofuncs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

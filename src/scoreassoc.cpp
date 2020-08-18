@@ -1,5 +1,5 @@
 #if 0
-Copyright 2018 David Curtis
+Copyright 2020 David Curtis
 
 This file is part of the scoreassoc package.
 
@@ -28,7 +28,7 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #include "safilterfuncs.hpp"
 
 #define PROGRAM "scoreassoc"
-#define SAVERSION "6.1"
+#define SAVERSION "7.0"
 
 int main(int argc, char *argv[])
 {
@@ -186,6 +186,7 @@ if (spi.df[SCOREFILE].fp)
 	fclose(spi.df[SCOREFILE].fp);
 	spi.df[SCOREFILE].fp=0;
 }
+#if 0
 if (spi.do_recessive_test)
 {
 if (atoi(comments[0])>22 || toupper(comments[0][0]) == 'X' || toupper(comments[0][0]) == 'Y' ||
@@ -197,6 +198,7 @@ else if (spi.use_haplotypes)
 else 
 	do_recessive_HWE_test(spi.df[OUTFILE].fp,score,sub,nsub,&pi,&spi,cc_freq,cc_count,max_cc,weight,missing_score,rarer,names);
 }
+#endif
 
 stateExclusions(spi.df[OUTFILE].fp);
 fclose(spi.df[OUTFILE].fp);

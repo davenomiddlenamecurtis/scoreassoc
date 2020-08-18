@@ -316,7 +316,6 @@ int main(int argc, char *argv[])
 	FILE *fp;
 	int s;
 	printf("%s v%s\n",PROGRAM,PAVERSION);
-	printf("MAX_LOCI=%d\nMAX_SUB=%d\n",MAX_LOCI,MAX_SUB);
 	pp.ignoreUninformative = 1;
 	if (!pp.readParms(argc,argv))
 		exit(1);

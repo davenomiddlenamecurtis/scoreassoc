@@ -48,16 +48,16 @@ option opt[]=
 	{ "nostringtomatchthis", NUMDATAFILETYPES }, // data files above must be in same order as enum in header
 	{ "numloci", NUMLOCI },
 // need this if using gc files
-	{ "ldthreshold", LDTHRESHOLD },
-	{ "minweight", WEIGHTTHRESHOLD },
+//	{ "ldthreshold", LDTHRESHOLD },
+//	{ "minweight", WEIGHTTHRESHOLD },
 	{ "isquantitative",ISQUANTITATIVE },
-	{ "dorecessive", DORECESSIVE },
+//	{ "dorecessive", DORECESSIVE },
 	{ "dottest",DOTTEST },
 	{ "dolrtest",DOLRTEST },
 	{ "dolinrtest",DOLINRTEST },
 	{ "start-from-fitted",STARTFROMFITTED },
-	{ "usehaps", USEHAPS },
-	{ "showhaplocusnames", SHOWHAPLOCUSNAMES },
+//	{ "usehaps", USEHAPS },
+//	{ "showhaplocusnames", SHOWHAPLOCUSNAMES },
 	{ "weightfactor", WEIGHTFACTOR },
 	{ "maxmaf", MAXMAF},
 	{"lamda",LAMDA},
@@ -87,10 +87,10 @@ void usage()
 "--contfreqfile file (provide allele frequency for each locus in controls)\n"
 "--triofile file\n"
 "--isquantitative x (quantitative phenotype, 0 or 1, default 0)"
-"--ldthreshold x (to discard variants in LD for recessive analysis, default 0.9)\n"
-"--minweight x (to include in recessive analysis, default 0, i.e. all variants)\n"
+// "--ldthreshold x (to discard variants in LD for recessive analysis, default 0.9)\n"
+// "--minweight x (to include in recessive analysis, default 0, i.e. all variants)\n"
 "--lamda x\n"
-"--dorecessive x\n"
+// "--dorecessive x\n"
 "--dottest x\n"
 "--dolrtest x\n"
 "--dolinrtest x\n"
@@ -98,8 +98,8 @@ void usage()
 "--varfile file\n"
 "--testfile file\n"
 "--lintestfile file\n"
-"--usehaps x\n"
-"--showhaplocinames x\n"
+// "--usehaps x\n"
+// "--showhaplocinames x\n"
 "--numloci x (needed with --gcdatafile or --gendatafile)\n"
 "--argfile file (additional arguments)\n"
 );

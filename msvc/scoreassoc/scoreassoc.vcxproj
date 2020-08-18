@@ -167,10 +167,8 @@
     <ClCompile Include="..\..\src\saFilterFuncs.cpp" />
     <ClCompile Include="..\..\src\sagcutils.c" />
     <ClCompile Include="..\..\src\saglobals.cpp" />
-    <ClCompile Include="..\..\src\sahaprecfuncs.cpp" />
     <ClCompile Include="..\..\src\sainit.cpp" />
     <ClCompile Include="..\..\src\salrtests.cpp" />
-    <ClCompile Include="..\..\src\sarecfuncs.cpp" />
     <ClCompile Include="..\..\src\satriofuncs.cpp" />
     <ClCompile Include="..\..\src\scoreassoc.cpp" />
     <ClCompile Include="..\..\src\scoreassocfuncs.cpp" />

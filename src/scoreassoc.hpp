@@ -111,8 +111,8 @@ void set_weights(FILE *fo,float *weight,float *missing_score,int *rarer,subject 
 // int read_sa_par(FILE *fp,par_info *pi,sa_par_info *spi,float *func_weight,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],char names[MAX_LOCI][LOCUS_NAME_LENGTH],char comments[MAX_LOCI][MAX_COMMENT_LENGTH]);
 void get_freqs(subject **sub,int nsub,par_info *pi,sa_par_info *spi,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],float cc_gencount[2][3][MAX_LOCI]);
 void write_scores(FILE *fs,subject **sub,int nsub,float *score,par_info* pi);
-void do_recessive_HWE_test(FILE *fo,float *score,subject **sub,int nsub,par_info *pi,sa_par_info *spi,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],float *weight,float *missing,int *old_rarer,char names[MAX_LOCI][LOCUS_NAME_LENGTH]);
-void do_recessive_HWE_test_with_haplotypes(FILE *fo, float *score, subject **sub, int nsub, par_info *pi,sa_par_info *spi, float cc_freq[2][MAX_LOCI], float cc_count[2][MAX_LOCI], int max_cc[2], float *weight, float *missing, int *old_rarer, char names[MAX_LOCI][LOCUS_NAME_LENGTH]);
+// void do_recessive_HWE_test(FILE *fo,float *score,subject **sub,int nsub,par_info *pi,sa_par_info *spi,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],float *weight,float *missing,int *old_rarer,char names[MAX_LOCI][LOCUS_NAME_LENGTH]);
+// void do_recessive_HWE_test_with_haplotypes(FILE *fo, float *score, subject **sub, int nsub, par_info *pi,sa_par_info *spi, float cc_freq[2][MAX_LOCI], float cc_count[2][MAX_LOCI], int max_cc[2], float *weight, float *missing, int *old_rarer, char names[MAX_LOCI][LOCUS_NAME_LENGTH]);
 extern int sort_trios(subject **sub,int nsub,par_info *pi, sa_par_info *spi, subject **new_sub,non_mendelian *nm,int *n_non_mendelian,char *non_mendelian_report);
 extern int output_nm_report(FILE *fp, par_info *pi, int n_non_mendelians, non_mendelian *non_mendelians);
 int read_all_gen_subjects(FILE *fi,subject **s,int *nsub,par_info *pi);
