@@ -37,9 +37,6 @@ typedef std::map<std::string,int> TStrIntMap;
 #define PROGRAM "permPathwayAssoc"
 #define PPAVERSION "1.3"
 
-#ifndef MAX_LOCI
-#define MAX_LOCI 12000
-#endif
 #ifndef MAX_SUB
 #define MAX_SUB 15000
 #endif
@@ -261,7 +258,7 @@ float threshold[NTHRESHOLD] = { 1,2,3,4,5 };
 
 int getSLPs(pathway **allPathways, float **geneScores, float **pathwayScores, int *cc, ppaParams *pp, int realData, float analysisWiseResults[NTHRESHOLD + 1],int nOverAnalysisWise[NTHRESHOLD + 1])
 {
-	int nGene,missing[MAX_LOCI],s,nSub,g,gg,n[2],i,p,t,nOverThreshold[NTHRESHOLD];
+	int nGene,s,nSub,g,gg,n[2],i,p,t,nOverThreshold[NTHRESHOLD];
 	float sigma_x[2],sigma_x2[2],mean[2],var[2],SLP,SE,tval,s2,score[MAX_SUB],maxSLP;
 	pathway *path;
 	double pVal;
@@ -517,7 +514,7 @@ int main(int argc, char *argv[])
 	pathway **allPathways;
 	TStrIntMap geneIndex;
 	printf("%s v%s\n",PROGRAM,PPAVERSION);
-	printf("MAX_LOCI=%d\nMAX_SUB=%d\n",MAX_LOCI,MAX_SUB);
+	printf("MAX_SUB=%d\n",MAX_SUB);
 	assert((geneScores=(float**)calloc(MAX_GENES,sizeof(float *)))!=0);
 	assert((allPathways=(pathway **)calloc(MAX_PATHWAYS,sizeof(pathway *)))!=0);
 	if (!pp.readParms(argc,argv))

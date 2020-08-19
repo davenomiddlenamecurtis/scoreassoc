@@ -907,6 +907,7 @@ int read_phenotypes(FILE* fi, subject** s, int *nsub, float* score,int isquantit
 	char id[MAX_ID_LENGTH + 1];
 	float pheno;
 	int ss,sss;
+	subject* tempSub; // now subject is a class can't have two pointers pointing to one subject
 	while (pheno=MISSINGPHENOTYPECODE, fgets(long_line, LONG_LINE_LENGTH, fi) && sscanf(long_line, "%s %f", id, &pheno)>=1)
 		subPhenos.insert(std::pair<std::string, float>(id, pheno));
 	for (ss = 0; ss < *nsub; ++ss)
@@ -926,11 +927,13 @@ int read_phenotypes(FILE* fi, subject** s, int *nsub, float* score,int isquantit
 	{
 		if (s[ss]->pheno == MISSINGPHENOTYPECODE || (isquantitative == 0 && s[ss]->cc != 0 && s[ss]->cc != 1))
 		{
+			tempSub = s[ss];
 			for (sss = ss; sss < *nsub - 1; ++sss)
 			{
 				s[sss] = s[sss + 1];
 				score[sss] = score[sss + 1];
 			}
+			s[sss] = tempSub; // pop it back at the end
 			--*nsub;
 		}
 	}

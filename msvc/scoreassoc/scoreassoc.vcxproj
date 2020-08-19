@@ -154,7 +154,7 @@
     <ClInclude Include="..\..\src\fisher.h" />
     <ClInclude Include="..\..\src\glModel.hpp" />
     <ClInclude Include="..\..\src\safilterfuncs.hpp" />
-    <ClInclude Include="..\..\src\sagcutils.h" />
+    <ClInclude Include="..\..\src\sagcutils.hpp" />
     <ClInclude Include="..\..\src\scoreassoc.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -165,7 +165,7 @@
     <ClCompile Include="..\..\src\glModel.cpp" />
     <ClCompile Include="..\..\src\ipmpar.c" />
     <ClCompile Include="..\..\src\saFilterFuncs.cpp" />
-    <ClCompile Include="..\..\src\sagcutils.c" />
+    <ClCompile Include="..\..\src\sagcutils.cpp" />
     <ClCompile Include="..\..\src\saglobals.cpp" />
     <ClCompile Include="..\..\src\sainit.cpp" />
     <ClCompile Include="..\..\src\salrtests.cpp" />

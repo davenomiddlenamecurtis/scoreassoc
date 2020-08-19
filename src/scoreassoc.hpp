@@ -28,9 +28,7 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #include <map>
 #include "glModel.hpp"
 
-extern "C" {
-#include "sagcutils.h"
-};
+#include "sagcutils.hpp"
 
 #define MAX_COMMENT_LENGTH 15000 // this was set to 1500 but this would miss off some of the VEP annotation
 #define NAME_LENGTH 20
@@ -78,6 +76,7 @@ sa_data_file_type df[NUMDATAFILETYPES];
 float wfactor,LD_threshold,weight_threshold,max_MAF;
 int use_func_weights,use_cc_freqs[2],use_locus_names,use_comments,do_recessive_test,use_haplotypes,show_hap_locus_names,use_trios,use_probs;
 int do_ttest, do_lrtest,do_linrtest;
+int useFlatFile = 0;
 };
 
 enum { DE_NOVO=0, NON_MENDELIAN };

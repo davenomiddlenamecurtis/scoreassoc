@@ -31,7 +31,7 @@ OURFLAGS = $(MYFLAGS) $(EXTRAFLAGS)
 
 # to compile for debugging use make -f scoreassoc.mak DEBUGFLAG=-g 
 
-HEADERS = cdflib.h  dcerror.hpp  dcexpr.hpp  fisher.h  sagcutils.h  safilterfuncs.hpp  scoreassoc.hpp
+HEADERS = cdflib.h  dcerror.hpp  dcexpr.hpp  fisher.h  sagcutils.hpp  safilterfuncs.hpp  scoreassoc.hpp
 # cheat and just assume all code dependent on all of these
 
 EXES = scoreassoc pathwayAssoc permPathwayAssoc makeScoreTable testGeneSets # fitScores combineGeneScores getVarScores combineCohorts 

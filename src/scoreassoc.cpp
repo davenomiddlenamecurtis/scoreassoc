@@ -45,14 +45,30 @@ int main(int argc, char *argv[])
 	printf("MAX_LOCI=%d\nMAX_SUB=%d\n",MAX_LOCI,MAX_SUB);
 
 	assert(sub=(subject **)calloc(MAX_SUB,sizeof(subject*)));
-	for (s=0;s<MAX_SUB;++s)
-		assert(sub[s]=(subject *)calloc(1,sizeof(subject)));
 	assert(score=(float *)calloc(MAX_SUB,sizeof(float)));
 	max_cc[0]=max_cc[1]=0;
 	read_all_args(argv,argc, &pi, &spi);
 	// make_arg_string(arg_string,argc,argv);
 	// parse_arg_string(arg_string,&pi,&spi,&pspi);
 	process_options(&pi,&spi);
+	for (s = 0; s < MAX_SUB; ++s)
+	{
+		if (spi.df[PSDATAFILE].fn[0]) {
+			sub[s] = new subject(); // use default MAX_LOCI
+		}
+		else if (spi.use_probs) {
+			sub[s] = new subject(pi.nloci, 1);
+		}
+		else if (spi.df[GENDATAFILE].fn[0]) {
+			sub[s] = new subject(pi.nloci, 0);
+		}
+		else if (spi.useFlatFile) {
+			sub[s] = new subject(0, 0);
+		}
+		else
+			sub[s] = new subject(pi.nloci, 0);
+	}
+
 	if (spi.df[FILTERFILE].fp)
 		initExclusions(spi.df[FILTERFILE].fp);
 	read_all_data(&pi,&spi,sub,&nsub,names,comments,func_weight,score);
@@ -203,6 +219,9 @@ else
 stateExclusions(spi.df[OUTFILE].fp);
 fclose(spi.df[OUTFILE].fp);
 spi.df[OUTFILE].fp=0; //  because otherwise the destructor will try to fclose it
+for (s = 0; s < MAX_SUB; ++s)
+	delete *(sub+s);
+free(sub);
 printf("\nProgram run completed OK\n");
 return 0;
 

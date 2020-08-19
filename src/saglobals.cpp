@@ -25,3 +25,5 @@ int rarer[MAX_LOCI],max_cc[2];
 char names[MAX_LOCI][LOCUS_NAME_LENGTH],comments[MAX_LOCI][MAX_COMMENT_LENGTH],trios_fn[500];
 lrVariable allVars[MAXLRVARIABLES];
 std::map<std::string,lrVariable *> varMap;
+
+extern int needed_loci = MAX_LOCI;

@@ -26,8 +26,10 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #include <math.h>
 #include <ctype.h>
 
-#include "sagcutils.h"
-#include "cdflib.h"
+#include "sagcutils.hpp"
+extern "C" {
+#include "cdflib.h" 
+}
 
 #ifndef MSDOS
 #include <unistd.h>
@@ -386,7 +388,12 @@ return 0;
 
 void output_alls(FILE *fo,long g,int n_loci_to_use,int *loci_to_use,int *n_alls)
 {
+#if 0
 int all[MAX_LOCI][2],this_geno,i;
+#else
+int (*all)[2], this_geno, i;
+all = (int(*)[2])calloc(n_loci_to_use, sizeof(*all));
+#endif
 for (i=n_loci_to_use-1;i>=0;--i)
   {
   this_geno=g%(n_alls[loci_to_use[i]]*n_alls[loci_to_use[i]]+1)+1;
@@ -408,7 +415,7 @@ for (i=0;i<n_loci_to_use;++i)
   if ((all[i][0]==0)!= (all[i][1]==0))
      error("Failure in output_alls()","");
   }
-
+free(all);
 }
 
 int output_genotypes(FILE *fo,subject **s,int nsub,int cc,int group,par_info *pi)
@@ -462,6 +469,7 @@ return found_one;
 }
 
 char long_line[LONG_LINE_LENGTH+1];
+#if 0
 int read_par(FILE *fp,par_info *pi)
 {
 char *ptr;
@@ -497,7 +505,7 @@ for (pi->n_loci_to_use=0,i=0,ptr=long_line;i<pi->nloci;++i)
   }
 return 1;
 }
-
+#endif
 int read_perm_par(FILE *fp,par_info *pi)
 {
 char line[2000];

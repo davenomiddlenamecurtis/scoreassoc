@@ -30,6 +30,9 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #ifndef MAX_LOCI
 #define MAX_LOCI 12000
 #endif
+extern int needed_loci;
+// move towards dynamic memory allocation
+
 #ifndef MAX_ALL
 #define MAX_ALL 2
 #endif
@@ -97,6 +100,7 @@ float hap_pair_prob[MAXHAPSPERGENO];
 
 typedef struct geno_probs_t geno_probs;
 
+#if 0
 struct subject_t { 
 	char id[MAX_ID_LENGTH + 1]; 
 	int cc, group, skip; union { int all[MAX_LOCI][2]; float prob[MAX_LOCI][3]; }; 
@@ -105,6 +109,28 @@ struct subject_t {
 };
 
 typedef struct subject_t subject;
+#else
+class subject {
+public:
+	char id[MAX_ID_LENGTH + 1];
+	int cc, group, skip; int (*all)[2]; float (*prob)[3];
+	float pheno;
+	long geno; int gc_geno;
+	subject(int nLoci = MAX_LOCI, int useProbs = 0)
+	{
+		all = 0;
+		prob = 0;
+		if (nLoci)
+		{
+			if (useProbs)
+				assert(prob = (float (*)[3])calloc(nLoci, sizeof(*prob)));
+			else
+				assert(all = (int(*)[2])calloc(nLoci, sizeof(*all)));
+		}
+	}
+	~subject() { if (all) free(all); if (prob) free(prob); }
+};
+#endif
 
 int error_func(unsigned l,char *f,char *s1,char *s2);
 double chistat(double x,double df);
