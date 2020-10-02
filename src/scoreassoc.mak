@@ -85,8 +85,8 @@ fitScores: fitScoresWithDlib.o dcerror.o source.o
 getVarScores: getVarScores.o saglobals.o scoreassocfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o 
 	$(CC) ${DEBUGFLAG} -o getVarScores getVarScores.o saglobals.o scoreassocfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o -lm
 
-scoreassoc: source.o scoreassoc.o sainit.o salrtests.o glModel.o saglobals.o scoreassocfuncs.o sarecfuncs.o sahaprecfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o 
-	$(CC) ${DEBUGFLAG} -o scoreassoc source.o scoreassoc.o sainit.o salrtests.o glModel.o saglobals.o scoreassocfuncs.o sarecfuncs.o sahaprecfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o -lm -lpthread
+scoreassoc: source.o scoreassoc.o sainit.o salrtests.o glModel.o saglobals.o scoreassocfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o 
+	$(CC) ${DEBUGFLAG} -o scoreassoc source.o scoreassoc.o sainit.o salrtests.o glModel.o saglobals.o scoreassocfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o -lm -lpthread
 
 combineCohorts: combineCohorts.o dcdflib.o ipmpar.o dcerror.o 
 	$(CC) ${DEBUGFLAG} -o combineCohorts combineCohorts.o dcdflib.o ipmpar.o dcerror.o -lm

@@ -76,21 +76,21 @@ void glModel::getMeans()
 #if 0
 
 Minimisation can be difficult if some sets of values are much higher than others, so this code can normalise them.
-Instead of fitting B with X, fit B' with Z.
+Instead of fitting B with X, fit Bprime with Z.
 Need to adjust B0 for intercept accordingly.
 Note that the mean and SD always refer to the original values, not the normalised ones which replace them.
 
 Xij=(Zij*Si+Mi)
 Zij=(Xij-Mi)/Si
-B' is for the normalised values
+Bprime is for the normalised values
 Ti=S(Bj*Xij) + B0
-Ti=S(B'j*Zij)+B'0
-=S(B'j*Xij/Sj)-S(B'j*Mj/Sj)+B'0
-So Bj=B'j/Sj
-And B0=B'0-S(B'j*Mj/Sj)
+Ti=S(Bprimej*Zij)+Bprime0
+=S(Bprimej*Xij/Sj)-S(Bprimej*Mj/Sj)+Bprime0
+So Bj=Bprimej/Sj
+And B0=Bprime0-S(Bprimej*Mj/Sj)
 
-B'j=Bj*Sj
-B'0=B0+S(Bj*Mj)
+Bprimej=Bj*Sj
+Bprime0=B0+S(Bj*Mj)
 
 #endif
 
