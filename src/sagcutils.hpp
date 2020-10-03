@@ -132,7 +132,7 @@ public:
 };
 #endif
 
-int error_func(unsigned l,char *f,char *s1,char *s2);
+int error_func(unsigned l,const char *f,const char *s1,const char *s2);
 double chistat(double x,double df);
 double tstat(double t,double df);
 int read_subject(char *line,subject *s,par_info *pi);

@@ -60,7 +60,7 @@ exit(1);
 
 #endif
 
-int error_func(unsigned l,char *f,char *s1,char *s2)
+int error_func(unsigned l,const char *f,const char *s1,const char *s2)
 {
 fprintf(stderr,"Error on line %d of source file %s:\n %s%s\n\n",l,f,s1,s2);
 exit(1);
