@@ -39,6 +39,7 @@ extern "C" {
 // #define _CRTIMP
 #endif
 
+
 int ISTEMP;
 float FSTEMP;
 
@@ -281,21 +282,23 @@ for (i=0;i<pi->nloci;++i)
 return (!found_error);
 }
 
-int read_all_subjects(FILE *fi,subject **s,int *nsub,par_info *pi)
+int read_all_subjects(FILE* fi, subject** s, int* nsub, par_info* pi)
 {
-char id[MAX_ID_LENGTH+1];
-int found_error;
-found_error=0;
-*nsub=0;
-while (fgets(long_line,LONG_LINE_LENGTH,fi) && sscanf(long_line,"%s",id)==1)
-  {
-  if (*nsub==MAX_SUB)
-    { error("Number of subjects exceeds MAX_SUB",""); return 0; }
-  if (!read_subject(long_line,s[(*nsub)++],pi)) found_error=1;
-  }
-if (found_error)
-  error("Error[s] found in data file","");
-return !found_error;
+    char id[MAX_ID_LENGTH + 1];
+    int found_error;
+    found_error = 0;
+    *nsub = 0;
+    while (fgets(long_line, LONG_LINE_LENGTH, fi) && sscanf(long_line, "%s", id) == 1)
+    {
+        if (*nsub == MAX_SUB)
+        {
+            error("Number of subjects exceeds MAX_SUB", ""); return 0;
+        }
+        if (!read_subject(long_line, s[(*nsub)++], pi)) found_error = 1;
+    }
+    if (found_error)
+        error("Error[s] found in data file", "");
+    return !found_error;
 }
 
 int alls_to_genotype(int *all,int n_alls)

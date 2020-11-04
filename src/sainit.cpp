@@ -64,6 +64,7 @@ option opt[]=
 	{"varfile",VARFILE},
 	{"testfile",TESTFILE},
 	{"lintestfile",LINTESTFILE},
+	{"transposedata",TRANSPOSEDATA},
 	{"argfile",ARGFILE},
 {"", NUMOPTS}
 };
@@ -72,6 +73,7 @@ option opt[]=
 void usage()
 {
 	printf("scoreassoc --psdatafile file || --gendatafile file || --gcdatafile file|| --inputscorefile file     [options]\n\nOptions:\n"
+"--transposedata x (0 or 1, data in gcdatafile is transposed)\n"
 "--IDphenotypefile file (assign different phenotypes)\n"
 "--weightfactor x (weight for very rare variants, default 10)\n"
 "--maxmaf x (MAF threshold to weight variants, default 0.5)\n"
@@ -86,7 +88,7 @@ void usage()
 "--casefreqfile file (provide allele frequency for each locus in cases)\n"
 "--contfreqfile file (provide allele frequency for each locus in controls)\n"
 "--triofile file\n"
-"--isquantitative x (quantitative phenotype, 0 or 1, default 0)"
+"--isquantitative x (quantitative phenotype, 0 or 1, default 0)\n"
 // "--ldthreshold x (to discard variants in LD for recessive analysis, default 0.9)\n"
 // "--minweight x (to include in recessive analysis, default 0, i.e. all variants)\n"
 "--lamda x\n"
@@ -199,8 +201,12 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 			}
 			break;
 		case NUMLOCI:
-			if (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &pi->nloci) != 1)
-				error=1;
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &pi->nloci) != 1)
+				error = 1;
+			break;
+		case TRANSPOSEDATA:
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->useTransposedFile) != 1)
+				error = 1;
 			break;
 		case WEIGHTFACTOR:
 			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%f", &spi->wfactor) != 1)
@@ -303,7 +309,7 @@ int process_options(par_info *pi, sa_par_info *spi)
 	}
 	if ((spi->df[GCDATAFILE].fn[0]!='\0' || spi->df[GENDATAFILE].fn[0]!='\0' ) && pi->nloci==0)
 	{
-		dcerror(1,"Need to specify --nloci when using --gcdatafile or --gendatafile"); exit(1);
+		dcerror(1,"Need to specify --numloci when using --gcdatafile or --gendatafile"); exit(1);
 	}
 	if (spi->df[GENDATAFILE].fn[0] != '\0')
 	{

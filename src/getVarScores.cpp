@@ -277,7 +277,7 @@ int process_options(par_info *pi, sa_par_info *spi)
 	// put below into scoreassoc
 	if ((spi->df[GCDATAFILE].fn[0]!='\0' || spi->df[GENDATAFILE].fn[0]!='\0' ) && spi->df[LOCUSFILTERFILE].fn[0]=='\0'  && pi->nloci==0)
 	{
-		dcerror(1,"Need to specify --nloci or --locusfilterfile when using --gcdatafile or --gendatafile"); exit(1);
+		dcerror(1,"Need to specify --numloci or --locusfilterfile when using --gcdatafile or --gendatafile"); exit(1);
 	}
 	if (spi->df[GENDATAFILE].fn[0] != '\0')
 	{

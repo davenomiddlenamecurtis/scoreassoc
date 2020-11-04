@@ -301,7 +301,7 @@ int readVarFiles(std::map<std::string, int> subIDs, int nSub, lr_test_par_info  
 				for (s = 0; s<nSub; ++s)
 					allVars[spi->numVars].val[s] = MISSING;
 				colIndex[c] = spi->numVars;
-				varMap[colValue] = allVars + spi->numVars;
+				varMap[colValue] = &allVars[spi->numVars];
 				++spi->numVars;
 			}
 			if (*ptr == '\0')
@@ -312,7 +312,7 @@ int readVarFiles(std::map<std::string, int> subIDs, int nSub, lr_test_par_info  
 		{
 			ptr = long_line;
 			while (*ptr && isspace(*ptr))
-				*sptr++ = *ptr++;
+				*ptr++;
 			for (c = 0; c <= idCol; ++c)
 			{
 				sptr = colValue;
@@ -354,7 +354,7 @@ int readVarFiles(std::map<std::string, int> subIDs, int nSub, lr_test_par_info  
 			}
 		}
 		for (s = 0; s<nSub; ++s)
-			if (allVars[colIndex[idCol + 1]].val[s] == MISSING)
+			if (allVars[colIndex[idCol + 1]].val[s] == MISSING) // only have to check one to know if the subject line was found
 			{
 				std::map<std::string, int>::iterator i1(subIDs.begin());
 				std::advance(i1, s);

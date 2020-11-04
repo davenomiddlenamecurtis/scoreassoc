@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
 		else if (spi.df[GENDATAFILE].fn[0]) {
 			sub[s] = new subject(pi.nloci, 0);
 		}
-		else if (spi.useFlatFile) {
+		else if (spi.useFlatFile) { // this has not been implemented
 			sub[s] = new subject(0, 0);
 		}
 		else

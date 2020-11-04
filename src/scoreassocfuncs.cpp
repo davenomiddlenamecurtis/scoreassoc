@@ -643,8 +643,10 @@ int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char 
 	}
 	if (spi->df[PSDATAFILE].fp)
 		read_ps_datafile(pi,spi,sub,nsubptr,names,comments, func_weight,weightMap,effectMap);
-	else if (spi->df[GCDATAFILE].fp)
+	else if (spi->df[GCDATAFILE].fp && !spi->useTransposedFile)
 		read_all_subjects(spi->df[GCDATAFILE].fp, sub, nsubptr, pi);
+	else if (spi->df[GCDATAFILE].fp && spi->useTransposedFile)
+		read_all_subjects_transposed(spi->df[GCDATAFILE].fp, sub, nsubptr, pi);
 	else if (spi->df[INPUTSCOREFILE].fp)
 		read_all_subject_scores(spi->df[INPUTSCOREFILE].fp, sub, nsubptr, score);
 	if (spi->df[IDPHENOTYPEFILE].fp)
@@ -940,4 +942,116 @@ int read_phenotypes(FILE* fi, subject** s, int *nsub, float* score,int isquantit
 	return 1;
 }
 
+int read_all_subjects_transposed(FILE* fi, subject** sub, int* nsub, par_info* pi)
+{
+	char id[MAX_ID_LENGTH + 1];
+	int found_error, ch, finished, s, i;
+	float pheno;
+	found_error = 0;
+	s = 0;
+	finished = 0;
+	while (fscanf(fi, "%s", id) == 1)
+	{
+		if (s >= MAX_SUB)
+		{
+			error("Number of subjects exceeds MAX_SUB", ""); return 0;
+		}
+		else
+			strcpy(sub[s++]->id, id);
+		do {
+			ch = fgetc(fi);
+			if (ch == '\n' || ch == EOF)
+			{
+				finished = 1;
+				break;
+			}
+		} while (isspace(ch));
+		if (finished)
+			break;
+		ungetc(ch, fi);
+	}
+	*nsub = s;
+	finished = 0;
+	s = 0;
+	while (fscanf(fi, "%f", &pheno) == 1)
+	{
+		if (pi->is_quantitative)
+		{
+			sub[s]->pheno = pheno;
+			sub[s]->cc = 0;
+		}
+		else
+		{
+			if (pheno != 0 && pheno != 1)
+			{
+				dcerror(1, "Bad case control status %f for subject %s\n", pheno, sub[s]->id);
+				return 0;
+			}
+			else
+				sub[s]->cc = pheno;
+		}
+		++s;
+		do {
+			ch = fgetc(fi);
+			if (ch == '\n' || ch == EOF)
+			{
+				finished = 1;
+				break;
+			}
+		} while (isspace(ch));
+		if (finished)
+			break;
+		ungetc(ch, fi);
+	}
+	if (s != *nsub)
+	{
+		dcerror(1, "There are %d phenotype codes in second line of data file but %d subjects\n", s, *nsub);
+		return 0;
+	}
+	for (i = 0; i < pi->nloci; ++i)
+	{
+		finished = 0;
+		s = 0;
+		while (fscanf(fi, "%d %d", &sub[s]->all[i][0], &sub[s]->all[i][1]) == 2)
+		{
+			if ((sub[s]->all[i][0] == 0) != (sub[s]->all[i][1] == 0))
+			{
+				printf("In subject %s there is only one zero allele for locus %d\n",
+					sub[s]->id, i + 1);
+				found_error = 1;
+			}
+			if (sub[s]->all[i][0]<0 || sub[s]->all[i][1]<0 || sub[s]->all[i][0]>pi->n_alls[i] || sub[s]->all[i][1]>pi->n_alls[i])
+			{
+				printf("In subject %s bad allele number for locus %d\n",
+					sub[s]->id, i + 1);
+				found_error = 1;
+			}
+			++s;
+			do {
+				ch = fgetc(fi);
+				if (ch == '\n' || ch == EOF)
+				{
+					finished = 1;
+					break;
+				}
+			} while (isspace(ch));
+			if (finished)
+				break;
+			ungetc(ch, fi);
+		}
+		if (s != *nsub)
+		{
+			dcerror(1, "There are %d allele pairs but %d subjects for locus %d\n", s, *nsub, i);
+			return 0;
+		}
+	}
+	if (i != pi->nloci)
+	{
+		dcerror(1, "Could only read in data for %d out of %d loci\n", i, pi->nloci);
+		return 0;
+	}
+	if (found_error)
+		dcerror(1,"Error[s] found in data file\n");
+	return !found_error;
+}
 
