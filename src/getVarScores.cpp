@@ -23,7 +23,7 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #include <ctype.h>
 #include <string>
 #include <map>
-
+#include <assert.h>
 #include "scoreassoc.hpp"
 
 #include "dcexpr.hpp"
@@ -456,7 +456,7 @@ int main(int argc, char *argv[])
 {
 	char arg_string[2000];
 	int nsub,n_new_sub,real_nsub,nVarTypes;
-	float **varScore,p;
+	float **varScore,p,*score;
 	int s,n_non_mendelian;
 	non_mendelian *non_mendelians;
 	char *non_mendelian_report;
@@ -477,7 +477,8 @@ int main(int argc, char *argv[])
 	process_options(&pi,&spi);
 	if (spi.df[FILTERFILE].fp)
 		initExclusions(spi.df[FILTERFILE].fp);
-	read_all_data(&pi,&spi,sub,&nsub,names,comments,func_weight);
+	assert(score = (float*)calloc(MAX_SUB, sizeof(float))); // this is only here because read_all_data() may use it
+	read_all_data(&pi,&spi,sub,&nsub,names,comments,func_weight,score);
 if (spi.use_trios)
 {
 	if (atoi(comments[0])>22 || toupper(comments[0][0]) == 'X' || toupper(comments[0][0]) == 'Y' ||

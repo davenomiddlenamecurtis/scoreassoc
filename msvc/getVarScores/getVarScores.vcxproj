@@ -152,7 +152,7 @@
     <ClCompile Include="..\..\src\getVarScores.cpp" />
     <ClCompile Include="..\..\src\ipmpar.c" />
     <ClCompile Include="..\..\src\saFilterFuncs.cpp" />
-    <ClCompile Include="..\..\src\sagcutils.c" />
+    <ClCompile Include="..\..\src\sagcutils.cpp" />
     <ClCompile Include="..\..\src\saglobals.cpp" />
     <ClCompile Include="..\..\src\satriofuncs.cpp" />
     <ClCompile Include="..\..\src\scoreassocfuncs.cpp" />
