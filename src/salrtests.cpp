@@ -359,7 +359,9 @@ int readVarFiles(std::map<std::string, int> subIDs, int nSub, lr_test_par_info  
 				std::map<std::string, int>::iterator i1(subIDs.begin());
 				std::advance(i1, s);
 				std::string ID = i1->first;
-				dcerror(1, "Missing values in variable file %s for subject %s\n", spi->varFiles[i].fn, (char*)ID.c_str());
+				dcerror(1, "Missing values in variable file %s for subject %s (s=%d, idCol+1=%d, colIndex[idCol+1]=%d)\n", 
+					spi->varFiles[i].fn, (char*)ID.c_str(),
+					s, idCol + 1, colIndex[idCol + 1]);
 				return 0;
 			}
 		fclose(spi->varFiles[i].fp);
