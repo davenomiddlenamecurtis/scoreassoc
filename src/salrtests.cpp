@@ -338,7 +338,7 @@ int readVarFiles(std::map<std::string, int> subIDs, int nSub, lr_test_par_info  
 			}
 			else
 				s = idIter->second;
-			for (; c<nCol; ++c)
+			for (++c; c<nCol; ++c)
 			{
 				sptr = colValue;
 				while (*ptr && !isspace(*ptr))
