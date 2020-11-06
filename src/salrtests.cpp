@@ -325,7 +325,7 @@ int readVarFiles(std::map<std::string, int> subIDs, int nSub, lr_test_par_info  
 					break;
 			}
 			
-			if (!strcmp(colValue,"1004559"))
+			if (!strcmp(colValue,"1012421"))
 			{
 				std::map<std::string, int>::const_iterator idIter2 = subIDs.find(colValue);
 				printf("Found %s, s=%d\n",colValue,idIter2->second);
