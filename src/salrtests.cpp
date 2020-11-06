@@ -324,6 +324,13 @@ int readVarFiles(std::map<std::string, int> subIDs, int nSub, lr_test_par_info  
 				if (*ptr == '\0')
 					break;
 			}
+			
+			if (!strcmp(colValue,"1004559"))
+			{
+				std::map<std::string, int>::const_iterator idIter2 = subIDs.find(colValue);
+				printf("Found %s, s=%d\n",colValue,idIter2->second);
+			}
+			
 			if (colValue[0] == '\0')
 			{
 				dcerror(1, "IID value missing from variable file %s in this line:\n%s\n", spi->varFiles[i].fn, long_line);
@@ -353,17 +360,25 @@ int readVarFiles(std::map<std::string, int> subIDs, int nSub, lr_test_par_info  
 				}
 			}
 		}
+		int wentWrong=0;
 		for (s = 0; s<nSub; ++s)
 			if (allVars[colIndex[idCol + 1]].val[s] == MISSING) // only have to check one to know if the subject line was found
 			{
 				std::map<std::string, int>::iterator i1(subIDs.begin());
 				std::advance(i1, s);
 				std::string ID = i1->first;
-				dcerror(1, "Missing values in variable file %s for subject %s (s=%d, idCol+1=%d, colIndex[idCol+1]=%d)\n", 
+//				dcerror(1, "Missing values in variable file %s for subject %s (s=%d, idCol+1=%d, colIndex[idCol+1]=%d)\n", 
+				printf("Missing values in variable file %s for subject %s (s=%d, idCol+1=%d, colIndex[idCol+1]=%d)\n", 
 					spi->varFiles[i].fn, (char*)ID.c_str(),
 					s, idCol + 1, colIndex[idCol + 1]);
-				return 0;
+//				return 0;
+				wentWrong=1;
 			}
+		if (wentWrong)
+		{
+			dcerror(1,"Aborting because of missing values in variable file %s\n",spi->varFiles[i].fn);
+			return 0;
+		}
 		fclose(spi->varFiles[i].fp);
 		spi->varFiles[i].fp = 0;
 	}
