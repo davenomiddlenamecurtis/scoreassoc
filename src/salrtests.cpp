@@ -361,15 +361,13 @@ int readVarFiles(std::map<std::string, int> subIDs, int nSub, lr_test_par_info  
 			}
 		}
 		int wentWrong=0;
-		for (s = 0; s<nSub; ++s)
-			if (allVars[colIndex[idCol + 1]].val[s] == MISSING) // only have to check one to know if the subject line was found
+		for (std::map<std::string, int>::iterator i1=subIDs.begin(); i1!=subIDs.end(); ++i1)
+			if (allVars[colIndex[idCol + 1]].val[s=i1->second] == MISSING) // only have to check one to know if the subject line was found
 			{
-				std::map<std::string, int>::iterator i1(subIDs.begin());
-				std::advance(i1, s);
-				std::string ID = i1->first;
+				
 //				dcerror(1, "Missing values in variable file %s for subject %s (s=%d, idCol+1=%d, colIndex[idCol+1]=%d)\n", 
 				printf("Missing values in variable file %s for subject %s (s=%d, idCol+1=%d, colIndex[idCol+1]=%d)\n", 
-					spi->varFiles[i].fn, (char*)ID.c_str(),
+					spi->varFiles[i].fn, (char*)(i1->first.c_str()),
 					s, idCol + 1, colIndex[idCol + 1]);
 //				return 0;
 				wentWrong=1;
