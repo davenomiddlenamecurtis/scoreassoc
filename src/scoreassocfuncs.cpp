@@ -318,7 +318,7 @@ void set_weights(FILE *f,float *weight,float *missing_score,int *rarer,subject *
 	{
 		if (!spi->use_locus_names)
 			sprintf(names[ll],"LOC%05d",ll+1);
-		fprintf(f,"%-" LOCUS_NAME_LENGTH_STR "s",names[ll]);
+		fprintf(f,"%-" LOCUS_NAME_LENGTH_STR "s ",names[ll]);
 		if (pi->is_quantitative)
 			fprintf(f,
 				spi->use_probs ?
@@ -730,8 +730,8 @@ int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char 
 	}
 	for (l = 0; l < pi->nloci; ++l)
 	{
-		strncpy(names[l],comments[l],NAME_LENGTH-1);
-		names[l][NAME_LENGTH-1]='\0';
+		strncpy(names[l],comments[l],LOCUS_NAME_LENGTH-1);
+		names[l][LOCUS_NAME_LENGTH-1]='\0';
 	}
 	if (spi->numVarFiles)
 	{

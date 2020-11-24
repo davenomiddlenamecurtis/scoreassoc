@@ -325,12 +325,6 @@ int readVarFiles(std::map<std::string, int> subIDs, int nSub, lr_test_par_info  
 					break;
 			}
 			
-			if (!strcmp(colValue,"1012421"))
-			{
-				std::map<std::string, int>::const_iterator idIter2 = subIDs.find(colValue);
-				printf("Found %s, s=%d\n",colValue,idIter2->second);
-			}
-			
 			if (colValue[0] == '\0')
 			{
 				dcerror(1, "IID value missing from variable file %s in this line:\n%s\n", spi->varFiles[i].fn, long_line);

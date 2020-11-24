@@ -110,11 +110,11 @@ if (spi.df[INPUTSCOREFILE].fp==0)
 {
 	if (pi.is_quantitative)
 		fprintf(spi.df[OUTFILE].fp, 
-			"Locus                                   contAA : contAB : contBB  contFreq  meanAA   : meanAB   : meanBB    rarer  weight  %s\n",
+			"Locus                                         contAA : contAB : contBB  contFreq  meanAA   : meanAB   : meanBB    rarer  weight  %s\n",
 			spi.use_comments ? "comment" : "");
 	else
 		fprintf(spi.df[OUTFILE].fp, 
-			"Locus                                   contAA : contAB : contBB  contFreq  caseAA : caseAB : caseBB  caseFreq  MAF       rarer  weight  %s\n",
+			"Locus                                         contAA : contAB : contBB  contFreq  caseAA : caseAB : caseBB  caseFreq  MAF       rarer  weight  %s\n",
 			spi.use_comments ? "comment" : "");
 	get_freqs(sub, nsub, &pi, &spi, cc_freq, cc_count, cc_genocount);
 	applyExclusions(sub, nsub, &pi);

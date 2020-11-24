@@ -36,8 +36,8 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #define MAXLRVARIABLES 50
 #endif
 #define MAXLRVARIABLENAMELENGTH 100
-#define LOCUS_NAME_LENGTH 40
-#define LOCUS_NAME_LENGTH_STR "40"
+#define LOCUS_NAME_LENGTH 45
+#define LOCUS_NAME_LENGTH_STR "45"
 #define DEFAULT_LAMDA 1
 
 enum OPT {
