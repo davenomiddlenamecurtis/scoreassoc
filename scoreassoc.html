@@ -17,18 +17,18 @@ xmlns="http://www.w3.org/TR/REC-html40">
   <o:Author>David Curtis</o:Author>
   <o:Template>B436C3BA.dotm</o:Template>
   <o:LastAuthor>Dave Curtis</o:LastAuthor>
-  <o:Revision>49</o:Revision>
-  <o:TotalTime>3750</o:TotalTime>
+  <o:Revision>51</o:Revision>
+  <o:TotalTime>3752</o:TotalTime>
   <o:LastPrinted>2016-06-20T14:51:00Z</o:LastPrinted>
   <o:Created>2016-05-26T16:44:00Z</o:Created>
-  <o:LastSaved>2020-11-24T10:23:00Z</o:LastSaved>
+  <o:LastSaved>2020-11-25T14:03:00Z</o:LastSaved>
   <o:Pages>46</o:Pages>
-  <o:Words>8977</o:Words>
-  <o:Characters>51169</o:Characters>
+  <o:Words>8957</o:Words>
+  <o:Characters>51055</o:Characters>
   <o:Company>UCL</o:Company>
-  <o:Lines>426</o:Lines>
-  <o:Paragraphs>120</o:Paragraphs>
-  <o:CharactersWithSpaces>60026</o:CharactersWithSpaces>
+  <o:Lines>425</o:Lines>
+  <o:Paragraphs>119</o:Paragraphs>
+  <o:CharactersWithSpaces>59893</o:CharactersWithSpaces>
   <o:Version>16.00</o:Version>
  </o:DocumentProperties>
  <o:OfficeDocumentSettings>
@@ -667,7 +667,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-font-charset:0;
 	mso-generic-font-family:roman;
 	mso-font-pitch:variable;
-	mso-font-signature:3 0 0 0 1 0;}
+	mso-font-signature:-536869121 1107305727 33554432 0 415 0;}
 @font-face
 	{font-family:Calibri;
 	panose-1:2 15 5 2 2 2 4 3 2 4;
@@ -678,6 +678,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 @font-face
 	{font-family:"Segoe UI";
 	panose-1:2 11 5 2 4 2 4 2 2 3;
+	mso-font-alt:Arial;
 	mso-font-charset:0;
 	mso-generic-font-family:swiss;
 	mso-font-pitch:variable;
@@ -1036,8 +1037,8 @@ style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fa
 style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>
 is a program which performs a weighted burden analysis to test if there is an
 excess of rare, functional variants in cases compared with controls or
-associated with a<span style='mso-spacerun:yes'>&nbsp; </span>quantitative phenotype,
-as described in these papers:<o:p></o:p></span></p>
+associated with a<span style='mso-spacerun:yes'>&nbsp; </span>quantitative
+phenotype, as described in these papers:<o:p></o:p></span></p>
 
 <p><span style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:
 minor-fareast'><a
@@ -1053,9 +1054,8 @@ data for obesity and schizophrenia. Curtis D, UK10K Consortium. <i
 style='mso-bidi-font-style:normal'>Ann Hum Genet</i> 2016.</a><o:p></o:p></span></p>
 
 <p><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6303265/">A weighted
-burden test using logistic regression for integrated analysis of sequence
-variants, copy number variants and polygenic risk score. Curtis D. Eur J Hum
-Genet 2019.</a></p>
+burden test using logistic regression for integrated analysis of sequence variants,
+copy number variants and polygenic risk score. Curtis D. Eur J Hum Genet 2019.</a></p>
 
 <p><span style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:
 minor-fareast'>As of version 7.0 recessive analyses are no longer supported.<o:p></o:p></span></p>
@@ -1239,13 +1239,13 @@ class=SpellE>outfile</span> DRD2.psao <o:p></o:p></span></p>
 minor-fareast'>Method<o:p></o:p></span></h2>
 
 <p><span style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:
-minor-fareast'>Variants are weighted according to their rarity and predicted effect.
-The weight for rarity is calculated according to a quadratic function such that
-a common variant has weight 1 and a very rare variant has a weight equal to a
-weighting factor whose default value is 10. The weight according to predicted
-effect means that, for example, an intergenic variant can be given a weight of
-1 whereas a stop (nonsense) variant can be given a weight of 20. The weight
-according to frequency and the weight according to effect are multiplied
+minor-fareast'>Variants are weighted according to their rarity and predicted
+effect. The weight for rarity is calculated according to a quadratic function
+such that a common variant has weight 1 and a very rare variant has a weight
+equal to a weighting factor whose default value is 10. The weight according to
+predicted effect means that, for example, an intergenic variant can be given a
+weight of 1 whereas a stop (nonsense) variant can be given a weight of 20. The
+weight according to frequency and the weight according to effect are multiplied
 together to produce an overall weight for each variant. Within a subject, the
 weights for all variants which are seen in that subject are added to produce an
 overall score. <o:p></o:p></span></p>
@@ -1268,10 +1268,11 @@ linear regression tests can be used.<o:p></o:p></span></p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'>To
 reiterate, it is not recommended that you run <span class=SpellE><i
-style='mso-bidi-font-style:normal'>scoreassoc</i></span> directly. It is recommended
-that instead you run <span class=SpellE><i style='mso-bidi-font-style:normal'>geneVarAssoc</i></span>,
-which will set up <span class=SpellE><i style='mso-bidi-font-style:normal'>scoreassoc</i></span>
-analyses and call it with the appropriate arguments.</p>
+style='mso-bidi-font-style:normal'>scoreassoc</i></span> directly. It is
+recommended that instead you run <span class=SpellE><i style='mso-bidi-font-style:
+normal'>geneVarAssoc</i></span>, which will set up <span class=SpellE><i
+style='mso-bidi-font-style:normal'>scoreassoc</i></span> analyses and call it
+with the appropriate arguments.</p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
@@ -1311,8 +1312,8 @@ rare variants, default 10)</p>
 <p class=MsoQuote>--<span class=SpellE>outfile</span> file (file for main
 output)</p>
 
-<p class=MsoQuote>--<span class=SpellE>weightfile</span> file (specify
-functional weights)</p>
+<p class=MsoQuote>--<span class=SpellE>weightfile</span> file (specify functional
+weights)</p>
 
 <p class=MsoQuote>--<span class=SpellE>annotfile</span> file (annotations from
 plink/<span class=SpellE>seq</span>)</p>
@@ -1352,8 +1353,8 @@ default 1)</p>
 <p class=MsoQuote>--<span class=SpellE>dolrtest</span> x (do logistic
 regression test, 0 or 1, default 0) </p>
 
-<p class=MsoQuote>--<span class=SpellE>dolinrtest</span> x (do linear
-regression test, 0 or 1, default 0) </p>
+<p class=MsoQuote>--<span class=SpellE>dolinrtest</span> x (do linear regression
+test, 0 or 1, default 0) </p>
 
 <p class=MsoQuote>--<span class=SpellE>varfile</span> file (file containing
 covariates) </p>
@@ -1509,17 +1510,13 @@ style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fa
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
 style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>The
 <i style='mso-bidi-font-style:normal'>--<span class=SpellE>gcdatafile</span></i>
-format may be easier to produce from some programs and this was the format
+format may be easier to produce from some programs and this is the format
 produced by default from <span class=SpellE><i style='mso-bidi-font-style:normal'>geneVarAssoc</i></span>.
-(However now the default is for <span class=SpellE><i style='mso-bidi-font-style:
-normal'>geneVarAssoc</i></span><i style='mso-bidi-font-style:normal'> </i><span
-style='mso-bidi-font-style:italic'>use the same format but with rows and
-columns transposed.</span>) The data consists of one row per subject with
-entries separated by spaces. The first entry is an arbitrary ID. This is
-followed by an affection status code consisting of 0 for controls and 1 for
-cases. Subsequent entries consist of pairs of alleles for each marker, numbered
-1 or 2, with 0 0 denoting a missing genotype. The reference allele is 1 and any
-other allele must be coded as 2.<o:p></o:p></span></p>
+The data consists of one row per subject with entries separated by spaces. The
+first entry is an arbitrary ID. This is followed by an affection status code
+consisting of 0 for controls and 1 for cases. Subsequent entries consist of
+pairs of alleles for each marker, numbered 1 or 2, with 0 0 denoting a missing
+genotype. The reference allele is 1 and any other allele must be coded as 2.<o:p></o:p></span></p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
 style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'><o:p>&nbsp;</o:p></span></p>
@@ -1582,16 +1579,15 @@ class=SpellE>numloci</span></i> parameter.</p>
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
 <h3 style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'>--<span
-class=SpellE>transposedata</span> 0 or 1<o:p></o:p></h3>
+class=SpellE>transposedata</span> 0 or 1</h3>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
 <p class=MsoNormal><span style='mso-fareast-font-family:"Times New Roman";
-mso-fareast-theme-font:minor-fareast'>This is used with the If x is 1 -<i
+mso-fareast-theme-font:minor-fareast'>This is used with the -<i
 style='mso-bidi-font-style:normal'>-<span class=SpellE>gcdatafile</span></i>
-format and indicates that the rows and columns of the file are transposed. This
-reduces the memory requirements for <span class=SpellE><i>geneVarAssoc</i></span>
-and is the default format it uses.</span><o:p></o:p></p>
+format and if x is 1 this indicates that the rows and columns of the file are
+transposed. This reduces the memory requirements for <span class=SpellE><i>geneVarAssoc</i></span>.</span></p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
@@ -1785,9 +1781,9 @@ style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>NM_000795,NM_00079
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'>Both
-the annotations file and the weights file need to be specified in order for
-weights to be allocated according to effect rather than just frequency. There
-must be an entry for every locus in the datafile.</p>
+the annotations file and the weights file need to be specified in order for weights
+to be allocated according to effect rather than just frequency. There must be
+an entry for every locus in the datafile.</p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><o:p>&nbsp;</o:p></p>
 
@@ -1935,8 +1931,8 @@ and the second model additionally includes <i style='mso-bidi-font-style:normal'
 A likelihood ratio test is performed and a SLP is output, consisting of the log
 base 10 of the p value with a positive sign if the coefficient for <i
 style='mso-bidi-font-style:normal'>score</i> is positive (suggesting score is
-positively correlated with <span class=SpellE>caseness</span> or the quantitative
-phenotype) and a negative sign otherwise.</p>
+positively correlated with <span class=SpellE>caseness</span> or the
+quantitative phenotype) and a negative sign otherwise.</p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
@@ -1995,11 +1991,10 @@ case-control status.</p>
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
 <p class=MsoNormal>Note that it is possible to include fixed effects. For
-example, if one wishes to have a model which includes as a risk factor
-possessing a CNV which is associated with an OR of 10 then can provide a
-variable named <i style='mso-bidi-font-style:normal'>HASCNV</i> with values of
-0 or 1 and one can specify a fixed value for the coefficient of ln(10)= 2.3
-with this line:</p>
+example, if one wishes to have a model which includes as a risk factor possessing
+a CNV which is associated with an OR of 10 then can provide a variable named <i
+style='mso-bidi-font-style:normal'>HASCNV</i> with values of 0 or 1 and one can
+specify a fixed value for the coefficient of ln(10)= 2.3 with this line:</p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
@@ -2068,18 +2063,18 @@ setting a value of 0 for this variable. </p>
 
 <p class=MsoNormal><o:p>&nbsp;</o:p></p>
 
-<p class=MsoNormal>By default, regularised or constrained regression is performed
-using the ridge penalty. This applies a penalty function consisting of the sum
-of squares of the coefficients multiplied by a constant, <span class=SpellE>lamda</span>.
-(See, for example, here: <a
+<p class=MsoNormal>By default, regularised or constrained regression is
+performed using the ridge penalty. This applies a penalty function consisting
+of the sum of squares of the coefficients multiplied by a constant, <span
+class=SpellE>lamda</span>. (See, for example, here: <a
 href="http://openclassroom.stanford.edu/MainFolder/DocumentPage.php?course=MachineLearning&amp;doc=exercises/ex5/ex5.html">http://openclassroom.stanford.edu/MainFolder/DocumentPage.php?course=MachineLearning&amp;doc=exercises/ex5/ex5.html</a>
 although <span class=SpellE><i style='mso-bidi-font-style:normal'>scoreassoc</i></span>
-works with the minus log likelihood rather than the residual sum of squares.) The
-purpose of this is to prevent any coefficients assuming very high values. This
-can happen if there is only a single informative variant which is found in one
-or two cases and some other subjects are untyped. The untyped subjects receive
-a mean value for the score and if more cases are untyped than controls then
-unconstrained regression will fit a very large coefficient and produce an
+works with the minus log likelihood rather than the residual sum of squares.)
+The purpose of this is to prevent any coefficients assuming very high values.
+This can happen if there is only a single informative variant which is found in
+one or two cases and some other subjects are untyped. The untyped subjects
+receive a mean value for the score and if more cases are untyped than controls
+then unconstrained regression will fit a very large coefficient and produce an
 artefactually significant result. A default value of 1 is provided for <span
 class=SpellE>lamda</span> and this seems to control well for this problem
 without preventing other coefficients from being fitted. If <span class=SpellE>lamda</span>
@@ -3737,10 +3732,10 @@ and averages these scores across the genes in the set. Then it tests to see
 whether cases on average have higher scores than controls. The effect of this
 is exactly the same as would be obtained if all the variants for all genes in
 the pathway were input together into <span class=SpellE><i style='mso-bidi-font-style:
-normal'>scoreassoc</i></span> but it is more convenient to handle the data in
-this way, especially when multiple pathways are tested and the same gene can be
-a member of more than one pathway. The approach is described in this paper,
-which should also be cited:<o:p></o:p></span></p>
+normal'>scoreassoc</i></span> but it is more convenient to handle the data in this
+way, especially when multiple pathways are tested and the same gene can be a
+member of more than one pathway. The approach is described in this paper, which
+should also be cited:<o:p></o:p></span></p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
 style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'><o:p>&nbsp;</o:p></span></p>
@@ -3985,18 +3980,18 @@ style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fa
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
 style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>Any
-individual genes which produce a <i style='mso-bidi-font-style:normal'>p</i>
-value such that the SLP is higher than the threshold will be output along with this
+individual genes which produce a <i style='mso-bidi-font-style:normal'>p</i> value
+such that the SLP is higher than the threshold will be output along with this
 value. Setting this threshold will show the genes making the biggest individual
 contributions to the overall test statistic for the pathway. An SLP of 1.6
 corresponds approximately to a gene-wise <i style='mso-bidi-font-style:normal'>p</i>
 value of 0.05 (0.025 one-tailed) for a significant excess of rare, functional
 variants among cases. However it may be there are many genes each individually
-making small contributions and then they will not be output. Setting the
-threshold to 0 would output all genes in which there was even a slight excess and
-setting it to -99 would output all genes. This threshold only applies to which
-genes are output along with their SLPs &#8211; all the genes are included in
-the analysis.<o:p></o:p></span></p>
+making small contributions and then they will not be output. Setting the threshold
+to 0 would output all genes in which there was even a slight excess and setting
+it to -99 would output all genes. This threshold only applies to which genes
+are output along with their SLPs &#8211; all the genes are included in the
+analysis.<o:p></o:p></span></p>
 
 <p class=MsoNormal style='tab-stops:45.8pt 91.6pt 137.4pt 183.2pt 229.0pt 274.8pt 320.6pt 366.4pt 412.2pt 458.0pt 503.8pt 549.6pt 595.4pt 641.2pt 687.0pt 732.8pt'><span
 style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'><o:p>&nbsp;</o:p></span></p>
@@ -4121,8 +4116,8 @@ style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fa
 style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>The
 <span class=SpellE>progam</span> assumes that score files have names of the
 form <span class=SpellE><i style='mso-bidi-font-style:normal'>prefix.gene.sco</i></span>
-and so extracts the gene name from the name of the score file. It writes the table
-into the file specified, using the format described above.</span><span
+and so extracts the gene name from the name of the score file. It writes the
+table into the file specified, using the format described above.</span><span
 style='font-size:14.0pt;font-family:"Courier New";mso-fareast-font-family:"Times New Roman";
 mso-fareast-theme-font:minor-fareast'><o:p></o:p></span></p>
 
@@ -4240,8 +4235,8 @@ mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>
 
 <p class=MsoNormal><span style='font-size:12.0pt;font-family:"Courier New";
 mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>SLP
-=<span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp; </span>2.62 (signed
-log10(p), positive if cases score higher than controls)<o:p></o:p></span></p>
+=<span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp; </span>2.62 (signed log10(p),
+positive if cases score higher than controls)<o:p></o:p></span></p>
 
 <p class=MsoNormal><span style='font-size:12.0pt;font-family:"Courier New";
 mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'><o:p>&nbsp;</o:p></span></p>
@@ -4299,7 +4294,8 @@ style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp;&nbsp; </span>0.34<o:p></o:p></span><
 
 <p class=MsoNormal><span style='font-size:12.0pt;font-family:"Courier New";
 mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>NR1H4<span
-style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>-0.06<o:p></o:p></span></p>
+style='mso-spacerun:yes'>&nbsp; </span><span
+style='mso-spacerun:yes'>&nbsp;&nbsp;</span>-0.06<o:p></o:p></span></p>
 
 <p class=MsoNormal><span style='font-size:12.0pt;font-family:"Courier New";
 mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:minor-fareast'>GLRX<span
@@ -4429,9 +4425,9 @@ a <i style='mso-bidi-font-style:normal'>t</i> test comparing them. <o:p></o:p></
 mso-fareast-theme-font:minor-fareast'><o:p>&nbsp;</o:p></span></p>
 
 <p class=MsoNormal><span style='mso-fareast-font-family:"Times New Roman";
-mso-fareast-theme-font:minor-fareast'>Next is a list of genes whose individual
-SLPs exceed a supplied threshold (for this example a negative threshold has
-been provided.<o:p></o:p></span></p>
+mso-fareast-theme-font:minor-fareast'>Next is a list of genes whose individual SLPs
+exceed a supplied threshold (for this example a negative threshold has been
+provided.<o:p></o:p></span></p>
 
 <p class=MsoNormal><span style='mso-fareast-font-family:"Times New Roman";
 mso-fareast-theme-font:minor-fareast'><o:p>&nbsp;</o:p></span></p>
@@ -4828,9 +4824,9 @@ summary output file. Each </span><span class=SpellE><i style='mso-bidi-font-styl
 normal'><span style='mso-fareast-font-family:"Times New Roman";mso-fareast-theme-font:
 minor-fareast'>scoreassoc</span></i></span><span style='mso-fareast-font-family:
 "Times New Roman";mso-fareast-theme-font:minor-fareast;mso-bidi-font-style:
-italic'> output file will contain the results from one or more tests and the
-script requires editing so that the column headings reflect the tests which
-have been performed. As supplied, the script contains this line:<o:p></o:p></span></p>
+italic'> output file will contain the results from one or more tests and the script
+requires editing so that the column headings reflect the tests which have been
+performed. As supplied, the script contains this line:<o:p></o:p></span></p>
 
 <p class=MsoNormal><span style='mso-fareast-font-family:"Times New Roman";
 mso-fareast-theme-font:minor-fareast;mso-bidi-font-style:italic'><o:p>&nbsp;</o:p></span></p>

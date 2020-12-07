@@ -303,6 +303,11 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 int process_options(par_info *pi, sa_par_info *spi)
 {
 	int a,l;
+	if (pi->nloci > MAX_LOCI)
+	{
+		dcerror(1, "Number of loci %d is greater than MAX_LOCI %d - need to recompile with higher value for MAX_LOCI", pi->nloci, MAX_LOCI);
+		exit(1);
+	}
 	if ((spi->df[PSDATAFILE].fn[0]==0)+(spi->df[GCDATAFILE].fn[0]==0) + (spi->df[GENDATAFILE].fn[0] == 0) + (spi->df[INPUTSCOREFILE].fn[0] == 0) != 3)
 	{
 		dcerror(1,"Must specify only one of --psdatafile, --gcdatafile, --gendatafile or --inputscorefile"); exit(1);
