@@ -189,7 +189,7 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 	{
 		if (strncmp(arg, "--", 2))
 		{
-			printf("Need to specify options with --\n%s\n\n", arg);
+			printf("Need to specify options with --\nHad just this argument on its own: %s\n\n", arg);
 			usage();
 			exit(1);
 		}

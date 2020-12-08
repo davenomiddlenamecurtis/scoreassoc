@@ -170,10 +170,10 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 			usage();
 			exit(1);
 		}
-		for (a=0;a<NUMOPTS-1;++a)
+		for (a=0;a<NUMOPTS;++a)
 			if (!strncmp(arg+2,opt[a].str,strlen(opt[a].str)))
 				break;
-		if (a == NUMOPTS - 1)
+		if (a == NUMOPTS )
 			{
 			printf("Unrecognised option: \n%s\n\n", arg);
 			usage();
@@ -183,16 +183,19 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 		switch (opt[a].o)
 		{
 		case ARGFILE:
-			if (++arg_depth >= MAXDEPTH)
+			if (arg_depth >= MAXDEPTH-1)
 			{
 				dcerror(1, "Attempting to recurse too deeply into arg-files with this one: %s\n", arg);
 				return 0;
 			}
-			else if (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num) == 0 || arg[0]=='-')
-				error=1;
+			else if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || arg[0] == '-')
+			{
+				dcerror(1, "Error trying to get argfile: %s\n",arg);
+				return 0;
+			}
 			else
 			{
-				fp[arg_depth] = fopen(arg, "r");
+				fp[++arg_depth] = fopen(arg, "r");
 				if (fp[arg_depth] == NULL)
 				{
 					dcerror(1, "Could not open arg file: %s\n", arg);
@@ -220,6 +223,7 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 			if(getNextArg(arg,argc,argv,fp,&arg_depth,&arg_num) == 0 || sscanf(arg,"%f",&spi->lamda) != 1)
 				error=1;
 			break;
+#if 0
 		case LDTHRESHOLD:
 			if (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num) == 0 || sscanf(arg,"%f",&spi->LD_threshold)!=1)
 				error=1;
@@ -228,14 +232,17 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 			if (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num) == 0 || sscanf(arg,"%f",&spi->weight_threshold)!=1)
 				error=1;
 			break;
+#endif
 		case ISQUANTITATIVE:
 			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &pi->is_quantitative) != 1)
 				error = 1;
 			break;
+#if 0
 		case DORECESSIVE:
 			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->do_recessive_test) != 1)
 				error = 1;
 			break;
+#endif
 		case DOTTEST:
 			if(getNextArg(arg,argc,argv,fp,&arg_depth,&arg_num) == 0 || sscanf(arg,"%d",&spi->do_ttest)!=1)
 				error=1;
@@ -252,6 +259,7 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->start_from_fitted) != 1)
 				error = 1;
 			break; 
+#if 0
 		case USEHAPS:
 			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->use_haplotypes) != 1)
 				error = 1;
@@ -260,6 +268,7 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->show_hap_locus_names) != 1)
 				error = 1;
 			break;
+#endif
 		case VARFILE:
 			if(getNextArg(arg,argc,argv,fp,&arg_depth,&arg_num) == 0 || sscanf(arg,"%s",spi->varFiles[spi->numVarFiles++].fn)!=1)
 				error=1;
