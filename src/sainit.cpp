@@ -52,6 +52,7 @@ option opt[]=
 //	{ "minweight", WEIGHTTHRESHOLD },
 	{ "isquantitative",ISQUANTITATIVE },
 //	{ "dorecessive", DORECESSIVE },
+	{ "missingzero",MISSINGZERO },
 	{ "dottest",DOTTEST },
 	{ "dolrtest",DOLRTEST },
 	{ "dolinrtest",DOLINRTEST },
@@ -151,6 +152,7 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 	spi->show_hap_locus_names=spi->use_haplotypes=spi->use_trios=0;
 	spi->use_cc_freqs[0]=spi->use_cc_freqs[1]=0;
 	spi->use_probs=0;
+	spi->missingZero = 0;
 	spi->do_ttest = 1;
 	spi->do_lrtest = 0;
 	spi->do_linrtest = 0;
@@ -243,9 +245,13 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 				error = 1;
 			break;
 #endif
+		case MISSINGZERO:
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->missingZero) != 1)
+				error = 1;
+			break;
 		case DOTTEST:
-			if(getNextArg(arg,argc,argv,fp,&arg_depth,&arg_num) == 0 || sscanf(arg,"%d",&spi->do_ttest)!=1)
-				error=1;
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->do_ttest) != 1)
+				error = 1;
 			break;
 		case DOLRTEST:
 			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->do_lrtest) != 1)

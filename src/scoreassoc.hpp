@@ -64,6 +64,7 @@ enum OPT {
 	// WEIGHTTHRESHOLD,
 	ISQUANTITATIVE,
 	// DORECESSIVE,
+	MISSINGZERO,
 	DOTTEST,
 	DOLRTEST,
 	DOLINRTEST,
@@ -114,6 +115,7 @@ sa_data_file_type df[NUMDATAFILETYPES];
 float wfactor,LD_threshold,weight_threshold,max_MAF;
 int use_func_weights,use_cc_freqs[2],use_locus_names,use_comments,do_recessive_test,use_haplotypes,show_hap_locus_names,use_trios,use_probs;
 int do_ttest, do_lrtest,do_linrtest;
+int missingZero = 0;
 int useFlatFile = 0;
 int useTransposedFile = 0;
 };

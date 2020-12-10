@@ -313,8 +313,11 @@ void set_weights(FILE *f,float *weight,float *missing_score,int *rarer,subject *
 		}
 		if (spi->use_func_weights)
 			weight[l]*=func_weight[pi->loci_to_use[l]];
-		missing_score[l]=weight[l]*freq; // I think
-	if (f!=0)
+		if (spi->missingZero)
+			missing_score[l] = 0;
+		else
+			missing_score[l] = weight[l] * freq; // I think
+		if (f!=0)
 	{
 		if (!spi->use_locus_names)
 			sprintf(names[ll],"LOC%05d",ll+1);
