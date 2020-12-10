@@ -347,7 +347,7 @@ int readVarFiles(std::map<std::string, int> subIDs, int nSub, lr_test_par_info  
 				*sptr = '\0';
 				while (*ptr && isspace(*ptr))
 					++ptr;
-				if (sscanf(colValue, "%f", &allVars[colIndex[c]].val[s]) != 1)
+				if (sscanf(colValue, "%lf", &allVars[colIndex[c]].val[s]) != 1)
 				{
 					dcerror(1, "Not enough values in variable file %s in this line:\n%s\n", spi->varFiles[i].fn, long_line);
 					return 0;
