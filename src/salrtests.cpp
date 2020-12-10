@@ -297,7 +297,7 @@ int readVarFiles(std::map<std::string, int> subIDs, int nSub, lr_test_par_info  
 					return 0;
 				}
 				strcpy(allVars[spi->numVars].name, colValue);
-				assert((allVars[spi->numVars].val = (float*)calloc(nSub, sizeof(float))) != 0);
+				assert((allVars[spi->numVars].val = (double*)calloc(nSub, sizeof(double))) != 0);
 				for (s = 0; s<nSub; ++s)
 					allVars[spi->numVars].val[s] = MISSING;
 				colIndex[c] = spi->numVars;

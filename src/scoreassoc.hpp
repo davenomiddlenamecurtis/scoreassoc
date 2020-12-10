@@ -130,7 +130,7 @@ typedef struct non_mendelian_t non_mendelian;
 class lrVariable {
 public:
 	char name[MAXLRVARIABLENAMELENGTH];
-	float *val;
+	double *val;
 	lrVariable() { name[0]='\0'; val=0; }
 	void clear() { name[0]='\0'; if(val) free(val); val=0; }
 	~lrVariable() { if(val) free(val); }
@@ -142,15 +142,15 @@ extern std::map<std::string,lrVariable *> varMap;
 void usage();
 int read_all_args(char *argv[], int argc, par_info *pi, sa_par_info *spi);
 int process_options(par_info *pi, sa_par_info *spi);
-int read_all_data(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr, char names[MAX_LOCI][LOCUS_NAME_LENGTH], char comments[MAX_LOCI][MAX_COMMENT_LENGTH], float func_weight[MAX_LOCI],float *scores);
+int read_all_data(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr, char names[MAX_LOCI][LOCUS_NAME_LENGTH], char comments[MAX_LOCI][MAX_COMMENT_LENGTH], double func_weight[MAX_LOCI],double *scores);
 
-double do_score_onetailed_ttest(FILE *fo,float *score,subject **sub,int nsub,par_info *pi,sa_par_info *spi,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],float *weight,float *missing,int *rarer);
-void get_scores(float *score,float *weight,float *missing_score,int *rarer,subject **sub,int nsub,par_info *pi,sa_par_info *spi);
-void set_weights(FILE *fo,float *weight,float *missing_score,int *rarer,subject **sub,int nsub,par_info *pi,sa_par_info *spi,float *func_weight,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],char names[MAX_LOCI][LOCUS_NAME_LENGTH],char comments[MAX_LOCI][MAX_COMMENT_LENGTH]);
+double do_score_onetailed_ttest(FILE *fo,double *score,subject **sub,int nsub,par_info *pi,sa_par_info *spi,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],double *weight,float *missing,int *rarer);
+void get_scores(double *score,double *weight,float *missing_score,int *rarer,subject **sub,int nsub,par_info *pi,sa_par_info *spi);
+void set_weights(FILE *fo,double *weight,float *missing_score,int *rarer,subject **sub,int nsub,par_info *pi,sa_par_info *spi,double *func_weight,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],char names[MAX_LOCI][LOCUS_NAME_LENGTH],char comments[MAX_LOCI][MAX_COMMENT_LENGTH]);
 // int read_score_assoc_par(FILE *fp,par_info *pi,float *wfactor,int *use_func_weights,int use_cc_freqs[2],float *func_weight,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],int *use_locus_names,char names[MAX_LOCI][LOCUS_NAME_LENGTH],int *use_comments,char comments[MAX_LOCI][MAX_COMMENT_LENGTH], int *do_recessive_test,float *weight_threshold,float *LD_threshold,int *use_haplotypes);
 // int read_sa_par(FILE *fp,par_info *pi,sa_par_info *spi,float *func_weight,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],char names[MAX_LOCI][LOCUS_NAME_LENGTH],char comments[MAX_LOCI][MAX_COMMENT_LENGTH]);
 void get_freqs(subject **sub,int nsub,par_info *pi,sa_par_info *spi,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],float cc_gencount[2][3][MAX_LOCI]);
-void write_scores(FILE *fs,subject **sub,int nsub,float *score,par_info* pi);
+void write_scores(FILE *fs,subject **sub,int nsub,double *score,par_info* pi);
 // void do_recessive_HWE_test(FILE *fo,float *score,subject **sub,int nsub,par_info *pi,sa_par_info *spi,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],float *weight,float *missing,int *old_rarer,char names[MAX_LOCI][LOCUS_NAME_LENGTH]);
 // void do_recessive_HWE_test_with_haplotypes(FILE *fo, float *score, subject **sub, int nsub, par_info *pi,sa_par_info *spi, float cc_freq[2][MAX_LOCI], float cc_count[2][MAX_LOCI], int max_cc[2], float *weight, float *missing, int *old_rarer, char names[MAX_LOCI][LOCUS_NAME_LENGTH]);
 extern int sort_trios(subject **sub,int nsub,par_info *pi, sa_par_info *spi, subject **new_sub,non_mendelian *nm,int *n_non_mendelian,char *non_mendelian_report);
@@ -165,13 +165,14 @@ float evaluateModel(FILE *fo, glModel *m, int *toUse, float *startBetas, int *to
 float runTestFile(FILE* fo, char* fn, glModel* m, lr_test_par_info* spi);
 float runLinTestFile(FILE* fo, char* fn, glModel* m, lr_test_par_info* spi);
 char *skip_word(char *ptr);
-int read_ps_datafile(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr, char names[MAX_LOCI][LOCUS_NAME_LENGTH], char comments[MAX_LOCI][MAX_COMMENT_LENGTH], float func_weight[MAX_LOCI],
-	std::map<std::string, float> weightMap, std::map<std::string, std::string> effectMap);
+int read_ps_datafile(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr, char names[MAX_LOCI][LOCUS_NAME_LENGTH], char comments[MAX_LOCI][MAX_COMMENT_LENGTH], double func_weight[MAX_LOCI],
+	std::map<std::string, double> weightMap, std::map<std::string, std::string> effectMap);
 int readVarFiles(std::map<std::string, int> subIDs, int nSub, lr_test_par_info *spi);
-int read_all_subject_scores(FILE* fi, subject** s, int* nsub, float *score);
-int read_phenotypes(FILE* fi, subject** s, int *nsub, float* score, int isquantitative);
+int read_all_subject_scores(FILE* fi, subject** s, int* nsub, double *score);
+int read_phenotypes(FILE* fi, subject** s, int *nsub, double* score, int isquantitative);
 
-extern float weight[MAX_LOCI],missing_score[MAX_LOCI],func_weight[MAX_LOCI],cc_freq[2][MAX_LOCI],cc_count[2][MAX_LOCI],cc_genocount[2][3][MAX_LOCI];
+extern float missing_score[MAX_LOCI],cc_freq[2][MAX_LOCI],cc_count[2][MAX_LOCI],cc_genocount[2][3][MAX_LOCI];
+extern double weight[MAX_LOCI], func_weight[MAX_LOCI];
 extern int rarer[MAX_LOCI],max_cc[2];
 extern char names[MAX_LOCI][LOCUS_NAME_LENGTH],comments[MAX_LOCI][MAX_COMMENT_LENGTH],trios_fn[500];
 

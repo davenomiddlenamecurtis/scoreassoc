@@ -21,7 +21,7 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #include "dcerror.hpp"
 #include "scoreassoc.hpp"
 
-void write_scores(FILE *fs,subject **sub,int nsub,float *score,par_info *pi)
+void write_scores(FILE *fs,subject **sub,int nsub,double *score,par_info *pi)
 {
 	int s;
 	if (pi->is_quantitative)
@@ -32,7 +32,7 @@ void write_scores(FILE *fs,subject **sub,int nsub,float *score,par_info *pi)
 			fprintf(fs, "%20s %d %8.4f\n", sub[s]->id, sub[s]->cc, score[s]);
 }
 
-double do_score_onetailed_ttest(FILE *fo, float *score, subject **sub, int nsub, par_info *pi, sa_par_info *spi, float cc_freq[2][MAX_LOCI], float cc_count[2][MAX_LOCI], int max_cc[2], float *weight, float *missing, int *rarer)
+double do_score_onetailed_ttest(FILE *fo, double *score, subject **sub, int nsub, par_info *pi, sa_par_info *spi, float cc_freq[2][MAX_LOCI], float cc_count[2][MAX_LOCI], int max_cc[2], double *weight, float *missing, int *rarer)
 {
 	int s, i, n[2], cc, pl, l, j;
 	float sigma_x[2], sigma_x2[2], mean[2], var[2], tval, SE, s2, rfreq, fscore, z, total_score;
@@ -126,7 +126,7 @@ double do_score_onetailed_ttest(FILE *fo, float *score, subject **sub, int nsub,
 
 
 /* treats male subjects as homozygous females for X loci*/
-void get_scores(float *score,float *weight,float *missing,int *rarer,subject **sub,int nsub,par_info *pi,sa_par_info *spi)
+void get_scores(double *score,double *weight,float *missing,int *rarer,subject **sub,int nsub,par_info *pi,sa_par_info *spi)
 {
 	int l,ll,s,a,p;
 	for (s=0;s<nsub;++s)
@@ -232,7 +232,7 @@ float get_zero_based_quadratic_weight(float freq,float wfactor)
 	return wt;
 }
 
-void set_weights(FILE *f,float *weight,float *missing_score,int *rarer,subject **sub,int nsub,par_info *pi,sa_par_info *spi,float *func_weight,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],char names[MAX_LOCI][LOCUS_NAME_LENGTH],char comments[MAX_LOCI][MAX_COMMENT_LENGTH])
+void set_weights(FILE *f,double *weight,float *missing_score,int *rarer,subject **sub,int nsub,par_info *pi,sa_par_info *spi,double *func_weight,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],char names[MAX_LOCI][LOCUS_NAME_LENGTH],char comments[MAX_LOCI][MAX_COMMENT_LENGTH])
 {
 	int l,ll,s,nh[2],cc,i,g;
 	float freq,ccfreq[2],vcount[2],gencount[2][3],qtot[3],fixedfreq;
@@ -609,18 +609,18 @@ if (*use_comments)
 return 1;
 }
 
-int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char names[MAX_LOCI][LOCUS_NAME_LENGTH],char comments[MAX_LOCI][MAX_COMMENT_LENGTH],float func_weight[MAX_LOCI],float *score)
+int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char names[MAX_LOCI][LOCUS_NAME_LENGTH],char comments[MAX_LOCI][MAX_COMMENT_LENGTH],double func_weight[MAX_LOCI],double *score)
 {
 	char aline[1000],pos[100],effect[100],*ptr;
 	int func_pos,l,f,use,s;
-	float wt;
-	std::map<std::string,float> weightMap;
+	double wt;
+	std::map<std::string,double> weightMap;
 	std::map<std::string,std::string> effectMap;
 	if (spi->df[WEIGHTFILE].fp)
 	{
 		while (fgets(aline, 999, spi->df[WEIGHTFILE].fp))
 		{
-			sscanf(aline,"%s %f",effect,&wt);
+			sscanf(aline,"%s %lf",effect,&wt);
 			weightMap[effect]=wt;
 		}
 	}
@@ -677,7 +677,7 @@ int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char 
 	if (spi->df[LOCUSWEIGHTFILE].fp)
 	{
 		for (l = 0; l < pi->nloci; ++l)
-			if (fscanf(spi->df[LOCUSWEIGHTFILE].fp,"%f ",&func_weight[l])!=1)
+			if (fscanf(spi->df[LOCUSWEIGHTFILE].fp,"%lf ",&func_weight[l])!=1)
 			{
 				dcerror(1, "Not enough values in locusweightfile %s\n", spi->df[LOCUSWEIGHTFILE].fn); exit(1);
 			}
@@ -795,8 +795,8 @@ int read_freqs_datafile(par_info *pi, sa_par_info *spi, int cc, float cc_freq[2]
 	return 1;
 }
 
-int read_ps_datafile(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr, char names[MAX_LOCI][LOCUS_NAME_LENGTH], char comments[MAX_LOCI][MAX_COMMENT_LENGTH], float func_weight[MAX_LOCI],
-	std::map<std::string, float> weightMap, std::map<std::string, std::string> effectMap)
+int read_ps_datafile(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr, char names[MAX_LOCI][LOCUS_NAME_LENGTH], char comments[MAX_LOCI][MAX_COMMENT_LENGTH], double func_weight[MAX_LOCI],
+	std::map<std::string, double> weightMap, std::map<std::string, std::string> effectMap)
 {
 	int nsub, first, s, a, l, f;
 	char dline[1000], aline[1000], pos[100], rsname[100], ref[100], alls[100], all[2][100], sname[100], ccstr[100], *ptr;
@@ -833,7 +833,7 @@ int read_ps_datafile(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr
 					exit(1);
 				}
 				sprintf(comments[l], "%s_%s_%s", pos, effIter->second.c_str(), alls);
-				std::map<std::string, float>::const_iterator weightIter = weightMap.find(effIter->second);
+				std::map<std::string, double>::const_iterator weightIter = weightMap.find(effIter->second);
 				if (weightIter == weightMap.end())
 				{
 					dcerror(1, "weight for effect %s not found in weight file %s\n", effIter->second.c_str(), spi->df[WEIGHTFILE].fn);
@@ -885,7 +885,7 @@ int read_ps_datafile(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr
 	return 1;
 }
 
-int read_all_subject_scores(FILE* fi, subject** s, int* nsub, float* score)
+int read_all_subject_scores(FILE* fi, subject** s, int* nsub, double* score)
 {
 	char id[MAX_ID_LENGTH + 1];
 	float pheno, sc;
@@ -906,7 +906,7 @@ int read_all_subject_scores(FILE* fi, subject** s, int* nsub, float* score)
 }
 
 #define MISSINGPHENOTYPECODE -999 // this should never be used
-int read_phenotypes(FILE* fi, subject** s, int *nsub, float* score,int isquantitative)
+int read_phenotypes(FILE* fi, subject** s, int *nsub, double* score,int isquantitative)
 {
 	std::map<std::string, float> subPhenos;
 	char id[MAX_ID_LENGTH + 1];

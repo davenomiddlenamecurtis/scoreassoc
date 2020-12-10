@@ -362,8 +362,8 @@ return 1;
 // code relies on fact that sub is allocated with calloc, which will have set all alleles to 0
 // NB the annot file MUST have two sets of counts - for cases and controls
 
-int read_ps_datafile(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr, char names[MAX_LOCI][20], char comments[MAX_LOCI][MAX_COMMENT_LENGTH], float func_weight[MAX_LOCI],	
-	std::map<std::string,float> weightMap,	std::map<std::string,std::string> effectMap)
+int read_ps_datafile(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr, char names[MAX_LOCI][20], char comments[MAX_LOCI][MAX_COMMENT_LENGTH], double func_weight[MAX_LOCI],	
+	std::map<std::string,double> weightMap,	std::map<std::string,std::string> effectMap)
 {
 	int nsub,first,s,a,l,f;
 	char dline[1000],aline[1000],pos[100],rsname[100],ref[100],alls[100],all[2][100],sname[100],ccstr[100],*ptr;
@@ -400,7 +400,7 @@ int read_ps_datafile(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr
 					exit(1);
 				}
 				sprintf(comments[l],"%s_%s_%s", pos, effIter->second.c_str(),alls);
-				std::map<std::string,float>::const_iterator weightIter =weightMap.find(effIter->second);
+				std::map<std::string,double>::const_iterator weightIter =weightMap.find(effIter->second);
 				if (weightIter==weightMap.end())
 					{
 						dcerror(1,"weight for effect %s not found in weight file %s\n",effIter->second.c_str(),spi->df[WEIGHTFILE].fn);
@@ -477,7 +477,7 @@ int main(int argc, char *argv[])
 	process_options(&pi,&spi);
 	if (spi.df[FILTERFILE].fp)
 		initExclusions(spi.df[FILTERFILE].fp);
-	assert(score = (float*)calloc(MAX_SUB, sizeof(float))); // this is only here because read_all_data() may use it
+	assert(score = (double*)calloc(MAX_SUB, sizeof(double))); // this is only here because read_all_data() may use it
 	read_all_data(&pi,&spi,sub,&nsub,names,comments,func_weight,score);
 if (spi.use_trios)
 {

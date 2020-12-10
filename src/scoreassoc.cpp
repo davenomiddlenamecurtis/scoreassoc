@@ -34,7 +34,8 @@ int main(int argc, char *argv[])
 {
 	char arg_string[2000];
 	int nsub,n_new_sub,real_nsub,filledModel;
-	float *score,SLP,p;
+	double* score;
+	float SLP, p;
 	int s,n_non_mendelian,t;
 	non_mendelian *non_mendelians;
 	par_info pi;
@@ -45,7 +46,7 @@ int main(int argc, char *argv[])
 	printf("MAX_LOCI=%d\nMAX_SUB=%d\n",MAX_LOCI,MAX_SUB);
 
 	assert(sub=(subject **)calloc(MAX_SUB,sizeof(subject*)));
-	assert(score=(float *)calloc(MAX_SUB,sizeof(float)));
+	assert(score=(double *)calloc(MAX_SUB,sizeof(double)));
 	max_cc[0]=max_cc[1]=0;
 	read_all_args(argv,argc, &pi, &spi);
 	// make_arg_string(arg_string,argc,argv);
