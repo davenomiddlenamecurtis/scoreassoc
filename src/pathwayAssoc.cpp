@@ -75,10 +75,10 @@ public:
 	char id[MAX_ID_LENGTH+1]; 
 	int cc;
 	float pheno;
-	float score[MAX_GENES];
+	double score[MAX_GENES];
 };
 
-float *totScore;
+double *totScore;
 
 #define LONGLINELENGTH 40000
 char long_line[LONGLINELENGTH+1],rest[LONGLINELENGTH+1];
@@ -331,7 +331,8 @@ float runOnePathway(char *line, pathwaySubject **sub, glModel *model,paParams *p
 	char pathwayName[1000], pathwayURL[1000], gene[MAX_LOCI][50], scoreFileName[1000], outputFileName[1000], thisGene[50];
 	FILE *fs, *fo;
 	int nGene, missing[MAX_LOCI], s, g, n[2], i, cc, c,t,nValidGenes;
-	float sigma_x[2], sigma_x2[2], mean[2], var[2], SLP, SE, tval, s2, score;
+	float sigma_x[2], sigma_x2[2], mean[2], var[2], SLP, SE, tval, s2;
+	double score;
 	double p, pathway_p;
 	fo = 0;
 	if (sscanf(line, "%s %s %[^\n]", pathwayName, pathwayURL, rest) != 3)
@@ -367,7 +368,7 @@ float runOnePathway(char *line, pathwaySubject **sub, glModel *model,paParams *p
 				++nValidGenes;
 				for (s = 0; s < pp->nSub; ++s)
 				{
-					if (fscanf(pp->scoreTableFile, "%f", &sub[s]->score[g]) != 1)
+					if (fscanf(pp->scoreTableFile, "%lf", &sub[s]->score[g]) != 1)
 					{
 						dcerror(1, "Not enough entries in %s for gene %s\n", pp->scoreTableFileName, gene[g]); exit(1);
 					}
@@ -392,13 +393,13 @@ float runOnePathway(char *line, pathwaySubject **sub, glModel *model,paParams *p
 						dcerror(1, "Not enough lines in scores file %s\n", scoreFileName); exit(1);
 					}
 					if (pp->is_quantitative) {
-						if (sscanf(line, "%s %f %f", sub[s]->id, &sub[s]->pheno, &sub[s]->score[g]) != 3)
+						if (sscanf(line, "%s %f %lf", sub[s]->id, &sub[s]->pheno, &sub[s]->score[g]) != 3)
 						{
 							dcerror(1, "Not enough entries on this line in scores file %s:\n%s\n", scoreFileName, line); exit(1);
 						}
 					}
 					else {
-						if (sscanf(line, "%s %d %f", sub[s]->id, &sub[s]->cc, &sub[s]->score[g]) != 3)
+						if (sscanf(line, "%s %d %lf", sub[s]->id, &sub[s]->cc, &sub[s]->score[g]) != 3)
 						{
 							dcerror(1, "Not enough entries on this line in scores file %s:\n%s\n", scoreFileName, line); exit(1);
 						}
@@ -609,7 +610,7 @@ int main(int argc, char *argv[])
 		if(!readVarFiles(subIDs,pp.nSub,&pp))
 			exit(1);
 	}
-	totScore = (float*)calloc(pp.nSub,sizeof(float));
+	totScore = (double*)calloc(pp.nSub,sizeof(double));
 	assert(totScore != 0);
 	pp.scoreCol = pp.numVars;
 	strcpy(allVars[pp.scoreCol].name,"score");
