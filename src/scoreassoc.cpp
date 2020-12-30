@@ -52,22 +52,30 @@ int main(int argc, char *argv[])
 	// make_arg_string(arg_string,argc,argv);
 	// parse_arg_string(arg_string,&pi,&spi,&pspi);
 	process_options(&pi,&spi);
-	for (s = 0; s < MAX_SUB; ++s)
+	try 
 	{
-		if (spi.df[PSDATAFILE].fn[0]) {
-			sub[s] = new subject(); // use default MAX_LOCI
+		for (s = 0; s < MAX_SUB; ++s)
+		{
+			if (spi.df[PSDATAFILE].fn[0]) {
+				sub[s] = new subject(); // use default MAX_LOCI
+			}
+			else if (spi.use_probs) {
+				sub[s] = new subject(pi.nloci, 1);
+			}
+			else if (spi.df[GENDATAFILE].fn[0]) {
+				sub[s] = new subject(pi.nloci, 0);
+			}
+			else if (spi.useFlatFile) { // this has not been implemented
+				sub[s] = new subject(0, 0);
+			}
+			else
+				sub[s] = new subject(pi.nloci, 0); // could be new (std::nothrow) subject(pi.nloci, 0), then check for NULL pointer
 		}
-		else if (spi.use_probs) {
-			sub[s] = new subject(pi.nloci, 1);
-		}
-		else if (spi.df[GENDATAFILE].fn[0]) {
-			sub[s] = new subject(pi.nloci, 0);
-		}
-		else if (spi.useFlatFile) { // this has not been implemented
-			sub[s] = new subject(0, 0);
-		}
-		else
-			sub[s] = new subject(pi.nloci, 0);
+	}
+	catch (std::bad_alloc& ba) // even though sizeof(subject) is small, call to new can sometimes throw exception
+	{
+		error("There is not enough memory for MAXSUB subjects and the requested number of loci", "");
+		return 1;
 	}
 
 	if (spi.df[FILTERFILE].fp)

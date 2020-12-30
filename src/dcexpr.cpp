@@ -28,6 +28,7 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #include <string.h>
 #include <ctype.h>
 #include <assert.h>
+#include <new>
 
 // change code to make all expressions case sensitive
 #if 0
@@ -92,7 +93,7 @@ dcexpr_string::dcexpr_string(char *t,int len)
 { 
 if (len)
   {
-  if ((buff=new char[len+1])!=NULL)
+  if ((buff=new (std::nothrow) char[len+1])!=NULL)
     {
     strncpy(buff,t,len);
     buff[len]='\0';
@@ -101,7 +102,7 @@ if (len)
   }
 else
   {
-  if ((buff=new char[strlen(t)+1])!=NULL)
+  if ((buff=new (std::nothrow) char[strlen(t)+1])!=NULL)
     strcpy(buff,t);
   else dcerror(ENOMEM); 
   }
@@ -170,7 +171,7 @@ dcexpr_val *vconstant::eval() { return new dcexpr_double(value); }
 
 vnode *vstrconstant::copy() { return new vstrconstant(value); }
 vstrconstant::vstrconstant(char *s) : vnode(0)
-  { if ((value=new char[strlen(s)+1])!=NULL) strcpy(value,s); }
+  { if ((value=new char[strlen(s)+1])!=NULL) strcpy(value,s); } // new will not in fact return NULL if it fails but will throw an exception
 vstrconstant::~vstrconstant() { if (value) delete value;}
 
 dcexpr_val *vstrconstant::eval() { return new dcexpr_string(value); }

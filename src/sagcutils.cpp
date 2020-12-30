@@ -68,6 +68,27 @@ exit(1);
 return 0;
 }
 
+subject::subject(int nLoci, int useProbs)
+{
+    all = 0;
+    prob = 0;
+    if (nLoci)
+    {
+        if (useProbs)
+        {
+            prob = (float(*)[3])calloc(nLoci, sizeof(*prob));
+            if (prob == 0)
+                error("Memory allocation failure","prob = (float(*)[3])calloc(nLoci, sizeof(*prob));");
+        }
+        else
+        {
+            all = (int(*)[2])calloc(nLoci, sizeof(*all));
+            if (all == 0)
+                error("Memory allocation failure", "all = (int(*)[2])calloc(nLoci, sizeof(*all))");
+        }
+    }
+}
+
 double chistat(double x,double df)
 {
 double p,q,d1=1.0,bound;

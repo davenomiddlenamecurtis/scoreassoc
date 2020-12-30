@@ -920,8 +920,9 @@ int read_phenotypes(FILE* fi, subject** s, int *nsub, double* score,int isquanti
 		std::map<std::string, float>::const_iterator it = subPhenos.find(s[ss]->id);
 		if (it == subPhenos.end())
 		{
-			dcerror(2, "No phenotype found for subject %s\n", s[ss]->id);
-			return 0;
+			// dcerror(2, "No phenotype found for subject %s\n", s[ss]->id);
+			// return 0;
+			s[ss]->pheno = MISSINGPHENOTYPECODE; // only analyse subjects in IDandPhenotype file, ignore others
 		}
 		else if (isquantitative)
 			s[ss]->pheno= it->second;

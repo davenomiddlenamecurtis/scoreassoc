@@ -17,9 +17,9 @@ You should have received a copy of the GNU General Public License
 along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #endif
 
-										/* sagcutils.h */
-#ifndef SAGCUTILSH
-#define SAGCUTILSH
+										/* sagcutils.hpp */
+#ifndef SAGCUTILSHPP
+#define SAGCUTILSHPP
 
 #include <stdio.h>
 
@@ -116,18 +116,7 @@ public:
 	int cc, group, skip; int (*all)[2]; float (*prob)[3];
 	float pheno;
 	long geno; int gc_geno;
-	subject(int nLoci = MAX_LOCI, int useProbs = 0)
-	{
-		all = 0;
-		prob = 0;
-		if (nLoci)
-		{
-			if (useProbs)
-				assert(prob = (float (*)[3])calloc(nLoci, sizeof(*prob)));
-			else
-				assert(all = (int(*)[2])calloc(nLoci, sizeof(*all)));
-		}
-	}
+	subject(int nLoci = MAX_LOCI, int useProbs = 0);
 	~subject() { if (all) free(all); if (prob) free(prob); }
 };
 #endif
