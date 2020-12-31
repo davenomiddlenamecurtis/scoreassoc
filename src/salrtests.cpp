@@ -104,12 +104,13 @@ float runTestFile(FILE* fo, char* fn, glModel* m, lr_test_par_info* spi)
 	return SLP;
 }
 
-void fillModelWithVars(glModel *m, int nsub, lr_test_par_info *spi,int which)
+int fillModelWithVars(glModel *m, int nsub, lr_test_par_info *spi,int which)
 {
 	int s, b;
 	if (which == -1)
 	{
-		m->init(nsub, spi->numVars);
+		if (!m->init(nsub, spi->numVars))
+			return 0;
 		for (s = 0; s < nsub; ++s)
 		{
 			for (b = 0; b < spi->numVars; ++b)
@@ -122,6 +123,7 @@ void fillModelWithVars(glModel *m, int nsub, lr_test_par_info *spi,int which)
 	else
 		for (s = 0; s < nsub; ++s)
 			m->X[s][which] = allVars[which].val[s];
+	return 1;
 }
 
 float evaluateModel(FILE *fo, glModel *m, int *toUse, float *startBetas, int *toFit,char *name)

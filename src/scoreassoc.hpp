@@ -158,7 +158,7 @@ extern int output_nm_report(FILE *fp, par_info *pi, int n_non_mendelians, non_me
 int read_all_gen_subjects(FILE *fi,subject **s,int *nsub,par_info *pi);
 int read_freqs_datafile(par_info *pi,sa_par_info *spi,int cc,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2]);
 float do_onetailed_LRT(FILE *fo,glModel *m,lr_test_par_info *spi,int do_linear);
-void fillModelWithVars(glModel *m,int nsub, lr_test_par_info *spi,int which=-1);
+int fillModelWithVars(glModel *m,int nsub, lr_test_par_info *spi,int which=-1);
 void printModel(FILE *fo, char *LLstr, double LL, glModel *m);
 extern double cumulBinom(int N,int k,double p);
 float evaluateModel(FILE *fo, glModel *m, int *toUse, float *startBetas, int *toFit, char *name);

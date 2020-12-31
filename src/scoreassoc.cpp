@@ -136,6 +136,26 @@ spi.scoreCol=spi.numVars;
 allVars[spi.scoreCol].val = score;
 varMap["score"] = &allVars[spi.numVars];
 ++spi.numVars;
+if (spi.do_lrtest || spi.do_linrtest || spi.numTestFiles > 0 || spi.numLinTestFiles > 0)
+{
+	if (!filledModel)
+	{
+		if (!fillModelWithVars(&model, nsub, &spi))
+		{
+			error("Failed to perform fillModelWithVars(&model, nsub, &spi), probably not enough memory","");
+			return 1;
+		}
+	fillModelWithVars(&model, nsub, &spi);
+	if (pi.is_quantitative)
+		for (s = 0; s < nsub; ++s)
+			model.Y[s] = sub[s]->pheno;
+	else
+		for (s = 0; s < nsub; ++s)
+			model.Y[s] = sub[s]->cc;
+	filledModel = 1;
+	}
+}
+// above is here because can fail to allocate memory and I want to exit before producing t test output
 
 if (spi.do_ttest)
 	SLP=do_score_onetailed_ttest(spi.df[OUTFILE].fp,score,sub,nsub,&pi,&spi,cc_freq,cc_count,max_cc,weight,missing_score,rarer);
@@ -143,61 +163,21 @@ if (spi.do_ttest)
 model.lamda = spi.lamda;
 if (spi.do_lrtest)
 {
-	if (!filledModel)
-	{
-		fillModelWithVars(&model, nsub, &spi);
-		for (s = 0; s < nsub; ++s)
-			model.Y[s] = sub[s]->cc;
-		filledModel = 1;
-	}
 	SLP = do_onetailed_LRT(spi.df[OUTFILE].fp, &model, &spi, 0);
 }
 if (spi.do_linrtest)
 {
-	if (!filledModel)
-	{
-		fillModelWithVars(&model, nsub, &spi);
-		if (pi.is_quantitative)
-			for (s = 0; s < nsub; ++s)
-				model.Y[s] = sub[s]->pheno;
-		else
-			for (s = 0; s < nsub; ++s)
-				model.Y[s] = sub[s]->cc;
-		filledModel = 1;
-	}
 	SLP = do_onetailed_LRT(spi.df[OUTFILE].fp, &model, &spi, 1);
 }
 
 if (spi.numTestFiles > 0)
 {
-	if (!filledModel)
-	{
-		fillModelWithVars(&model, nsub, &spi);
-		if (pi.is_quantitative)
-			for (s = 0; s < nsub; ++s)
-				model.Y[s] = sub[s]->pheno;
-		else
-			for (s = 0; s < nsub; ++s)
-				model.Y[s] = sub[s]->cc;
-		filledModel = 1;
-	}
 	for (t = 0; t < spi.numTestFiles; ++t)
 		p = runTestFile(spi.df[OUTFILE].fp, spi.testFiles[t].fn, &model, &spi);
 }
 
 if (spi.numLinTestFiles > 0)
 {
-	if (!filledModel)
-	{
-		fillModelWithVars(&model, nsub, &spi);
-		if (pi.is_quantitative)
-			for (s = 0; s < nsub; ++s)
-				model.Y[s] = sub[s]->pheno;
-		else
-			for (s = 0; s < nsub; ++s)
-				model.Y[s] = sub[s]->cc;
-		filledModel = 1;
-	}
 	for (t = 0; t < spi.numLinTestFiles; ++t)
 		p = runLinTestFile(spi.df[OUTFILE].fp, spi.linTestFiles[t].fn, &model, &spi);
 }
