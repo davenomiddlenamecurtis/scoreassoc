@@ -47,7 +47,7 @@ public:
 class tgsParams {
 public:
 	char resultsFileName[1000],outputFileName[1000],pathwayFileName[1000], outputFilePrefix[1000], outputFileSuffix[1000];
-	float geneLevelOutputThreshold;
+	float geneLevelOutputThreshold,correctionFactor;
 	int numTests,numGenes,ignoreUninformative;
 	geneResult* results;
 	std::map<std::string,geneResult*> geneIndex;
@@ -100,6 +100,7 @@ int tgsParams::readParms(int argc, char *argv[])
 	strcpy(outputFileSuffix, ".tgso");
 	resultsFile=summaryOutputFile=0;
 	geneLevelOutputThreshold = 1000;
+	correctionFactor = 1.0;
 	ignoreUninformative = 1; // default
 	numTests = 0;
 	while (getNextArg(arg, argc, argv, &fp, &argNum))
@@ -141,6 +142,10 @@ int tgsParams::readParms(int argc, char *argv[])
 		else if (FILLARG("--gene-level-output-threshold"))
 		{
 			geneLevelOutputThreshold = atof(arg);
+		}
+		else if (FILLARG("--correction-factor"))
+		{
+			correctionFactor = atof(arg);
 		}
 		else if (FILLARG("--pathway-file"))
 		{
@@ -222,7 +227,7 @@ float runOnePathway(char *line, tgsParams *pp, int writeFile)
 			++nValidGenes;
 			for (t = 0; t < pp->numTests; ++t)
 			{
-				sigmaChisq[t] += 2*log(10)*fabs(geneIter->second->result[t]); // convert SLP to chisq
+				sigmaChisq[t] += 2*log(10)*fabs(geneIter->second->result[t])/pp->correctionFactor; // convert SLP to chisq
 			}
 		}
 	}
