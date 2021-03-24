@@ -44,6 +44,7 @@ all:
 	if [ ! -e ${DCBIN} ] ; then mkdir ${DCBIN} ; fi ; \
 	cd ../obj; \
 	make -f ../src/scoreassoc.mak INOBJ=INOBJ ; \
+	echo cp ${EXES} ${DCBIN} ; \
 	cp ${EXES} ${DCBIN} ; \
 	echo copied executables to ${DCBIN} ; \
 	cd ../src

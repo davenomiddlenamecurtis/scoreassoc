@@ -34,9 +34,9 @@ int main(int argc, char *argv[])
 {
 	char arg_string[2000];
 	int nsub,n_new_sub,real_nsub,filledModel;
-	double* score;
+	double** score;
 	float SLP, p;
-	int s,n_non_mendelian,t;
+	int s,n_non_mendelian,t,sc;
 	non_mendelian *non_mendelians;
 	par_info pi;
 	sa_par_info spi;
@@ -46,13 +46,24 @@ int main(int argc, char *argv[])
 	printf("MAX_LOCI=%d\nMAX_SUB=%d\n",MAX_LOCI,MAX_SUB);
 
 	assert(sub=(subject **)calloc(MAX_SUB,sizeof(subject*)));
-	assert(score=(double *)calloc(MAX_SUB,sizeof(double)));
 	max_cc[0]=max_cc[1]=0;
 	read_all_args(argv,argc, &pi, &spi);
 	// make_arg_string(arg_string,argc,argv);
 	// parse_arg_string(arg_string,&pi,&spi,&pspi);
-	process_options(&pi,&spi);
-	try 
+	process_options(&pi,&spi); // use this to get number of weight files and set numScore here
+	assert(score = (double**)calloc(numScores, sizeof(double*)));
+	assert(weight = (double**)calloc(numScores, sizeof(double*)));
+	assert(func_weight = (double**)calloc(numScores, sizeof(double*)));
+	assert(missing_score = (float**)calloc(numScores, sizeof(double*)));
+	for (sc = 0; sc < numScores; ++sc)
+	{
+		assert(score[sc] = (double*)calloc(MAX_SUB, sizeof(double)));
+		assert(weight[sc] = (double*)calloc(pi.nloci? pi.nloci:MAX_LOCI, sizeof(double)));
+		assert(func_weight[sc] = (double*)calloc(pi.nloci ? pi.nloci : MAX_LOCI, sizeof(double)));
+		assert(missing_score[sc] = (float*)calloc(pi.nloci ? pi.nloci : MAX_LOCI, sizeof(double)));
+	}
+	// at this point, have allocated func_weight, weight and score - need to free them later
+	try
 	{
 		for (s = 0; s < MAX_SUB; ++s)
 		{
@@ -80,7 +91,7 @@ int main(int argc, char *argv[])
 
 	if (spi.df[FILTERFILE].fp)
 		initExclusions(spi.df[FILTERFILE].fp);
-	read_all_data(&pi,&spi,sub,&nsub,names,comments,func_weight,score);
+	read_all_data(&pi,&spi,sub,&nsub,names,comments,func_weight,score,numScores);
 	if (nsub == 0)
 	{
 		error("There were zero subjects to input","");
@@ -119,23 +130,33 @@ if (spi.df[INPUTSCOREFILE].fp==0)
 {
 	if (pi.is_quantitative)
 		fprintf(spi.df[OUTFILE].fp, 
-			"Locus                                         contAA : contAB : contBB  contFreq  meanAA   : meanAB   : meanBB    rarer  weight  %s\n",
-			spi.use_comments ? "comment" : "");
+			"Locus                                         contAA : contAB : contBB  contFreq  meanAA   : meanAB   : meanBB    rarer  ");
 	else
 		fprintf(spi.df[OUTFILE].fp, 
-			"Locus                                         contAA : contAB : contBB  contFreq  caseAA : caseAB : caseBB  caseFreq  MAF       rarer  weight  %s\n",
-			spi.use_comments ? "comment" : "");
+			"Locus                                         contAA : contAB : contBB  contFreq  caseAA : caseAB : caseBB  caseFreq  MAF       rarer  ");
+	if (spi.numScores == 1)
+		fprintf(spi.df[OUTFILE].fp, "weight   ");
+	else
+		for (sc = 0; sc < spi.numScores; ++sc)
+			fprintf(spi.df[OUTFILE].fp, "weight%-2d ", sc);
+	fprintf(spi.df[OUTFILE].fp,"%s\n",spi.use_comments ? "comment" : "");
 	get_freqs(sub, nsub, &pi, &spi, cc_freq, cc_count, cc_genocount);
 	applyExclusions(sub, nsub, &pi);
 	set_weights(spi.df[OUTFILE].fp, weight, missing_score, rarer, sub, nsub, &pi, &spi, func_weight, cc_freq, cc_count, max_cc, names, comments);
 	get_scores(score, weight, missing_score, rarer, sub, nsub, &pi, &spi);
 }
 filledModel=0;
-strcpy(allVars[spi.numVars].name, "score");
-spi.scoreCol=spi.numVars;
-allVars[spi.scoreCol].val = score;
-varMap["score"] = &allVars[spi.numVars];
-++spi.numVars;
+spi.scoreCol = spi.numVars; // first of possibly more than one score
+for (sc = 0; sc < spi.numScores; ++sc)
+{
+	if (spi.numScores == 1)
+		strcpy(allVars[spi.numVars].name, "score");
+	else
+		sprintf(allVars[spi.numVars].name, "score%d", sc);
+	allVars[spi.scoreCol].val = score[sc];
+	varMap[allVars[spi.numVars].name] = &allVars[spi.numVars];
+	++spi.numVars;
+}
 if (spi.do_lrtest || spi.do_linrtest || spi.numTestFiles > 0 || spi.numLinTestFiles > 0)
 {
 	if (!filledModel)
@@ -187,7 +208,7 @@ if (spi.use_trios)
 
 if (spi.df[SCOREFILE].fp)
 {
-	write_scores(spi.df[SCOREFILE].fp,sub,nsub,score,&pi);
+	write_scores(spi.df[SCOREFILE].fp,sub,nsub,score,spi.numScores,&pi);
 	fclose(spi.df[SCOREFILE].fp);
 	spi.df[SCOREFILE].fp=0;
 }

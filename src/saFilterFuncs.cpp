@@ -37,7 +37,7 @@ if ((r1=b1->eval())==NULL || (r2=b2->eval())==NULL) return NULL;
 
 dcexpr_val *weight_op(vnode *b1)
 {
-double rv=func_weight[currentLocus];
+double rv=func_weight[0][currentLocus]; // use first weight if more than one
 return new dcexpr_double(rv);
 }
 

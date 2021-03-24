@@ -206,7 +206,7 @@ float runOnePathway(char *line, tgsParams *pp, int writeFile)
 	if (writeFile)
 	{
 		if (pp->summaryOutputFile != 0)
-			fprintf(pp->summaryOutputFile, "%s\t", pathwayName);
+			fprintf(pp->summaryOutputFile, "%s\t%d\t", pathwayName, nGene);
 		sprintf(line, "%s%s%s", pp->outputFilePrefix, pathwayName, pp->outputFileSuffix);
 		fo = fopen(line, "w");
 		if (fo == 0)
@@ -288,7 +288,7 @@ int readResultsFile(tgsParams *pp)
 	fgets(long_line, LONGLINELENGTH, pp->resultsFile);
 	sscanf(long_line, "%s %[^\n]", gene, rest);
 	if (pp->summaryOutputFile)
-		fprintf(pp->summaryOutputFile, "GeneSet\t");
+		fprintf(pp->summaryOutputFile, "GeneSet\tnGene\t");
 	pp->numTests = 0;
 	while (strcpy(long_line, rest), *rest = '\0', sscanf(long_line, "%s %[^\n]", gene, rest) > 0)
 	{

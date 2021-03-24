@@ -65,6 +65,7 @@ option opt[]=
 	{"varfile",VARFILE},
 	{"testfile",TESTFILE},
 	{"lintestfile",LINTESTFILE},
+	{"numscores",NUMSCORES},
 	{"transposedata",TRANSPOSEDATA},
 	{"argfile",ARGFILE},
 {"", NUMOPTS}
@@ -151,6 +152,7 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 	spi->LD_threshold=0.9;
 	spi->show_hap_locus_names=spi->use_haplotypes=spi->use_trios=0;
 	spi->use_cc_freqs[0]=spi->use_cc_freqs[1]=0;
+	spi->numLocusWeightFiles = 0;
 	spi->use_probs=0;
 	spi->missingZero = 0;
 	spi->do_ttest = 1;
@@ -159,10 +161,15 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 	spi->start_from_fitted = 1;
 	spi->numVars=spi->numVarFiles= spi->numTestFiles = spi->numLinTestFiles = 0;
 	spi->lamda=DEFAULT_LAMDA;
-	for (a = 0; a < NUMDATAFILETYPES;++a)
+	for (a = 0; a < NUMDATAFILETYPES; ++a)
 	{
 		spi->df[a].fn[0] = '\0';
 		spi->df[a].fp = 0;
+	}
+	for (a = 0; a < MAXWEIGHTFILES; ++a)
+	{
+		spi->locusWeightFile[a].fn[0] = '\0';
+		spi->locusWeightFile[a].fp = 0;
 	}
 	while (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num))
 	{
@@ -209,6 +216,10 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &pi->nloci) != 1)
 				error = 1;
 			break;
+		case NUMSCORES:
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->numScores) != 1)
+				error = 1;
+			break;
 		case TRANSPOSEDATA:
 			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->useTransposedFile) != 1)
 				error = 1;
@@ -225,26 +236,10 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 			if(getNextArg(arg,argc,argv,fp,&arg_depth,&arg_num) == 0 || sscanf(arg,"%f",&spi->lamda) != 1)
 				error=1;
 			break;
-#if 0
-		case LDTHRESHOLD:
-			if (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num) == 0 || sscanf(arg,"%f",&spi->LD_threshold)!=1)
-				error=1;
-			break;
-		case WEIGHTTHRESHOLD:
-			if (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num) == 0 || sscanf(arg,"%f",&spi->weight_threshold)!=1)
-				error=1;
-			break;
-#endif
 		case ISQUANTITATIVE:
 			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &pi->is_quantitative) != 1)
 				error = 1;
 			break;
-#if 0
-		case DORECESSIVE:
-			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->do_recessive_test) != 1)
-				error = 1;
-			break;
-#endif
 		case MISSINGZERO:
 			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->missingZero) != 1)
 				error = 1;
@@ -265,16 +260,6 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->start_from_fitted) != 1)
 				error = 1;
 			break; 
-#if 0
-		case USEHAPS:
-			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->use_haplotypes) != 1)
-				error = 1;
-			break;
-		case SHOWHAPLOCUSNAMES:
-			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->show_hap_locus_names) != 1)
-				error = 1;
-			break;
-#endif
 		case VARFILE:
 			if(getNextArg(arg,argc,argv,fp,&arg_depth,&arg_num) == 0 || sscanf(arg,"%s",spi->varFiles[spi->numVarFiles++].fn)!=1)
 				error=1;
@@ -287,15 +272,18 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%s", spi->linTestFiles[spi->numLinTestFiles++].fn) != 1)
 				error = 1;
 			break;
+		case LOCUSWEIGHTFILE:
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || arg[0] == '-' || sscanf(arg, "%s", spi->locusWeightFile[spi->numLocusWeightFiles++].fn) != 1)
+				error = 1;
+			break;
 		case PSDATAFILE:
 		case GCDATAFILE:
 		case GENDATAFILE:
 		case TRIOFILE:
-		case WEIGHTFILE:
 		case ANNOTFILE:
 		case FILTERFILE:
 		case LOCUSFILTERFILE:
-		case LOCUSWEIGHTFILE:
+		case WEIGHTFILE:
 		case LOCUSNAMEFILE:
 		case CASEFREQFILE:
 		case CONTFREQFILE:
@@ -362,12 +350,20 @@ int process_options(par_info *pi, sa_par_info *spi)
 		printf("Warning: weightfile specified but not annotfile so will not assign weights according to function\n");
 	else if (!spi->df[WEIGHTFILE].fp && spi->df[ANNOTFILE].fp)
 		printf("Warning: annotfile specified but not weightfile so will not assign weights according to function\n");
-	if (spi->df[LOCUSWEIGHTFILE].fp)
+	if (spi->numLocusWeightFiles>0)
 	{
 		spi->use_func_weights=1;
 		if (spi->df[WEIGHTFILE].fp)
 			printf("Warning: weightfile specified but will read weights from locusweightfile instead\n");
+		for (a = 0; a < spi->numLocusWeightFiles; ++a)
+			if (spi->locusWeightFile[a].fn[0] && (spi->locusWeightFile[a].fp = fopen(spi->locusWeightFile[a].fn, "r")) == 0)
+			{
+				dcerror(1, "Could not open locusweightfile %s\n", spi->locusWeightFile[a].fn); exit(1);
+			}
 	}
+	if (spi->numScores == -1)
+		spi->numScores = spi->numLocusWeightFiles==0?1: spi->numLocusWeightFiles;
+	numScores = spi->numScores;
 	if (spi->df[TRIOFILE].fp)
 		spi->use_trios=1;
 }

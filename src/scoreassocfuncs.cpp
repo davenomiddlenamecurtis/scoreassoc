@@ -21,138 +21,155 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #include "dcerror.hpp"
 #include "scoreassoc.hpp"
 
-void write_scores(FILE *fs,subject **sub,int nsub,double *score,par_info *pi)
+void write_scores(FILE *fs,subject **sub,int nsub,double **score,int numScores,par_info *pi)
 {
-	int s;
-	if (pi->is_quantitative)
-		for (s = 0; s < nsub; ++s)
-			fprintf(fs, "%20s %f %8.4f\n", sub[s]->id, sub[s]->pheno, score[s]);
-	else
-		for (s = 0; s < nsub; ++s)
-			fprintf(fs, "%20s %d %8.4f\n", sub[s]->id, sub[s]->cc, score[s]);
+	int s,sc;
+	for (s = 0; s < nsub; ++s) {
+		fprintf(fs, "%20s ", sub[s]->id);
+		if (pi->is_quantitative)
+			fprintf(fs, "%f ", sub[s]->pheno);
+		else
+			fprintf(fs, "%d ", sub[s]->cc);
+		for (sc = 0; sc < numScores; ++sc)
+			fprintf(fs, "%8.4f ", score[sc][s]);
+		fprintf(fs, "\n");
+	}
 }
 
-double do_score_onetailed_ttest(FILE *fo, double *score, subject **sub, int nsub, par_info *pi, sa_par_info *spi, float cc_freq[2][MAX_LOCI], float cc_count[2][MAX_LOCI], int max_cc[2], double *weight, float *missing, int *rarer)
+double do_score_onetailed_ttest(FILE *fo, double **score, subject **sub, int nsub, par_info *pi, sa_par_info *spi, float cc_freq[2][MAX_LOCI], float cc_count[2][MAX_LOCI], int max_cc[2], double **weight, float **missing, int *rarer)
 {
-	int s, i, n[2], cc, pl, l, j;
+	int s, i, n[2], cc, pl, l, j,sc;
 	float sigma_x[2], sigma_x2[2], mean[2], var[2], tval, SE, s2, rfreq, fscore, z, total_score;
 	double p, pz;
+	char SLPstr[10];
 #ifndef USEMLP
 	float SLP;
 #endif
-	for (i = 0; i<2; ++i)
-		sigma_x[i] = sigma_x2[i] = n[i] = 0;
-	for (s = 0; s<nsub; ++s)
+	for (sc = 0; sc < spi->numScores; ++sc)
 	{
-		cc = sub[s]->cc;
-		++n[cc];
-		sigma_x[cc] += score[s];
-		sigma_x2[cc] += score[s] * score[s];
-	}
-	for (i = 0; i<2; ++i)
-	{
-		if (spi->use_cc_freqs[i])
+		for (i = 0; i < 2; ++i)
+			sigma_x[i] = sigma_x2[i] = n[i] = 0;
+		for (s = 0; s < nsub; ++s)
 		{
-			total_score = 0;
-			n[i] = max_cc[i];
-			var[i] = 0;
-			for (pl = 0; pl<pi->n_loci_to_use; ++pl)
-			{
-				float tempvar = 0;
-				float ngen[3]; // number of typed subjects who are AA,AB,BB
-				l = pi->loci_to_use[pl];
-				sigma_x2[i] = 0;
-				sigma_x[i] = 0;
-				if (rarer[pl] == 2)
-					rfreq = cc_freq[i][l];
-				// assume supplied frequency is of alt allele, i.e. allele 2
-				// but score will be added to by rarer allele, even if this is allele 1
-				else
-					rfreq = 1 - cc_freq[i][l];
-				// as actual counts missing, assume HWE
-				ngen[0] = (1 - rfreq)*(1 - rfreq)*cc_count[i][l];
-				ngen[1] = 2 * rfreq*(1 - rfreq)*cc_count[i][l];
-				ngen[2] = rfreq*rfreq*cc_count[i][l];
-				fscore = weight[pl]; // average score for each subject for this locus
-				sigma_x[i] += ngen[1] * fscore; // AB
-				sigma_x2[i] += ngen[1] * fscore*fscore;
-				sigma_x[i] += ngen[2] * 2 * fscore; // BB
-				sigma_x2[i] += ngen[2] * 4 * fscore*fscore;
-				fscore = missing[l]; // as if missing scores were also independent
-				sigma_x[i] += (max_cc[i] - cc_count[i][l])*fscore;
-				sigma_x2[i] += (max_cc[i] - cc_count[i][l])*fscore*fscore;
-				tempvar = (sigma_x2[i] - sigma_x[i] * sigma_x[i] / n[i]) / (n[i] - 1);
-				var[i] += tempvar; // add variances due to each marker
-				total_score += sigma_x[i];
-			}
-			mean[i] = total_score / n[i];
+			cc = sub[s]->cc;
+			++n[cc];
+			sigma_x[cc] += score[sc][s];
+			sigma_x2[cc] += score[sc][s] * score[sc][s];
 		}
-		else
+		for (i = 0; i < 2; ++i)
 		{
-			if (n[i]<2)
-				{ mean[i]=var[i]=0; }
+			if (spi->use_cc_freqs[i])
+			{
+				total_score = 0;
+				n[i] = max_cc[i];
+				var[i] = 0;
+				for (pl = 0; pl < pi->n_loci_to_use; ++pl)
+				{
+					float tempvar = 0;
+					float ngen[3]; // number of typed subjects who are AA,AB,BB
+					l = pi->loci_to_use[pl];
+					sigma_x2[i] = 0;
+					sigma_x[i] = 0;
+					if (rarer[pl] == 2)
+						rfreq = cc_freq[i][l];
+					// assume supplied frequency is of alt allele, i.e. allele 2
+					// but score will be added to by rarer allele, even if this is allele 1
+					else
+						rfreq = 1 - cc_freq[i][l];
+					// as actual counts missing, assume HWE
+					ngen[0] = (1 - rfreq) * (1 - rfreq) * cc_count[i][l];
+					ngen[1] = 2 * rfreq * (1 - rfreq) * cc_count[i][l];
+					ngen[2] = rfreq * rfreq * cc_count[i][l];
+					fscore = weight[sc][pl]; // average score for each subject for this locus
+					sigma_x[i] += ngen[1] * fscore; // AB
+					sigma_x2[i] += ngen[1] * fscore * fscore;
+					sigma_x[i] += ngen[2] * 2 * fscore; // BB
+					sigma_x2[i] += ngen[2] * 4 * fscore * fscore;
+					fscore = missing[sc][l]; // as if missing scores were also independent
+					sigma_x[i] += (max_cc[i] - cc_count[i][l]) * fscore;
+					sigma_x2[i] += (max_cc[i] - cc_count[i][l]) * fscore * fscore;
+					tempvar = (sigma_x2[i] - sigma_x[i] * sigma_x[i] / n[i]) / (n[i] - 1);
+					var[i] += tempvar; // add variances due to each marker
+					total_score += sigma_x[i];
+				}
+				mean[i] = total_score / n[i];
+			}
 			else
 			{
-				var[i] = (sigma_x2[i] - sigma_x[i] * sigma_x[i] / n[i]) / (n[i] - 1);
-				mean[i] = sigma_x[i] / n[i];
+				if (n[i] < 2)
+				{
+					mean[i] = var[i] = 0;
+				}
+				else
+				{
+					var[i] = (sigma_x2[i] - sigma_x[i] * sigma_x[i] / n[i]) / (n[i] - 1);
+					mean[i] = sigma_x[i] / n[i];
+				}
 			}
 		}
+		if (n[0] + n[1] < 2)
+			s2 = SE = 0;
+		else
+		{
+			s2 = ((n[0] - 1) * var[0] + (n[1] - 1) * var[1]) / (n[0] + n[1] - 2);
+			SE = sqrt(s2 * (1 / (float)n[0] + 1 / (float)n[1]));
+		}
+		if (SE == 0)
+			tval = 0;
+		else
+			tval = (mean[1] - mean[0]) / SE;
+		p = tstat(tval, n[0] + n[1] - 2.0) / 2; // one-tailed
+		SLP = log10(2 * p) * (mean[0] >= mean[1] ? 1 : -1);
+		if (spi->numScores == 1)
+			strcpy(SLPstr, "SLP");
+		else
+			sprintf(SLPstr, "SLP%d", sc);
+		if (fo != NULL)
+			fprintf(fo, "\n             Controls  Cases     \n"
+				"N            %9d %9d\n"
+				"Mean score   %9.3f %9.3f\n"
+				"SD           %9.3f %9.3f\n"
+				"t (%d df) = %6.3f\n"
+				"p = %10.8f\n"
+				"%s = %8.2f (signed log10(p), positive if cases score higher than controls)\n",
+				n[0], n[1], mean[0], mean[1], sqrt(var[0]), sqrt(var[1]), n[0] + n[1] - 2, tval, 2 * p, SLPstr,SLP);
+		// I am writing SD because it will allow me to combine statistics later
 	}
-	if (n[0]+n[1]<2)
-		s2=SE=0;
-	else
-	{
-		s2 = ((n[0] - 1)*var[0] + (n[1] - 1)*var[1]) / (n[0] + n[1] - 2);
-		SE = sqrt(s2*(1 / (float)n[0] + 1 / (float)n[1]));
-	}
-	if (SE == 0)
-		tval = 0;
-	else
-		tval = (mean[1] - mean[0]) / SE;
-	p = tstat(tval, n[0] + n[1] - 2.0) / 2; // one-tailed
-	SLP = log10(2 * p)*(mean[0] >= mean[1] ? 1 : -1);
-	if (fo != NULL)
-		fprintf(fo, "             Controls  Cases     \n"
-			"N            %9d %9d\n"
-			"Mean score   %9.3f %9.3f\n"
-			"SD           %9.3f %9.3f\n"
-			"t (%d df) = %6.3f\n"
-			"p = %10.8f\n"
-			"SLP = %8.2f (signed log10(p), positive if cases score higher than controls)\n",
-			n[0], n[1], mean[0], mean[1], sqrt(var[0]), sqrt(var[1]), n[0] + n[1] - 2, tval, 2 * p, SLP);
-	// I am writing SD because it will allow me to combine statistics later
 	return SLP;
 }
 
 
 /* treats male subjects as homozygous females for X loci*/
-void get_scores(double *score,double *weight,float *missing,int *rarer,subject **sub,int nsub,par_info *pi,sa_par_info *spi)
+void get_scores(double **score,double **weight,float **missing,int *rarer,subject **sub,int nsub,par_info *pi,sa_par_info *spi)
 {
-	int l,ll,s,a,p;
+	int l,ll,s,a,p,sc;
 	for (s=0;s<nsub;++s)
 	{
-		score[s]=0;
-        for (l=0;l<pi->n_loci_to_use;++l)
+		for (sc = 0; sc < spi->numScores; ++sc)
+		{
+			score[sc][s] = 0;
+			for (l = 0; l < pi->n_loci_to_use; ++l)
 			{
-				ll=pi->loci_to_use[l];
+				ll = pi->loci_to_use[l];
 				if (spi->use_probs)
 				{
-					if (sub[s]->prob[ll][0]+sub[s]->prob[ll][1]+sub[s]->prob[ll][2]==0)
-						score[s] += missing[l]*2; 
-					else if (rarer[l]==2)
-						score[s]+=(sub[s]->prob[ll][1]+sub[s]->prob[ll][2]*2)*weight[l];
+					if (sub[s]->prob[ll][0] + sub[s]->prob[ll][1] + sub[s]->prob[ll][2] == 0)
+						score[sc][s] += missing[sc][l] * 2;
+					else if (rarer[l] == 2)
+						score[sc][s] += (sub[s]->prob[ll][1] + sub[s]->prob[ll][2] * 2) * weight[sc][l];
 					else
-						score[s]+=(sub[s]->prob[ll][1]+sub[s]->prob[ll][0]*2)*weight[l];
+						score[sc][s] += (sub[s]->prob[ll][1] + sub[s]->prob[ll][0] * 2) * weight[sc][l];
 				}
 				else
 				{
 					for (a = 0; a < 2; ++a)
 						if (sub[s]->all[ll][a] == rarer[l])
-							score[s] += weight[l];
+							score[sc][s] += weight[sc][l];
 						else if (sub[s]->all[ll][a] == 0)
-							score[s] += missing[l];
+							score[sc][s] += missing[sc][l];
 				}
 			}
+		}
 	}
 }
 
@@ -232,9 +249,9 @@ float get_zero_based_quadratic_weight(float freq,float wfactor)
 	return wt;
 }
 
-void set_weights(FILE *f,double *weight,float *missing_score,int *rarer,subject **sub,int nsub,par_info *pi,sa_par_info *spi,double *func_weight,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],char names[MAX_LOCI][LOCUS_NAME_LENGTH],char comments[MAX_LOCI][MAX_COMMENT_LENGTH])
+void set_weights(FILE *f,double **weight,float **missing_score,int *rarer,subject **sub,int nsub,par_info *pi,sa_par_info *spi,double **func_weight,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],char names[MAX_LOCI][LOCUS_NAME_LENGTH],char comments[MAX_LOCI][MAX_COMMENT_LENGTH])
 {
-	int l,ll,s,nh[2],cc,i,g;
+	int l,ll,s,nh[2],cc,i,g,sc;
 	float freq,ccfreq[2],vcount[2],gencount[2][3],qtot[3],fixedfreq;
 
 	for (l=0;l<pi->n_loci_to_use;++l)
@@ -300,7 +317,8 @@ void set_weights(FILE *f,double *weight,float *missing_score,int *rarer,subject 
 		else
 			rarer[l]=2;
 		if (freq==0.0) /* monomorphic */
-			weight[l]=0;
+			for (sc = 0; sc < spi->numScores; ++sc)
+				weight[sc][l]=0;
 		else
 		{
 			if (spi->max_MAF >= 0.5)
@@ -309,14 +327,17 @@ void set_weights(FILE *f,double *weight,float *missing_score,int *rarer,subject 
 				fixedfreq = 0.5;
 			else
 				fixedfreq = freq * 0.5/spi->max_MAF;
-			weight[l] = get_quadratic_weight(fixedfreq, spi->wfactor);
+			for (sc = 0; sc < spi->numScores; ++sc)
+				weight[sc][l] = get_quadratic_weight(fixedfreq, spi->wfactor);
 		}
 		if (spi->use_func_weights)
-			weight[l]*=func_weight[pi->loci_to_use[l]];
-		if (spi->missingZero)
-			missing_score[l] = 0;
-		else
-			missing_score[l] = weight[l] * freq; // I think
+			for (sc = 0; sc < spi->numScores; ++sc) {
+				weight[sc][l] *= func_weight[sc][pi->loci_to_use[l]];
+				if (spi->missingZero)
+					missing_score[sc][l] = 0;
+				else
+					missing_score[sc][l] = weight[sc][l] * freq; // I think
+			}
 		if (f!=0)
 	{
 		if (!spi->use_locus_names)
@@ -325,26 +346,27 @@ void set_weights(FILE *f,double *weight,float *missing_score,int *rarer,subject 
 		if (pi->is_quantitative)
 			fprintf(f,
 				spi->use_probs ?
-				"%6.2f : %6.2f : %6.2f  %8.6f  %8.3f : %8.3f : %8.3f  %d     %7.2f  %s\n" :
-				"%6.0f : %6.0f : %6.0f  %8.6f  %8.3f : %8.3f : %8.3f  %d     %7.2f  %s\n",
+				"%6.2f : %6.2f : %6.2f  %8.6f  %8.3f : %8.3f : %8.3f  %d     " :
+				"%6.0f : %6.0f : %6.0f  %8.6f  %8.3f : %8.3f : %8.3f  %d     ",
 				gencount[0][0], gencount[0][1], gencount[0][2],
 				ccfreq[0],
 				gencount[0][0]?qtot[0]/gencount[0][0]:0, 
 				gencount[0][1] ? qtot[1] / gencount[0][1]:0,
 				gencount[0][2] ? qtot[2] / gencount[0][2]:0,
-				rarer[l], weight[l],
-				spi->use_comments ? comments[ll] : "");
+				rarer[l]);
 		else
 			fprintf(f,
 			spi->use_probs ?
-			"%6.2f : %6.2f : %6.2f  %8.6f  %6.2f : %6.2f : %6.2f  %8.6f  %8.6f  %d     %7.2f  %s\n" :
-			"%6.0f : %6.0f : %6.0f  %8.6f  %6.0f : %6.0f : %6.0f  %8.6f  %8.6f  %d     %7.2f  %s\n",
+			"%6.2f : %6.2f : %6.2f  %8.6f  %6.2f : %6.2f : %6.2f  %8.6f  %8.6f  %d     " :
+			"%6.0f : %6.0f : %6.0f  %8.6f  %6.0f : %6.0f : %6.0f  %8.6f  %8.6f  %d     ",
 			gencount[0][0],gencount[0][1],gencount[0][2],
 			ccfreq[0],
 			gencount[1][0],gencount[1][1],gencount[1][2],
 			ccfreq[1],
-			freq,rarer[l],weight[l],
-			spi->use_comments?comments[ll]:"");
+			freq,rarer[l]);
+		for (sc = 0; sc < spi->numScores; ++sc)
+			fprintf(f, "%7.2f  ", weight[sc][l]);
+		fprintf(f,"%s\n", spi->use_comments ? comments[ll] : "");
 
 	}
 	}
@@ -609,7 +631,7 @@ if (*use_comments)
 return 1;
 }
 
-int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char names[MAX_LOCI][LOCUS_NAME_LENGTH],char comments[MAX_LOCI][MAX_COMMENT_LENGTH],double func_weight[MAX_LOCI],double *score)
+int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char names[MAX_LOCI][LOCUS_NAME_LENGTH],char comments[MAX_LOCI][MAX_COMMENT_LENGTH],double **func_weight,double **score,int numScores)
 {
 	char aline[1000],pos[100],effect[100],*ptr;
 	int func_pos,l,f,use,s;
@@ -645,15 +667,15 @@ int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char 
 		}
 	}
 	if (spi->df[PSDATAFILE].fp)
-		read_ps_datafile(pi,spi,sub,nsubptr,names,comments, func_weight,weightMap,effectMap);
+		read_ps_datafile(pi,spi,sub,nsubptr,names,comments, func_weight[0],weightMap,effectMap);
 	else if (spi->df[GCDATAFILE].fp && !spi->useTransposedFile)
 		read_all_subjects(spi->df[GCDATAFILE].fp, sub, nsubptr, pi);
 	else if (spi->df[GCDATAFILE].fp && spi->useTransposedFile)
 		read_all_subjects_transposed(spi->df[GCDATAFILE].fp, sub, nsubptr, pi);
 	else if (spi->df[INPUTSCOREFILE].fp)
-		read_all_subject_scores(spi->df[INPUTSCOREFILE].fp, sub, nsubptr, score);
+		read_all_subject_scores(spi->df[INPUTSCOREFILE].fp, sub, nsubptr, score,spi->numScores);
 	if (spi->df[IDPHENOTYPEFILE].fp)
-		read_phenotypes(spi->df[IDPHENOTYPEFILE].fp, sub, nsubptr, score, pi->is_quantitative);
+		read_phenotypes(spi->df[IDPHENOTYPEFILE].fp, sub, nsubptr,score, spi->numScores, pi->is_quantitative);
 	// overwrite previously defined phenotypes
 	if (spi->df[LOCUSFILTERFILE].fp)
 	{
@@ -674,17 +696,20 @@ int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char 
 		for (l = 0; l < pi->nloci; ++l)
 			pi->loci_to_use[l] = l;
 	}
-	if (spi->df[LOCUSWEIGHTFILE].fp)
+	if (spi->numLocusWeightFiles>0)
 	{
-		for (l = 0; l < pi->nloci; ++l)
-			if (fscanf(spi->df[LOCUSWEIGHTFILE].fp,"%lf ",&func_weight[l])!=1)
-			{
-				dcerror(1, "Not enough values in locusweightfile %s\n", spi->df[LOCUSWEIGHTFILE].fn); exit(1);
-			}
+		for (s = 0; s < spi->numLocusWeightFiles; ++s)
+		{
+			for (l = 0; l < pi->nloci; ++l)
+				if (fscanf(spi->locusWeightFile[s].fp, "%lf ", &func_weight[s][l]) != 1)
+				{
+					dcerror(1, "Not enough values in locusweightfile %s\n", spi->locusWeightFile[s].fn); exit(1);
+				}
+		}
 	}
 	else if (spi->df[WEIGHTFILE].fp ==0)
 		for (l = 0; l < pi->nloci; ++l)
-			func_weight[l]=1;
+			func_weight[0][l]=1;
 	if (spi->df[LOCUSNAMEFILE].fp)
 	{
 		for (l = 0; l < pi->nloci; ++l)
@@ -795,7 +820,7 @@ int read_freqs_datafile(par_info *pi, sa_par_info *spi, int cc, float cc_freq[2]
 	return 1;
 }
 
-int read_ps_datafile(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr, char names[MAX_LOCI][LOCUS_NAME_LENGTH], char comments[MAX_LOCI][MAX_COMMENT_LENGTH], double func_weight[MAX_LOCI],
+int read_ps_datafile(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr, char names[MAX_LOCI][LOCUS_NAME_LENGTH], char comments[MAX_LOCI][MAX_COMMENT_LENGTH], double *func_weight,
 	std::map<std::string, double> weightMap, std::map<std::string, std::string> effectMap)
 {
 	int nsub, first, s, a, l, f;
@@ -885,33 +910,47 @@ int read_ps_datafile(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr
 	return 1;
 }
 
-int read_all_subject_scores(FILE* fi, subject** s, int* nsub, double* score)
+int read_all_subject_scores(FILE* fi, subject** s, int* nsub, double **score,int numScores)
 {
-	char id[MAX_ID_LENGTH + 1];
-	float pheno, sc;
+	char id[MAX_ID_LENGTH + 1],rest[2000];
+	float pheno;
+	int sc;
+	long here;
 	*nsub = 0;
-	while (fgets(long_line, LONG_LINE_LENGTH, fi) && sscanf(long_line, "%s %f %f", id, &pheno, &sc) == 3)
+
+	while (fgets(long_line, LONG_LINE_LENGTH, fi) && sscanf(long_line, "%s %f %[^\n]", id, &pheno, rest) == 3)
 		if (*nsub == MAX_SUB)
 		{
 			error("Number of subjects exceeds MAX_SUB", ""); return 0;
 		}
 		else
 		{
+			here = ftell(fi);
 			strcpy(s[*nsub]->id, id);
 			s[*nsub]->pheno = pheno;
-			score[*nsub] = sc;
+			for (sc=0;sc<numScores;++sc)
+			{
+				strcpy(long_line,rest);
+				if (sscanf(long_line, "%f %[^\n]", &score[sc][*nsub], rest) < 1)
+				{
+					fseek(fi, here, SEEK_SET);
+					fgets(long_line, LONG_LINE_LENGTH, fi);
+					error("Not enough scores in this line:", long_line);
+					return 0;
+				}
+			}
 			++(*nsub);
 		}
 	return 1;
 }
 
 #define MISSINGPHENOTYPECODE -999 // this should never be used
-int read_phenotypes(FILE* fi, subject** s, int *nsub, double* score,int isquantitative)
+int read_phenotypes(FILE* fi, subject** s, int *nsub, double **score, int numScores, int isquantitative)
 {
 	std::map<std::string, float> subPhenos;
 	char id[MAX_ID_LENGTH + 1];
 	float pheno;
-	int ss,sss;
+	int ss,sss,sc;
 	subject* tempSub; // now subject is a class can't have two pointers pointing to one subject
 	while (pheno=MISSINGPHENOTYPECODE, fgets(long_line, LONG_LINE_LENGTH, fi) && sscanf(long_line, "%s %f", id, &pheno)>=1)
 		subPhenos.insert(std::pair<std::string, float>(id, pheno));
@@ -937,7 +976,8 @@ int read_phenotypes(FILE* fi, subject** s, int *nsub, double* score,int isquanti
 			for (sss = ss; sss < *nsub - 1; ++sss)
 			{
 				s[sss] = s[sss + 1];
-				score[sss] = score[sss + 1];
+				for (sc=0;sc<numScores;++sc)
+				score[sc][sss] = score[sc][sss + 1];
 			}
 			s[sss] = tempSub; // pop it back at the end
 			--*nsub;

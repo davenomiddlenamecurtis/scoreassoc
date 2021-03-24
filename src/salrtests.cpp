@@ -198,7 +198,7 @@ float do_onetailed_LRT(FILE *fo, glModel *m,lr_test_par_info *spi,int do_linear)
 			break;
 	if(b==spi->numVars)
 	{
-		dcerror(1,"Variable named score is not available\n");
+		dcerror(1,"Variable named score is not available (can only use default regression test if only one score)\n");
 		return 0;
 	}
 	else
