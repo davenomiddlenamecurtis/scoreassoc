@@ -37,6 +37,7 @@ option opt[]=
 	{"filterfile",FILTERFILE},
 	{ "locusfilterfile", LOCUSFILTERFILE },
 	{ "locusnamefile", LOCUSNAMEFILE },
+	{ "locusweightnamefile", LOCUSWEIGHTNAMEFILE },
 	{ "locusweightfile", LOCUSWEIGHTFILE },
 	{ "triofile",TRIOFILE},
 	{ "casefreqfile", CASEFREQFILE },	
@@ -182,7 +183,7 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 		for (a=0;a<NUMOPTS;++a)
 			if (!strncmp(arg+2,opt[a].str,strlen(opt[a].str)))
 				break;
-		if (a == NUMOPTS )
+		if (a >= NUMOPTS-1) // because the NUMOPTS entry is a zero-length string
 			{
 			printf("Unrecognised option: \n%s\n\n", arg);
 			usage();
@@ -285,6 +286,7 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 		case LOCUSFILTERFILE:
 		case WEIGHTFILE:
 		case LOCUSNAMEFILE:
+		case LOCUSWEIGHTNAMEFILE:
 		case CASEFREQFILE:
 		case CONTFREQFILE:
 		case INPUTSCOREFILE:

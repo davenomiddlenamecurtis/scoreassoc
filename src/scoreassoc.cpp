@@ -149,11 +149,8 @@ filledModel=0;
 spi.scoreCol = spi.numVars; // first of possibly more than one score
 for (sc = 0; sc < spi.numScores; ++sc)
 {
-	if (spi.numScores == 1)
-		strcpy(allVars[spi.numVars].name, "score");
-	else
-		sprintf(allVars[spi.numVars].name, "score%d", sc);
-	allVars[spi.scoreCol].val = score[sc];
+	strcpy(allVars[spi.numVars].name, weightNames[sc]);
+	allVars[spi.numVars].val = score[sc];
 	varMap[allVars[spi.numVars].name] = &allVars[spi.numVars];
 	++spi.numVars;
 }

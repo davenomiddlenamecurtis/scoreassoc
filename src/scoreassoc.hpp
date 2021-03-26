@@ -50,6 +50,7 @@ enum OPT {
 	FILTERFILE,
 	LOCUSFILTERFILE,
 	LOCUSNAMEFILE,
+	LOCUSWEIGHTNAMEFILE,
 	LOCUSWEIGHTFILE,
 	TRIOFILE,
 	CASEFREQFILE,
@@ -175,7 +176,7 @@ int read_phenotypes(FILE* fi, subject** s, int *nsub, double **scores,int numSco
 extern float **missing_score,cc_freq[2][MAX_LOCI],cc_count[2][MAX_LOCI],cc_genocount[2][3][MAX_LOCI];
 extern double **weight, **func_weight;
 extern int rarer[MAX_LOCI],max_cc[2];
-extern char names[MAX_LOCI][LOCUS_NAME_LENGTH],comments[MAX_LOCI][MAX_COMMENT_LENGTH],trios_fn[500];
+extern char names[MAX_LOCI][LOCUS_NAME_LENGTH],weightNames[MAX_LOCI][LOCUS_NAME_LENGTH], comments[MAX_LOCI][MAX_COMMENT_LENGTH],trios_fn[500];
 extern int numScores;
 
 #define USEFILTERS 1

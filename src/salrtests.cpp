@@ -88,7 +88,7 @@ float runTestFile(FILE* fo, char* fn, glModel* m, lr_test_par_info* spi)
 	p = chistat(chisq, df);
 	if (fo)
 		fprintf(fo,
-			"chisq = %.2f, %.0f df, p = %10.8f\n", chisq,df, p);
+			"\nchisq = %.2f, %.0f df, p = %10.8f\n", chisq,df, p);
 	if (scoreVar != -1 && df == 1 && toFit0[scoreVar] == 0 && toFit1[scoreVar] == 1)
 	{
 		SLP = -log10(p);
@@ -221,7 +221,7 @@ float do_onetailed_LRT(FILE *fo, glModel *m,lr_test_par_info *spi,int do_linear)
 		SLP *= -1;
 	if (fo)
 		fprintf(fo,
-			"chisq = %.2f, 1 df, p = %10.8f\n"
+			"\nchisq = %.2f, 1 df, p = %10.8f\n"
 			"%s = %8.2f %s",
 			chisq,p,
 			do_linear ? "linrSLP" : "lrSLP",

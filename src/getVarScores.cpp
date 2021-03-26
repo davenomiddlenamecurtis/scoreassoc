@@ -49,6 +49,7 @@ option opt[]=
 	{ "filterfile", FILTERFILE },
 	{ "annotfile", ANNOTFILE },
 	{ "locusfilterfile", LOCUSFILTERFILE },
+	{ "weightnamefile", LOCUSWEIGHTNAMEFILE },
 	{ "locusnamefile", LOCUSNAMEFILE },
 	{ "locusweightfile", LOCUSWEIGHTFILE },
 	{ "triofile", TRIOFILE },
@@ -243,6 +244,7 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 		case FILTERFILE:
 		case LOCUSFILTERFILE:
 		case LOCUSWEIGHTFILE:
+		case LOCUSWEIGHTNAMEFILE:
 		case LOCUSNAMEFILE:
 		case OUTFILE:
 		case SCOREFILE:

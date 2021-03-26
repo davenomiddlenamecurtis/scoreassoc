@@ -23,7 +23,7 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 float **missing_score,cc_freq[2][MAX_LOCI],cc_count[2][MAX_LOCI],cc_genocount[2][3][MAX_LOCI];
 double **weight, **func_weight;
 int rarer[MAX_LOCI],max_cc[2],numScores;
-char names[MAX_LOCI][LOCUS_NAME_LENGTH],comments[MAX_LOCI][MAX_COMMENT_LENGTH],trios_fn[500];
+char names[MAX_LOCI][LOCUS_NAME_LENGTH], weightNames[MAX_LOCI][LOCUS_NAME_LENGTH], comments[MAX_LOCI][MAX_COMMENT_LENGTH],trios_fn[500];
 lrVariable allVars[MAXLRVARIABLES];
 std::map<std::string,lrVariable *> varMap;
 

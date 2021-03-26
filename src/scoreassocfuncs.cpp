@@ -710,8 +710,21 @@ int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char 
 	else if (spi->df[WEIGHTFILE].fp ==0)
 		for (l = 0; l < pi->nloci; ++l)
 			func_weight[0][l]=1;
-	if (spi->df[LOCUSNAMEFILE].fp)
+	if (spi->df[LOCUSWEIGHTNAMEFILE].fp)
 	{
+		for (s = 0; s < spi->numScores; ++s)
+			if (fscanf(spi->df[LOCUSWEIGHTNAMEFILE].fp, "%s", weightNames[s]) != 1)
+			{
+				dcerror(1, "Not enough names for weights in %s\n", spi->df[LOCUSWEIGHTNAMEFILE].fn); exit(1);
+			}
+	}
+	else if (spi->numScores == 1)
+		strcpy(weightNames[0], "score");
+	else
+		for (s = 0; s < spi->numScores; ++s)
+			sprintf(weightNames[s],"score%d",s);
+	if (spi->df[LOCUSNAMEFILE].fp)
+		{
 		for (l = 0; l < pi->nloci; ++l)
 #if 1
 		{
