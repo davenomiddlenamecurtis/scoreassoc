@@ -49,7 +49,7 @@ option opt[]=
 	{ "filterfile", FILTERFILE },
 	{ "annotfile", ANNOTFILE },
 	{ "locusfilterfile", LOCUSFILTERFILE },
-	{ "weightnamefile", LOCUSWEIGHTNAMEFILE },
+	{ "locusweightnamefile", LOCUSWEIGHTNAMEFILE },
 	{ "locusnamefile", LOCUSNAMEFILE },
 	{ "locusweightfile", LOCUSWEIGHTFILE },
 	{ "triofile", TRIOFILE },

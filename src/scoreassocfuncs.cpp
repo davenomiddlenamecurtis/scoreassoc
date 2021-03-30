@@ -125,6 +125,9 @@ double do_score_onetailed_ttest(FILE *fo, double **score, subject **sub, int nsu
 		else
 			sprintf(SLPstr, "SLP%d", sc);
 		if (fo != NULL)
+		{
+			if (spi->numScores > 1)
+				fprintf(fo, "\n%s", weightNames[sc]);
 			fprintf(fo, "\n             Controls  Cases     \n"
 				"N            %9d %9d\n"
 				"Mean score   %9.3f %9.3f\n"
@@ -134,6 +137,7 @@ double do_score_onetailed_ttest(FILE *fo, double **score, subject **sub, int nsu
 				"%s = %8.2f (signed log10(p), positive if cases score higher than controls)\n",
 				n[0], n[1], mean[0], mean[1], sqrt(var[0]), sqrt(var[1]), n[0] + n[1] - 2, tval, 2 * p, SLPstr,SLP);
 		// I am writing SD because it will allow me to combine statistics later
+		}
 	}
 	return SLP;
 }

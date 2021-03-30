@@ -138,7 +138,7 @@ if (spi.df[INPUTSCOREFILE].fp==0)
 		fprintf(spi.df[OUTFILE].fp, "weight   ");
 	else
 		for (sc = 0; sc < spi.numScores; ++sc)
-			fprintf(spi.df[OUTFILE].fp, "weight%-2d ", sc);
+			fprintf(spi.df[OUTFILE].fp, "%.8s ", weightNames[sc]);
 	fprintf(spi.df[OUTFILE].fp,"%s\n",spi.use_comments ? "comment" : "");
 	get_freqs(sub, nsub, &pi, &spi, cc_freq, cc_count, cc_genocount);
 	applyExclusions(sub, nsub, &pi);
