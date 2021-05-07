@@ -1,4 +1,6 @@
 # scoreassoc
+Software to carry out weighted burden analysis of rare, functional variants, as obtained from large scale sequencing studies.
+
 Distribution for scoreassoc, including source, example files and MSVC files. Also files to produce exome-wide risk score.
 
 Use this link to preview the scoreassoc html:
