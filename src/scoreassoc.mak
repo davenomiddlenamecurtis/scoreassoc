@@ -6,7 +6,7 @@
 # The line needs to finish with a backspace character with no spaces after it.
 
 # You must edit the line below so that it points to the right folder for your installation of DLIB (obtainable from dlib.net)
-DLIB = /home/dcurtis/dlib/dlib-19.19
+DLIB = ~/dlib/dlib-19.22
 
 # Destination for executables, change this if you want
 DCBIN = ../bin
