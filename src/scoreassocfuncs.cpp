@@ -24,6 +24,7 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 void write_scores(FILE *fs,subject **sub,int nsub,double **score,int numScores,par_info *pi)
 {
 	int s,sc;
+	printf("Writing scores...\nnsub = %d, numScores = %d, first score = %f\n", nsub, numScores, score[0][0]);
 	for (s = 0; s < nsub; ++s) {
 		fprintf(fs, "%20s ", sub[s]->id);
 		if (pi->is_quantitative)
