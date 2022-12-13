@@ -214,8 +214,13 @@ void write_rec_scores(FILE* fs, subject** sub, int nsub, double** score, recPair
 			for (i = 0; i < 2; ++i)
 			{
 				l = rP[sc][s].l[i];
-				ll = pi->loci_to_use[l];
-				fprintf(fs, "%-" LOCUS_NAME_LENGTH_STR "s %8.4f ", names[ll], weight[spi->numAddScores + sc][l]);
+				if (l != -1)
+				{
+					ll = pi->loci_to_use[l];
+					fprintf(fs, "%-" LOCUS_NAME_LENGTH_STR "s %8.4f ", names[ll], weight[spi->numAddScores + sc][l]);
+				}
+				else
+					fprintf(fs, "%-" LOCUS_NAME_LENGTH_STR "s %8.4f ", "NOLOCUS",0);
 			}
 		}
 		fprintf(fs, "\n");
