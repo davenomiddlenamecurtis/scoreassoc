@@ -55,6 +55,7 @@ option opt[]=
 	{ "triofile", TRIOFILE },
 	{ "outfile", OUTFILE },
 	{ "scorefile", SCOREFILE },
+	{ "recscorefile", RECSCOREFILE },
 	{ "nostringtomatchthis", NUMDATAFILETYPES },
 	{ "numloci", NUMLOCI },
 // need this if using gc files, unless locusfilterfile provided
@@ -247,6 +248,7 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 		case LOCUSWEIGHTNAMEFILE:
 		case LOCUSNAMEFILE:
 		case OUTFILE:
+		case RECSCOREFILE:
 		case SCOREFILE:
 		case TRIOFILE:
 			if (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num) == 0 || arg[0]=='-' || sscanf(arg, "%s",spi->df[opt[a].o].fn) != 1)
@@ -264,10 +266,13 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 int process_options(par_info *pi, sa_par_info *spi)
 {
 	int a,l;
+	/*
+	I do not know why this was ever here
 	if (!spi->df[SCOREFILE].fn[0])
 	{
 		dcerror(1,"Must specify --scorefile"); exit(1);
 	}
+	*/
 	if (!spi->df[FLAGFILE].fn[0])
 	{
 		dcerror(1,"Must specify --flagfile"); exit(1);

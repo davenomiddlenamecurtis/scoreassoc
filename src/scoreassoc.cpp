@@ -28,13 +28,14 @@ along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #include "safilterfuncs.hpp"
 
 #define PROGRAM "scoreassoc"
-#define SAVERSION "7.0"
+#define SAVERSION "8.0"
 
 int main(int argc, char *argv[])
 {
 	char arg_string[2000];
 	int nsub,n_new_sub,real_nsub,filledModel;
 	double** score;
+	recPair** rP;
 	float SLP, p;
 	int s,n_non_mendelian,t,sc;
 	non_mendelian *non_mendelians;
@@ -51,17 +52,26 @@ int main(int argc, char *argv[])
 	// make_arg_string(arg_string,argc,argv);
 	// parse_arg_string(arg_string,&pi,&spi,&pspi);
 	process_options(&pi,&spi); // use this to get number of weight files and set numScore here
-	assert(score = (double**)calloc(numScores, sizeof(double*)));
-	assert(weight = (double**)calloc(numScores, sizeof(double*)));
-	assert(func_weight = (double**)calloc(numScores, sizeof(double*)));
-	assert(missing_score = (float**)calloc(numScores, sizeof(double*)));
-	for (sc = 0; sc < numScores; ++sc)
+	assert(score = (double**)calloc(spi.numScores, sizeof(double*)));
+	assert(weight = (double**)calloc(spi.numScores, sizeof(double*)));
+	assert(func_weight = (double**)calloc(spi.numScores, sizeof(double*)));
+	assert(missing_score = (float**)calloc(spi.numScores, sizeof(double*)));
+	for (sc = 0; sc < spi.numScores; ++sc)
 	{
 		assert(score[sc] = (double*)calloc(MAX_SUB, sizeof(double)));
 		assert(weight[sc] = (double*)calloc(pi.nloci? pi.nloci:MAX_LOCI, sizeof(double)));
 		assert(func_weight[sc] = (double*)calloc(pi.nloci ? pi.nloci : MAX_LOCI, sizeof(double)));
 		assert(missing_score[sc] = (float*)calloc(pi.nloci ? pi.nloci : MAX_LOCI, sizeof(double)));
 	}
+	if (spi.numRecScores > 0)
+	{
+		assert(rP = (recPair**)calloc(spi.numScores, sizeof(recPair*)));
+		for (sc = 0; sc < spi.numRecScores; ++sc)
+			assert(rP[sc] = (recPair*)calloc(MAX_SUB, sizeof(recPair)));
+
+	}
+	else
+		rP = 0;
 	// at this point, have allocated func_weight, weight and score - need to free them later
 	try
 	{
@@ -91,7 +101,7 @@ int main(int argc, char *argv[])
 
 	if (spi.df[FILTERFILE].fp)
 		initExclusions(spi.df[FILTERFILE].fp);
-	read_all_data(&pi,&spi,sub,&nsub,names,comments,func_weight,score,numScores);
+	read_all_data(&pi,&spi,sub,&nsub,names,comments,func_weight,score,spi.numScores);
 	if (nsub == 0)
 	{
 		error("There were zero subjects to input","");
@@ -144,6 +154,8 @@ if (spi.df[INPUTSCOREFILE].fp==0)
 	applyExclusions(sub, nsub, &pi);
 	set_weights(spi.df[OUTFILE].fp, weight, missing_score, rarer, sub, nsub, &pi, &spi, func_weight, cc_freq, cc_count, max_cc, names, comments);
 	get_scores(score, weight, missing_score, rarer, sub, nsub, &pi, &spi);
+	if (spi.numRecScores>0)
+		get_rec_scores(score, rP, weight, missing_score, rarer, sub, nsub, &pi, &spi);
 }
 filledModel=0;
 spi.scoreCol = spi.numVars; // first of possibly more than one score
@@ -207,9 +219,15 @@ if (spi.use_trios)
 
 if (spi.df[SCOREFILE].fp)
 {
-	write_scores(spi.df[SCOREFILE].fp,sub,nsub,score,spi.numScores,&pi);
+	write_scores(spi.df[SCOREFILE].fp, sub, nsub, score, spi.numScores, &pi);
 	fclose(spi.df[SCOREFILE].fp);
-	spi.df[SCOREFILE].fp=0;
+	spi.df[SCOREFILE].fp = 0;
+}
+if (spi.df[RECSCOREFILE].fp)
+{
+	write_rec_scores(spi.df[RECSCOREFILE].fp, sub, nsub, score,rP, spi.numRecScores,weight,names, &pi,&spi);
+	fclose(spi.df[RECSCOREFILE].fp);
+	spi.df[RECSCOREFILE].fp = 0;
 }
 #if 0
 if (spi.do_recessive_test)

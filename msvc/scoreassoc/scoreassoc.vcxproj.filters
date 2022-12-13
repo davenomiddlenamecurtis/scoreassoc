@@ -122,5 +122,8 @@
     <ClCompile Include="..\..\src\sagcutils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\scoreassocGetRecScore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

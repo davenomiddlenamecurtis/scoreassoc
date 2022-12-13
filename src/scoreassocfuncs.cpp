@@ -700,6 +700,9 @@ int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char 
 		for (l = 0; l < pi->nloci; ++l)
 			pi->loci_to_use[l] = l;
 	}
+	if (spi->numLocusWeightFiles == 0 && spi->numLocusRecWeightFiles == 0 && spi->df[WEIGHTFILE].fp == 0)
+		for (l = 0; l < pi->nloci; ++l)
+			func_weight[0][l] = 1;
 	if (spi->numLocusWeightFiles>0)
 	{
 		for (s = 0; s < spi->numLocusWeightFiles; ++s)
@@ -711,22 +714,43 @@ int read_all_data(par_info *pi,sa_par_info *spi,subject **sub,int *nsubptr,char 
 				}
 		}
 	}
-	else if (spi->df[WEIGHTFILE].fp ==0)
-		for (l = 0; l < pi->nloci; ++l)
-			func_weight[0][l]=1;
+	if (spi->numLocusRecWeightFiles > 0)
+	{
+		for (s = 0; s < spi->numLocusRecWeightFiles; ++s)
+		{
+			for (l = 0; l < pi->nloci; ++l)
+				if (fscanf(spi->locusRecWeightFile[s].fp, "%lf ", &func_weight[spi->numAddScores + s][l]) != 1)
+				{
+					dcerror(1, "Not enough values in locusrecweightfile %s\n", spi->locusWeightFile[s].fn); exit(1);
+				}
+		}
+	}
 	if (spi->df[LOCUSWEIGHTNAMEFILE].fp)
 	{
-		for (s = 0; s < spi->numScores; ++s)
+		for (s = 0; s < spi->numAddScores; ++s)
 			if (fscanf(spi->df[LOCUSWEIGHTNAMEFILE].fp, "%s", weightNames[s]) != 1)
 			{
 				dcerror(1, "Not enough names for weights in %s\n", spi->df[LOCUSWEIGHTNAMEFILE].fn); exit(1);
 			}
 	}
-	else if (spi->numScores == 1)
+	else if (spi->numAddScores == 1)
 		strcpy(weightNames[0], "score");
 	else
-		for (s = 0; s < spi->numScores; ++s)
-			sprintf(weightNames[s],"score%d",s);
+		for (s = 0; s < spi->numAddScores; ++s)
+			sprintf(weightNames[s], "score%d", s);
+	if (spi->df[LOCUSRECWEIGHTNAMEFILE].fp)
+	{
+		for (s = 0; s < spi->numRecScores; ++s)
+			if (fscanf(spi->df[LOCUSRECWEIGHTNAMEFILE].fp, "%s", weightNames[spi->numAddScores+s]) != 1)
+			{
+				dcerror(1, "Not enough names for recessive weights in %s\n", spi->df[LOCUSRECWEIGHTNAMEFILE].fn); exit(1);
+			}
+	}
+	else if (spi->numRecScores == 1)
+		strcpy(weightNames[spi->numAddScores], "recscore");
+	else
+		for (s = 0; s < spi->numAddScores; ++s)
+			sprintf(weightNames[spi->numAddScores+s], "recscore%d", s);
 	if (spi->df[LOCUSNAMEFILE].fp)
 		{
 		for (l = 0; l < pi->nloci; ++l)

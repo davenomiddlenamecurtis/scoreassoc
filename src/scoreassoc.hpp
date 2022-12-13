@@ -52,6 +52,8 @@ enum OPT {
 	LOCUSNAMEFILE,
 	LOCUSWEIGHTNAMEFILE,
 	LOCUSWEIGHTFILE,
+	LOCUSRECWEIGHTNAMEFILE,
+	LOCUSRECWEIGHTFILE,
 	TRIOFILE,
 	CASEFREQFILE,
 	CONTFREQFILE,
@@ -59,6 +61,7 @@ enum OPT {
 	IDPHENOTYPEFILE,
 	OUTFILE,
 	SCOREFILE,
+	RECSCOREFILE,
 	NUMDATAFILETYPES,
 	NUMLOCI,
 	// LDTHRESHOLD,
@@ -115,15 +118,16 @@ public:
 class sa_par_info : public lr_test_par_info {
 public:
 sa_data_file_type df[NUMDATAFILETYPES];
-sa_data_file_type locusWeightFile[MAXWEIGHTFILES];
-int numLocusWeightFiles=0;
+sa_data_file_type locusWeightFile[MAXWEIGHTFILES], locusRecWeightFile[MAXWEIGHTFILES];
+int numLocusWeightFiles=0,numLocusRecWeightFiles = 0;
 float wfactor,LD_threshold,weight_threshold,max_MAF;
 int use_func_weights,use_cc_freqs[2],use_locus_names,use_comments,do_recessive_test,use_haplotypes,show_hap_locus_names,use_trios,use_probs;
 int do_ttest, do_lrtest,do_linrtest;
 int missingZero = 0;
 int useFlatFile = 0;
 int useTransposedFile = 0;
-int numScores = -1;
+float LDThreshold2022 = 1;
+int numScores = -1, numAddScores = -1, numRecScores = -1;
 };
 
 enum { DE_NOVO=0, NON_MENDELIAN };
@@ -144,6 +148,8 @@ public:
 extern lrVariable allVars[MAXLRVARIABLES];
 extern std::map<std::string,lrVariable *> varMap;
 
+typedef struct recPair_t { int l[2]; } recPair; //  loci contributing to hightest compound heterozygote score
+
 
 void usage();
 int read_all_args(char *argv[], int argc, par_info *pi, sa_par_info *spi);
@@ -151,10 +157,12 @@ int process_options(par_info *pi, sa_par_info *spi);
 int read_all_data(par_info *pi, sa_par_info *spi, subject **sub, int *nsubptr, char names[MAX_LOCI][LOCUS_NAME_LENGTH], char comments[MAX_LOCI][MAX_COMMENT_LENGTH], double **func_weight,double **score,int numScores);
 
 double do_score_onetailed_ttest(FILE *fo,double **score,subject **sub,int nsub,par_info *pi,sa_par_info *spi,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],double **weight,float **missing,int *rarer);
-void get_scores(double **score,double **weight,float **missing_score,int *rarer,subject **sub,int nsub,par_info *pi,sa_par_info *spi);
+void get_scores(double** score, double** weight, float** missing_score, int* rarer, subject** sub, int nsub, par_info* pi, sa_par_info* spi);
+void get_rec_scores(double** score, recPair ** rP,double** weight, float** missing_score, int* rarer, subject** sub, int nsub, par_info* pi, sa_par_info* spi);
 void set_weights(FILE *fo,double **weight,float **missing_score,int *rarer,subject **sub,int nsub,par_info *pi,sa_par_info *spi,double **func_weight,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],int max_cc[2],char names[MAX_LOCI][LOCUS_NAME_LENGTH],char comments[MAX_LOCI][MAX_COMMENT_LENGTH]);
 void get_freqs(subject **sub,int nsub,par_info *pi,sa_par_info *spi,float cc_freq[2][MAX_LOCI],float cc_count[2][MAX_LOCI],float cc_gencount[2][3][MAX_LOCI]);
-void write_scores(FILE *fs,subject **sub,int nsub,double **score,int numScores,par_info* pi);
+void write_scores(FILE* fs, subject** sub, int nsub, double** score, int numScores, par_info* pi);
+void write_rec_scores(FILE* fs, subject** sub, int nsub, double** score, recPair** rP, int numRecScores, double** weight, char names[MAX_LOCI][LOCUS_NAME_LENGTH], par_info* pi, sa_par_info* spi);
 extern int sort_trios(subject **sub,int nsub,par_info *pi, sa_par_info *spi, subject **new_sub,non_mendelian *nm,int *n_non_mendelian,char *non_mendelian_report);
 extern int output_nm_report(FILE *fp, par_info *pi, int n_non_mendelians, non_mendelian *non_mendelians);
 int read_all_gen_subjects(FILE *fi,subject **s,int *nsub,par_info *pi);
@@ -177,7 +185,6 @@ extern float **missing_score,cc_freq[2][MAX_LOCI],cc_count[2][MAX_LOCI],cc_genoc
 extern double **weight, **func_weight;
 extern int rarer[MAX_LOCI],max_cc[2];
 extern char names[MAX_LOCI][LOCUS_NAME_LENGTH],weightNames[MAX_LOCI][LOCUS_NAME_LENGTH], comments[MAX_LOCI][MAX_COMMENT_LENGTH],trios_fn[500];
-extern int numScores;
 
 #define USEFILTERS 1
 #endif

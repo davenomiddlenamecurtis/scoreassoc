@@ -39,6 +39,8 @@ option opt[]=
 	{ "locusnamefile", LOCUSNAMEFILE },
 	{ "locusweightnamefile", LOCUSWEIGHTNAMEFILE },
 	{ "locusweightfile", LOCUSWEIGHTFILE },
+	{ "locusrecweightnamefile", LOCUSRECWEIGHTNAMEFILE },
+	{ "locusrecweightfile", LOCUSRECWEIGHTFILE },
 	{ "triofile",TRIOFILE},
 	{ "casefreqfile", CASEFREQFILE },	
 	{ "contfreqfile", CONTFREQFILE },
@@ -46,6 +48,7 @@ option opt[]=
 	{ "IDphenotypefile", IDPHENOTYPEFILE},	
 	{ "outfile", OUTFILE },
 	{ "scorefile", SCOREFILE },
+	{ "recscorefile", RECSCOREFILE },
 	{ "nostringtomatchthis", NUMDATAFILETYPES }, // data files above must be in same order as enum in header
 	{ "numloci", NUMLOCI },
 // need this if using gc files
@@ -171,6 +174,8 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 	{
 		spi->locusWeightFile[a].fn[0] = '\0';
 		spi->locusWeightFile[a].fp = 0;
+		spi->locusRecWeightFile[a].fn[0] = '\0';
+		spi->locusRecWeightFile[a].fp = 0;
 	}
 	while (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num))
 	{
@@ -277,6 +282,10 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || arg[0] == '-' || sscanf(arg, "%s", spi->locusWeightFile[spi->numLocusWeightFiles++].fn) != 1)
 				error = 1;
 			break;
+		case LOCUSRECWEIGHTFILE:
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || arg[0] == '-' || sscanf(arg, "%s", spi->locusRecWeightFile[spi->numLocusRecWeightFiles++].fn) != 1)
+				error = 1;
+			break;
 		case PSDATAFILE:
 		case GCDATAFILE:
 		case GENDATAFILE:
@@ -286,13 +295,15 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 		case LOCUSFILTERFILE:
 		case WEIGHTFILE:
 		case LOCUSNAMEFILE:
+		case LOCUSRECWEIGHTNAMEFILE:
 		case LOCUSWEIGHTNAMEFILE:
 		case CASEFREQFILE:
 		case CONTFREQFILE:
 		case INPUTSCOREFILE:
 		case IDPHENOTYPEFILE:
-		case OUTFILE:
+		case RECSCOREFILE:
 		case SCOREFILE:
+		case OUTFILE:
 			if (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num) == 0 || arg[0]=='-' || sscanf(arg, "%s",spi->df[a].fn) != 1)
 				error=1;
 			break;
@@ -341,7 +352,7 @@ int process_options(par_info *pi, sa_par_info *spi)
 		{
 			dcerror(1, "Could not open %s %s\n", opt[a].str,spi->df[a].fn); exit(1);
 		}
-	for (a=OUTFILE;a<=SCOREFILE;++a)
+	for (a=OUTFILE;a< NUMDATAFILETYPES;++a)
 		if (spi->df[a].fn[0] && (spi->df[a].fp = fopen(spi->df[a].fn, "w")) == 0)
 		{
 			dcerror(1, "Could not open %s %s\n", opt[a].str,spi->df[a].fn); exit(1);
@@ -352,9 +363,9 @@ int process_options(par_info *pi, sa_par_info *spi)
 		printf("Warning: weightfile specified but not annotfile so will not assign weights according to function\n");
 	else if (!spi->df[WEIGHTFILE].fp && spi->df[ANNOTFILE].fp)
 		printf("Warning: annotfile specified but not weightfile so will not assign weights according to function\n");
-	if (spi->numLocusWeightFiles>0)
+	if (spi->numLocusWeightFiles > 0)
 	{
-		spi->use_func_weights=1;
+		spi->use_func_weights = 1;
 		if (spi->df[WEIGHTFILE].fp)
 			printf("Warning: weightfile specified but will read weights from locusweightfile instead\n");
 		for (a = 0; a < spi->numLocusWeightFiles; ++a)
@@ -363,9 +374,30 @@ int process_options(par_info *pi, sa_par_info *spi)
 				dcerror(1, "Could not open locusweightfile %s\n", spi->locusWeightFile[a].fn); exit(1);
 			}
 	}
-	if (spi->numScores == -1)
-		spi->numScores = spi->numLocusWeightFiles==0?1: spi->numLocusWeightFiles;
-	numScores = spi->numScores;
+	if (spi->numLocusRecWeightFiles > 0)
+	{
+		spi->use_func_weights = 1;
+		if (spi->df[WEIGHTFILE].fp)
+			printf("Warning: weightfile specified but will read weights from locusrecweightfile instead\n");
+		for (a = 0; a < spi->numLocusRecWeightFiles; ++a)
+			if (spi->locusRecWeightFile[a].fn[0] && (spi->locusRecWeightFile[a].fp = fopen(spi->locusRecWeightFile[a].fn, "r")) == 0)
+			{
+				dcerror(1, "Could not open locusrecweightfile %s\n", spi->locusRecWeightFile[a].fn); exit(1);
+			}
+	}
+	if (spi->numScores == -1) // I hope this is always true
+	{
+		if (spi->numLocusWeightFiles+ spi->numLocusRecWeightFiles == 0)
+		{
+			spi->numAddScores = 1;
+		}
+		else
+		{
+			spi->numAddScores = spi->numLocusWeightFiles;
+		}
+		spi->numRecScores = spi->numLocusRecWeightFiles;
+		spi->numScores = spi->numAddScores + spi->numRecScores;
+	}
 	if (spi->df[TRIOFILE].fp)
 		spi->use_trios=1;
 }
