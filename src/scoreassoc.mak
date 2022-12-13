@@ -6,7 +6,7 @@
 # The line needs to finish with a backspace character with no spaces after it.
 
 # You must edit the line below so that it points to the right folder for your installation of DLIB (obtainable from dlib.net)
-DLIB = ~/dlib/dlib-19.22
+DLIB = ~/dlib-19.4
 
 # Destination for executables, change this if you want
 DCBIN = ../bin
@@ -86,8 +86,8 @@ fitScores: fitScoresWithDlib.o dcerror.o source.o
 getVarScores: getVarScores.o saglobals.o scoreassocfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o 
 	$(CC) ${DEBUGFLAG} -o getVarScores getVarScores.o saglobals.o scoreassocfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o -lm
 
-scoreassoc: scoreassocGetRecScore.o source.o scoreassoc.o sainit.o salrtests.o glModel.o saglobals.o scoreassocfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o 
-	$(CC) ${DEBUGFLAG} -o scoreassoc source.o scoreassoc.o sainit.o salrtests.o glModel.o saglobals.o scoreassocfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o -lm -lpthread
+scoreassoc: source.o scoreassocGetRecScore.o scoreassoc.o sainit.o salrtests.o glModel.o saglobals.o scoreassocfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o 
+	$(CC) ${DEBUGFLAG} -o scoreassoc scoreassocGetRecScore.o source.o scoreassoc.o sainit.o salrtests.o glModel.o saglobals.o scoreassocfuncs.o satriofuncs.o sagcutils.o dcdflib.o ipmpar.o dcerror.o dcexpr.o saFilterFuncs.o -lm -lpthread
 
 combineCohorts: combineCohorts.o dcdflib.o ipmpar.o dcerror.o 
 	$(CC) ${DEBUGFLAG} -o combineCohorts combineCohorts.o dcdflib.o ipmpar.o dcerror.o -lm
