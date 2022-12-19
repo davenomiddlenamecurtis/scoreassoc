@@ -80,7 +80,7 @@ int getPairsToUseIndex(locusIndex * usablePairs, double** weight, int* rarer, su
 	// then get most important loci and discard the rest
 	// then search each one for usable pairs with it
 	// discard any with no usable pairs
-	int(* genoCounts)[3],s,i,c,a,l,l2,ll1,ll2,n1,n2,*useThisRecLocus, * useSecondRecLocus,anyValidPair,thisPairValid;
+	int(* genoCounts)[3],s,i,c,a,l,l2,ll1,ll2,lll,n1,n2,*useThisRecLocus, * useSecondRecLocus,anyValidPair,thisPairValid;
 	variantContribution* contrib;
 	assert((genoCounts = (int (*)[3])calloc(pi->n_loci_to_use, sizeof(int[3]))) != 0);
 	assert((contrib = (variantContribution*)calloc(pi->nloci, sizeof(variantContribution))) != 0);
@@ -124,7 +124,8 @@ int getPairsToUseIndex(locusIndex * usablePairs, double** weight, int* rarer, su
 			if (useThisRecLocus[ll2] == 0)
 				continue;
 			thisPairValid = 0;
-			useSecondRecLocus[ll2] = 0;
+			for (lll=0;lll<=ll2;++lll)
+				useSecondRecLocus[lll] = 0;
 			for (s = 0; s < nsub; ++s)
 			{
 					n1 = 0;
@@ -149,7 +150,7 @@ int getPairsToUseIndex(locusIndex * usablePairs, double** weight, int* rarer, su
 			}
 		}
 		if (anyValidPair)
-			usablePairs[ll1].fill(useSecondRecLocus + ll1 + 1, pi->nloci - ll1 - 1);
+			usablePairs[ll1].fill(useSecondRecLocus, pi->nloci);
 	}
 
 
