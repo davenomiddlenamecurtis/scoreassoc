@@ -85,6 +85,7 @@ enum OPT {
 	NUMSCORES,
 	ARGFILE,
 	NUMOPTS, 
+	MAXRECLOCI,
 	FLAGFILE
 };
 // must begin with datafiles followed by output files
@@ -128,6 +129,7 @@ int useFlatFile = 0;
 int useTransposedFile = 0;
 float LDThreshold2022 = 1;
 int numScores = -1, numAddScores = -1, numRecScores = -1;
+int maxRecLociToUse = 200;
 };
 
 enum { DE_NOVO=0, NON_MENDELIAN };

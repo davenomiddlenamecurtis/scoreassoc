@@ -70,7 +70,8 @@ option opt[]=
 	{"testfile",TESTFILE},
 	{"lintestfile",LINTESTFILE},
 	{"numscores",NUMSCORES},
-	{"transposedata",TRANSPOSEDATA},
+	{ "transposedata", TRANSPOSEDATA },
+	{ "maxrecloci", MAXRECLOCI },
 	{"argfile",ARGFILE},
 {"", NUMOPTS}
 };
@@ -164,6 +165,7 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 	spi->do_linrtest = 0;
 	spi->start_from_fitted = 1;
 	spi->numVars=spi->numVarFiles= spi->numTestFiles = spi->numLinTestFiles = 0;
+	spi->maxRecLociToUse = 200;
 	spi->lamda=DEFAULT_LAMDA;
 	for (a = 0; a < NUMDATAFILETYPES; ++a)
 	{
@@ -236,6 +238,10 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 			break;
 		case MAXMAF:
 			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%f", &spi->max_MAF) != 1)
+				error = 1;
+			break;
+		case MAXRECLOCI:
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->maxRecLociToUse) != 1)
 				error = 1;
 			break;
 		case LAMDA:
