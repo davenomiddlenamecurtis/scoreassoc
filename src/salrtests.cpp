@@ -194,11 +194,11 @@ float do_onetailed_LRT(FILE *fo, glModel *m,lr_test_par_info *spi,int do_linear)
 	float startBetas[MAXLRVARIABLES+1];
 	m->useLinearRegression(do_linear);
 	for(b=0;b<spi->numVars;++b)
-		if(!strcmp(allVars[b].name,"score"))
+		if(!strcmp(allVars[b].name,"score")|| !strcmp(allVars[b].name, "recscore"))
 			break;
 	if(b==spi->numVars)
 	{
-		dcerror(1,"Variable named score is not available (can only use default regression test if only one score)\n");
+		dcerror(1,"Variable named score or recscore is not available for default regression test\n");
 		return 0;
 	}
 	else

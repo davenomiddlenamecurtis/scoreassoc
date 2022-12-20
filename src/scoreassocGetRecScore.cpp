@@ -118,14 +118,14 @@ int getPairsToUseIndex(locusIndex * usablePairs, double** weight, int* rarer, su
 		if (useThisRecLocus[ll1] == 0)
 			continue;
 		anyValidPair = 0;
+		for (lll = 0; lll <= ll1; ++lll)
+			useSecondRecLocus[lll] = 0;
 		for (l2 = l + 1; l2 < pi->n_loci_to_use; ++l2)
 		{
 			ll2 = pi->loci_to_use[l2];
 			if (useThisRecLocus[ll2] == 0)
 				continue;
 			thisPairValid = 0;
-			for (lll=0;lll<=ll2;++lll)
-				useSecondRecLocus[lll] = 0;
 			for (s = 0; s < nsub; ++s)
 			{
 					n1 = 0;
