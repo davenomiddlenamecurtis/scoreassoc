@@ -127,7 +127,7 @@ int do_ttest, do_lrtest,do_linrtest;
 int missingZero = 0;
 int useFlatFile = 0;
 int useTransposedFile = 0;
-float LDThreshold2022 = 1;
+float LDThreshold2022 = 2.0; // excess of co-occurrences above expectation
 int numScores = -1, numAddScores = -1, numRecScores = -1;
 int maxRecLociToUse = 200;
 };

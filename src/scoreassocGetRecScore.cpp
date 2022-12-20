@@ -80,7 +80,8 @@ int getPairsToUseIndex(locusIndex * usablePairs, double** weight, int* rarer, su
 	// then get most important loci and discard the rest
 	// then search each one for usable pairs with it
 	// discard any with no usable pairs
-	int(* genoCounts)[3],s,i,c,a,l,l2,ll1,ll2,lll,n1,n2,*useThisRecLocus, * useSecondRecLocus,anyValidPair,thisPairValid;
+	int(* genoCounts)[3],s,i,c,a,l,l2,ll1,ll2,lll,n1,n2,*useThisRecLocus, * useSecondRecLocus,
+		anyValidPair,thisPairValid,coOccur;
 	variantContribution* contrib;
 	assert((genoCounts = (int (*)[3])calloc(pi->n_loci_to_use, sizeof(int[3]))) != 0);
 	assert((contrib = (variantContribution*)calloc(pi->nloci, sizeof(variantContribution))) != 0);
@@ -125,7 +126,7 @@ int getPairsToUseIndex(locusIndex * usablePairs, double** weight, int* rarer, su
 			ll2 = pi->loci_to_use[l2];
 			if (useThisRecLocus[ll2] == 0)
 				continue;
-			thisPairValid = 0;
+			thisPairValid = coOccur = 0;
 			for (s = 0; s < nsub; ++s)
 			{
 					n1 = 0;
@@ -141,8 +142,13 @@ int getPairsToUseIndex(locusIndex * usablePairs, double** weight, int* rarer, su
 						break; // do not allow any where must be in same haplotype
 					}
 					else if (n1 == 1 && n2 == 1)
-						thisPairValid= 1;
+					{
+						++coOccur;
+						thisPairValid = 1;
+					}
 			}
+			if (coOccur > spi->LDThreshold2022 * genoCounts[l][1] * genoCounts[l2][1] / nsub)
+				thisPairValid = 0;
 			if (thisPairValid)
 			{
 				useSecondRecLocus[ll2] = 1;

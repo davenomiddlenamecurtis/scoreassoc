@@ -166,7 +166,8 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 	spi->start_from_fitted = 1;
 	spi->numVars=spi->numVarFiles= spi->numTestFiles = spi->numLinTestFiles = 0;
 	spi->maxRecLociToUse = 200;
-	spi->lamda=DEFAULT_LAMDA;
+	spi->LDThreshold2022 = 2.0;
+	spi->lamda = DEFAULT_LAMDA;
 	for (a = 0; a < NUMDATAFILETYPES; ++a)
 	{
 		spi->df[a].fn[0] = '\0';
