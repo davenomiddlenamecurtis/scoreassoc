@@ -52,7 +52,7 @@ option opt[]=
 	{ "nostringtomatchthis", NUMDATAFILETYPES }, // data files above must be in same order as enum in header
 	{ "numloci", NUMLOCI },
 // need this if using gc files
-//	{ "ldthreshold", LDTHRESHOLD },
+	{ "ldthreshold", LDTHRESHOLD },
 //	{ "minweight", WEIGHTTHRESHOLD },
 	{ "isquantitative",ISQUANTITATIVE },
 //	{ "dorecessive", DORECESSIVE },
@@ -96,7 +96,7 @@ void usage()
 "--contfreqfile file (provide allele frequency for each locus in controls)\n"
 "--triofile file\n"
 "--isquantitative x (quantitative phenotype, 0 or 1, default 0)\n"
-// "--ldthreshold x (to discard variants in LD for recessive analysis, default 0.9)\n"
+"--ldthreshold x (to discard variants in LD for recessive analysis, default 2.0)\n"
 // "--minweight x (to include in recessive analysis, default 0, i.e. all variants)\n"
 "--lamda x\n"
 // "--dorecessive x\n"
@@ -153,8 +153,6 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 	spi->use_locus_names=spi->use_comments=1;
 	spi->wfactor = 10;
 	spi->max_MAF = 0.5;
-	spi->do_recessive_test=0;
-	spi->LD_threshold=0.9;
 	spi->show_hap_locus_names=spi->use_haplotypes=spi->use_trios=0;
 	spi->use_cc_freqs[0]=spi->use_cc_freqs[1]=0;
 	spi->numLocusWeightFiles = 0;
@@ -243,6 +241,10 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 			break;
 		case MAXRECLOCI:
 			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->maxRecLociToUse) != 1)
+				error = 1;
+			break;
+		case LDTHRESHOLD:
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%f", &spi->LDThreshold2022) != 1)
 				error = 1;
 			break;
 		case LAMDA:
