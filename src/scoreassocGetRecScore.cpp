@@ -290,7 +290,7 @@ void get_rec_scores(double **score,recPair **rP,double **weight,float **missing,
 			}
 			if (n1 !=1)
 				continue; // ignoring homozygotes in all situations, worry about unknowns later
-			for (l2 = l+1; l2 < usablePairs[ll1].nLoci; ++l2)
+			for (l2 = 0; l2 < usablePairs[ll1].nLoci; ++l2)
 			{
 				ll2 = usablePairs[ll1].loci[l2];
 				if (sub[s]->all[ll2][0] == 0)
