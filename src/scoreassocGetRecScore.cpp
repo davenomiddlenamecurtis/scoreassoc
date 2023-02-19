@@ -81,7 +81,7 @@ int getPairsToUseIndex(locusIndex * usablePairs, double** weight, int* rarer, su
 	// then search each one for usable pairs with it
 	// discard any with no usable pairs
 	int(* genoCounts)[3],s,i,c,a,l,l2,ll1,ll2,lll,n1,n2,*useThisRecLocus, * useSecondRecLocus,
-		anyValidPair,thisPairValid,coOccur;
+		anyValidPair,thisPairValid,coOccur,d;
 	variantContribution* contrib;
 	assert((genoCounts = (int (*)[3])calloc(pi->n_loci_to_use, sizeof(int[3]))) != 0);
 	assert((contrib = (variantContribution*)calloc(pi->nloci, sizeof(variantContribution))) != 0);
@@ -101,6 +101,7 @@ int getPairsToUseIndex(locusIndex * usablePairs, double** weight, int* rarer, su
 			contrib[ll1].index = ll1;
 			contrib[ll1].contribution = weight[spi->numAddScores][l] * genoCounts[l][1];
 			// homozygotes will be ignored
+			// not interested in singleton heterozygotes
 			// only the first set of recessive weights will be used to select most informative loci
 			// if this is a problem, will either need to include all loci or run repeated analyses
 		}
@@ -112,6 +113,17 @@ int getPairsToUseIndex(locusIndex * usablePairs, double** weight, int* rarer, su
 			break;
 		else
 			useThisRecLocus[contrib[ll1].index] = 1;
+	}
+	if (spi->df[DEBUGFILE].fp)
+	{
+		fprintf(spi->df[DEBUGFILE].fp, "Initial set of potentially informative loci for recessive analysis:\n");
+		for (l = 0; l < pi->n_loci_to_use; ++l)
+		{
+			ll1 = pi->loci_to_use[l];
+			if (useThisRecLocus[ll1] == 0)
+				continue;
+			fprintf(spi->df[DEBUGFILE].fp, "%-" LOCUS_NAME_LENGTH_STR "s\n", names[ll1]);
+		}
 	}
 	for (l = 0; l < pi->n_loci_to_use; ++l)
 	{
@@ -139,6 +151,12 @@ int getPairsToUseIndex(locusIndex * usablePairs, double** weight, int* rarer, su
 					if ((n1 == 2 && n2 > 0) || (n1 > 0 && n2 == 2))
 					{
 						thisPairValid = 0;
+						if (spi->df[DEBUGFILE].fp)
+						{
+							fprintf(spi->df[DEBUGFILE].fp,
+								"Excluding %-" LOCUS_NAME_LENGTH_STR "s and %-" LOCUS_NAME_LENGTH_STR "s because they have allele counts %d and %d in %s\n", 
+								names[ll1], names[ll2], n1, n2, sub[s]->id);
+						}
 						break; // do not allow any where must be in same haplotype
 					}
 					else if (n1 == 1 && n2 == 1)
@@ -148,7 +166,15 @@ int getPairsToUseIndex(locusIndex * usablePairs, double** weight, int* rarer, su
 					}
 			}
 			if (coOccur > spi->LDThreshold2022 * genoCounts[l][1] * genoCounts[l2][1] / nsub)
+			{
 				thisPairValid = 0;
+				if (spi->df[DEBUGFILE].fp)
+				{
+					fprintf(spi->df[DEBUGFILE].fp, 
+						"Excluding %-" LOCUS_NAME_LENGTH_STR "s and %-" LOCUS_NAME_LENGTH_STR "s because they co-occur too frequently, in %d subjects",
+						names[ll1], names[ll2], coOccur);
+				}
+			}
 			if (thisPairValid)
 			{
 				useSecondRecLocus[ll2] = 1;

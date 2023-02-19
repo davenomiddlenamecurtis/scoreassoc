@@ -56,6 +56,7 @@ option opt[]=
 	{ "outfile", OUTFILE },
 	{ "scorefile", SCOREFILE },
 	{ "recscorefile", RECSCOREFILE },
+	{ "debugfile", DEBUGFILE },
 	{ "nostringtomatchthis", NUMDATAFILETYPES },
 	{ "numloci", NUMLOCI },
 // need this if using gc files, unless locusfilterfile provided

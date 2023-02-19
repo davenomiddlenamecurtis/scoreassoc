@@ -49,6 +49,7 @@ option opt[]=
 	{ "outfile", OUTFILE },
 	{ "scorefile", SCOREFILE },
 	{ "recscorefile", RECSCOREFILE },
+	{ "debugfile", DEBUGFILE },
 	{ "nostringtomatchthis", NUMDATAFILETYPES }, // data files above must be in same order as enum in header
 	{ "numloci", NUMLOCI },
 // need this if using gc files
@@ -311,6 +312,7 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 		case INPUTSCOREFILE:
 		case IDPHENOTYPEFILE:
 		case RECSCOREFILE:
+		case DEBUGFILE:
 		case SCOREFILE:
 		case OUTFILE:
 			if (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num) == 0 || arg[0]=='-' || sscanf(arg, "%s",spi->df[a].fn) != 1)
