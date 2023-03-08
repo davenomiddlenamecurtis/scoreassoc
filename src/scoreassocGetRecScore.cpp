@@ -157,7 +157,7 @@ int getPairsToUseIndex(locusIndex * usablePairs, double** weight, int* rarer, su
 								"Excluding %-" LOCUS_NAME_LENGTH_STR "s and %-" LOCUS_NAME_LENGTH_STR "s because they have allele counts %d and %d in %s\n", 
 								names[ll1], names[ll2], n1, n2, sub[s]->id);
 						}
-						break; // do not allow any where must be in same haplotype
+						break; // do not allow any where must be in same haplotype, i.e. homozygote and heterozygote
 					}
 					else if (n1 == 1 && n2 == 1)
 					{
@@ -171,7 +171,7 @@ int getPairsToUseIndex(locusIndex * usablePairs, double** weight, int* rarer, su
 				if (spi->df[DEBUGFILE].fp)
 				{
 					fprintf(spi->df[DEBUGFILE].fp, 
-						"Excluding %-" LOCUS_NAME_LENGTH_STR "s and %-" LOCUS_NAME_LENGTH_STR "s because they co-occur too frequently, in %d subjects",
+						"Excluding %-" LOCUS_NAME_LENGTH_STR "s and %-" LOCUS_NAME_LENGTH_STR "s because they co-occur too frequently, in %d subjects\n",
 						names[ll1], names[ll2], coOccur);
 				}
 			}
@@ -179,6 +179,12 @@ int getPairsToUseIndex(locusIndex * usablePairs, double** weight, int* rarer, su
 			{
 				useSecondRecLocus[ll2] = 1;
 				anyValidPair = 1;
+				if (spi->df[DEBUGFILE].fp)
+				{
+					fprintf(spi->df[DEBUGFILE].fp,
+						"Will use %-" LOCUS_NAME_LENGTH_STR "s and %-" LOCUS_NAME_LENGTH_STR "s. They co-occur too frequently in %d subjects and have heterozygote counts of %d and %d.\n",
+						names[ll1], names[ll2], coOccur, genoCounts[l][1], genoCounts[l2][1]);
+				}
 			}
 		}
 		if (anyValidPair)
