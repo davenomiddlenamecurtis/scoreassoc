@@ -131,7 +131,7 @@ int getPairsToUseIndex(locusIndex * usablePairs, double** weight, int* rarer, su
 		if (useThisRecLocus[ll1] == 0)
 			continue;
 		anyValidPair = 0;
-		for (lll = 0; lll <= ll1; ++lll)
+		for (lll = 0; lll < pi->nloci; ++lll)
 			useSecondRecLocus[lll] = 0;
 		for (l2 = l + 1; l2 < pi->n_loci_to_use; ++l2)
 		{
@@ -182,7 +182,7 @@ int getPairsToUseIndex(locusIndex * usablePairs, double** weight, int* rarer, su
 				if (spi->df[DEBUGFILE].fp)
 				{
 					fprintf(spi->df[DEBUGFILE].fp,
-						"Will use %-" LOCUS_NAME_LENGTH_STR "s and %-" LOCUS_NAME_LENGTH_STR "s. They co-occur too frequently in %d subjects and have heterozygote counts of %d and %d.\n",
+						"Will use %-" LOCUS_NAME_LENGTH_STR "s and %-" LOCUS_NAME_LENGTH_STR "s. They co-occur in %d subjects and have heterozygote counts of %d and %d.\n",
 						names[ll1], names[ll2], coOccur, genoCounts[l][1], genoCounts[l2][1]);
 				}
 			}
