@@ -165,7 +165,7 @@ int getPairsToUseIndex(locusIndex * usablePairs, double** weight, int* rarer, su
 						thisPairValid = 1;
 					}
 			}
-			if (coOccur > spi->LDThreshold2022 * genoCounts[l][1] * genoCounts[l2][1] / nsub)
+			if ((thisPairValid == 1) && (coOccur > spi->LDThreshold2022 * genoCounts[l][1] * genoCounts[l2][1] / nsub))
 			{
 				thisPairValid = 0;
 				if (spi->df[DEBUGFILE].fp)
