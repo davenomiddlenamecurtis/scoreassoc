@@ -5,8 +5,8 @@
 
 args = commandArgs(trailingOnly=TRUE)
 
-wd="C:/Users/dave/OneDrive/msvc/data/fixTTest"
-setwd(wd)
+# wd="C:/Users/dave/OneDrive/msvc/data/fixTTest"
+# setwd(wd)
 if (length(args)<1) {
   args=c("--arg-file","testADSP.rarg")
 }
