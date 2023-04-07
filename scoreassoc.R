@@ -8,7 +8,7 @@ args = commandArgs(trailingOnly=TRUE)
 # wd="C:/Users/dave/OneDrive/msvc/data/fixTTest"
 # setwd(wd)
 if (length(args)<1) {
-  args=c("--arg-file","testADSP.rarg")
+  args=c("--arg-file","rsco.test.rarg")
 }
 
 if (length(args)<1) {
@@ -276,7 +276,9 @@ for (gene in genes) {
   colnames(scores)=c("IID","oldPheno","score")
   testData=merge(scores,allData,by="IID")
   if (pars@doTTest) {
-    tt=t.test(testData$score[testData$pheno==0],testData$score[testData$pheno!=0])
+    tt=t.test(testData$score[testData$pheno==0],testData$score[testData$pheno!=0],var.equal=TRUE)
+	# t test can give silly results if allowed to have unequal variances in scores
+	# because gets too few degrees of freedom
 	SLP=log10(tt$p.value)*as.numeric(sign(tt$estimate[1]-tt$estimate[2]))
 	colnames(summary)[summaryCol]="SLP"
 	summary[summaryRow,summaryCol]=SLP
