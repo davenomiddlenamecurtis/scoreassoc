@@ -17,6 +17,14 @@ You should have received a copy of the GNU General Public License
 along with scoreassoc.If not, see <http://www.gnu.org/licenses/>.
 #endif
 
+#if 0
+This is an earlier attempt to detect valid compound heterozygotes which I am now abandoning.
+
+It tests whether the number of potential compound heterozygotes exceeds that based on MAF of both variants.
+
+Problem is that the expectation to have even a single compound heterozygote is very low unless both variants are very common.
+#endif
+
 #include <ctype.h>
 #include "dcerror.hpp"
 #include "scoreassoc.hpp"
@@ -165,14 +173,14 @@ int getPairsToUseIndex(locusIndex * usablePairs, double** weight, int* rarer, su
 						thisPairValid = 1;
 					}
 			}
-			if ((thisPairValid == 1) && (coOccur > genoCounts[l][1] * spi->propCompHet || coOccur > genoCounts[l2][1] * spi->propCompHet))
+			if ((thisPairValid == 1) && (coOccur > spi->LDThreshold2022 * genoCounts[l][1] * genoCounts[l2][1] / nsub))
 			{
 				thisPairValid = 0;
 				if (spi->df[DEBUGFILE].fp)
 				{
 					fprintf(spi->df[DEBUGFILE].fp, 
-						"Excluding %-" LOCUS_NAME_LENGTH_STR "s and %-" LOCUS_NAME_LENGTH_STR "s because they co-occur too frequently, in %d subjects, while genotype counts are only %d and %d\n",
-						names[ll1], names[ll2], coOccur, genoCounts[l][1], genoCounts[l2][1]);
+						"Excluding %-" LOCUS_NAME_LENGTH_STR "s and %-" LOCUS_NAME_LENGTH_STR "s because they co-occur too frequently, in %d subjects\n",
+						names[ll1], names[ll2], coOccur);
 				}
 			}
 			if (thisPairValid)

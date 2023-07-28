@@ -54,6 +54,7 @@ option opt[]=
 	{ "numloci", NUMLOCI },
 // need this if using gc files
 	{ "ldthreshold", LDTHRESHOLD },
+	{ "propcomphet", PROPCOMPHET },
 //	{ "minweight", WEIGHTTHRESHOLD },
 	{ "isquantitative",ISQUANTITATIVE },
 //	{ "dorecessive", DORECESSIVE },
@@ -97,7 +98,8 @@ void usage()
 "--contfreqfile file (provide allele frequency for each locus in controls)\n"
 "--triofile file\n"
 "--isquantitative x (quantitative phenotype, 0 or 1, default 0)\n"
-"--ldthreshold x (to discard variants in LD for recessive analysis, default 2.0)\n"
+"--propcomphet x (to discard variant pairs likely in LD, proportion of possible complex heterozygotes among carriers, default 0.5)\n"
+//"--ldthreshold x (to discard variants in LD for recessive analysis, default 2.0)\n"
 // "--minweight x (to include in recessive analysis, default 0, i.e. all variants)\n"
 "--lamda x\n"
 // "--dorecessive x\n"
@@ -166,6 +168,7 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 	spi->numVars=spi->numVarFiles= spi->numTestFiles = spi->numLinTestFiles = 0;
 	spi->maxRecLociToUse = 200;
 	spi->LDThreshold2022 = 2.0;
+	spi->propCompHet = 0.5;
 	spi->lamda = DEFAULT_LAMDA;
 	for (a = 0; a < NUMDATAFILETYPES; ++a)
 	{
@@ -244,8 +247,8 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->maxRecLociToUse) != 1)
 				error = 1;
 			break;
-		case LDTHRESHOLD:
-			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%f", &spi->LDThreshold2022) != 1)
+		case PROPCOMPHET:
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%f", &spi->propCompHet) != 1)
 				error = 1;
 			break;
 		case LAMDA:
