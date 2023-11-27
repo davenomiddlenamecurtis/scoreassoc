@@ -41,7 +41,8 @@ doTTest="numeric",doLRTest="numeric",doLinRTest="numeric",isquantitative="numeri
 numVars="numeric",
 numVarFiles="numeric",varFiles="vector",
 numTestFiles="numeric",testFiles="vector",
-numLinTestFiles="numeric",linTestFiles="vector"
+numLinTestFiles="numeric",linTestFiles="vector",
+locusWeightNameFile="character"
 ))
 
 pars=new("parInfo",numVarFiles=0,numTestFiles=0,numLinTestFiles=0,
@@ -68,6 +69,8 @@ while (TRUE) {
 	a=-1
   } else if (arg=="--IDphenotypefile") {
     pars@IDphenotypefile=args[a*2+2]
+  } else if (arg=="--locusweightnamefile") {
+    pars@locusWeightNameFile=args[a*2+2]
   } else if (arg=="--isquantitative") {
     pars@isquantitative=as.numeric(args[a*2+2])
   } else if (arg=="--inputscorefilespec") {
@@ -255,6 +258,10 @@ for (t in 1:nTests) {
 }
 }
 
+if (length(pars@locusWeightNameFile)>0) {
+	weightNames=read.table(pars@locusWeightNameFile,header=FALSE)
+}
+
 for (gene in genes) {
   if (gene %in% summary$Gene) {
     next
@@ -273,7 +280,20 @@ for (gene in genes) {
   summary[summaryRow,1]=gene
   summaryCol=2
   scores=data.frame(read.table(scoresFileName,header=FALSE))
-  colnames(scores)=c("IID","oldPheno","score")
+  if (ncol(scores)==3) {
+	  colnames(scores)=c("IID","oldPheno","score")
+  } else {
+	  colnames(scores[1:2])=c("IID","oldPheno")
+	  for (s in 0:(ncol(scores)-3)) {
+		  colnames(scores)[s]=sprintf("score%d",s)
+	  }
+  }
+  if (length(pars@locusWeightNameFile)>0) {
+	  if (nrow(weightNames)!=ncol(scores)-2) {
+		  cat(sprintf("%s has %d rows but %s has %d scores\n",pars@locusWeightNameFile,nrow(weightNames),scoresFileName,ncol(scores)-2))
+		  quit()
+	  }
+  }
   testData=merge(scores,allData,by="IID")
   if (pars@doTTest) {
     tt=t.test(testData$score[testData$pheno==0],testData$score[testData$pheno!=0],var.equal=TRUE)
