@@ -142,7 +142,7 @@ if (length(pars@geneListFile)>0) {
 }
 
 if (length(pars@locusWeightNameFile)>0) {
-	weightNames=read.table(pars@locusWeightNameFile,header=FALSE)
+	weightNames=read.table(pars@locusWeightNameFile,header=FALSE,stringsAsFactors=FALSE)
 }
 
 if (file.exists(pars@summaryOutputFile)) {
@@ -188,15 +188,19 @@ scores=data.frame(read.table(sprintf(inputScoreFileSpec,genes[1]),header=FALSE))
 if (ncol(scores)==3) {
 	  colnames(scores)=c("IID","oldPheno","score")
   } else {
-	  colnames(scores[1:2])=c("IID","oldPheno")
+	  colnames(scores)[1:2]=c("IID","oldPheno")
 	  for (s in 0:(ncol(scores)-3)) {
-		  colnames(scores)[s]=sprintf("score%d",s)
+		  colnames(scores)[s+3]=sprintf("score%d",s)
 	  }
   }
-  if (length(pars@locusWeightNameFile)>0) {
+if (length(pars@locusWeightNameFile)>0) {
 	  if (nrow(weightNames)!=ncol(scores)-2) {
 		  cat(sprintf("%s has %d rows but %s has %d scores\n",pars@locusWeightNameFile,nrow(weightNames),scoresFileName,ncol(scores)-2))
 		  quit()
+	  } else {
+	  for (s in 0:(ncol(scores)-3)) {
+		  colnames(scores)[s+3]=weightNames[s+1,1]
+		  }
 	  }
   }
 allData=merge(scores,allData,by="IID")
@@ -297,15 +301,19 @@ for (gene in genes) {
   if (ncol(scores)==3) {
 	  colnames(scores)=c("IID","oldPheno","score")
   } else {
-	  colnames(scores[1:2])=c("IID","oldPheno")
+	  colnames(scores)[1:2]=c("IID","oldPheno")
 	  for (s in 0:(ncol(scores)-3)) {
-		  colnames(scores)[s]=sprintf("score%d",s)
+		  colnames(scores)[s+3]=sprintf("score%d",s)
 	  }
   }
   if (length(pars@locusWeightNameFile)>0) {
 	  if (nrow(weightNames)!=ncol(scores)-2) {
 		  cat(sprintf("%s has %d rows but %s has %d scores\n",pars@locusWeightNameFile,nrow(weightNames),scoresFileName,ncol(scores)-2))
 		  quit()
+	  } else {
+	  for (s in 0:(ncol(scores)-3)) {
+		  colnames(scores)[s+3]=weightNames[s+1,1]
+		  }
 	  }
   }
   testData=merge(scores,allData,by="IID")
