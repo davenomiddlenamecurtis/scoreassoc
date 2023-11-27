@@ -256,7 +256,7 @@ for (t in 1:nTests) {
 	    model1=sprintf("pheno ~ %s",test[r,1])
 	    first1=FALSE
 	  } else {
-	    model1=sprintf("%s + %s",model0,test[r,1])
+	    model1=sprintf("%s + %s",model1,test[r,1])
 	  }
 	}
   }
@@ -397,13 +397,13 @@ for (gene in genes) {
 		if (coeffs1[rr,1]<0) {
 		  SLP=-SLP
 		}
-     	cat(sprintf("chisq = %f, 1 df, p=%f\ntSLP = %f (signed log10(p), positive if variant score is positively correlated with phenotype)\n\n",
-	      ch2,p,SLP)) 
-	    colnames(summary)[summaryCol]="tSLP"
+     	cat(sprintf("chisq = %f, %d df, p=%f\ntSLP = %f (signed log10(p), positive if variant score is positively correlated with phenotype)\n\n",
+	      ch2,df,p,SLP)) 
+	    colnames(summary)[summaryCol]=sprintf("tSLP%d",t)
 	  } else {
-     	cat(sprintf("chisq = %f, 1 df, p=%f\ntMLP = %f (minus log10(p))\n\n",
-	      ch2,p,SLP)) 
-	    colnames(summary)[summaryCol]="tMLP"
+     	cat(sprintf("chisq = %f, %d df, p=%f\ntMLP = %f (minus log10(p))\n\n",
+	      ch2,df,p,SLP)) 
+	    colnames(summary)[summaryCol]=sprintf("tMLP%d",t)
 	  }
 	  summary[summaryRow,summaryCol]=SLP
 	  summaryCol=summaryCol+1
