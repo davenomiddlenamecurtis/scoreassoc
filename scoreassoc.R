@@ -180,9 +180,23 @@ if (pars@numVarFiles>0) {
 
 #reduce allData rows to match subjects we are using
 scores=data.frame(read.table(sprintf(inputScoreFileSpec,genes[1]),header=FALSE))
-colnames(scores)=c("IID","oldPheno","score")
+
+if (ncol(scores)==3) {
+	  colnames(scores)=c("IID","oldPheno","score")
+  } else {
+	  colnames(scores[1:2])=c("IID","oldPheno")
+	  for (s in 0:(ncol(scores)-3)) {
+		  colnames(scores)[s]=sprintf("score%d",s)
+	  }
+  }
+  if (length(pars@locusWeightNameFile)>0) {
+	  if (nrow(weightNames)!=ncol(scores)-2) {
+		  cat(sprintf("%s has %d rows but %s has %d scores\n",pars@locusWeightNameFile,nrow(weightNames),scoresFileName,ncol(scores)-2))
+		  quit()
+	  }
+  }
 allData=merge(scores,allData,by="IID")
-allData=allData[,c(1,4:ncol(allData))]
+allData=allData[,c(1,(ncol(scores)+1):ncol(allData))]
 
 if (pars@doLRTest) {
   m=glm(as.formula(fullModel0),data=allData,family="binomial")
