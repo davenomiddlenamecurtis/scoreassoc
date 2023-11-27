@@ -141,6 +141,10 @@ if (length(pars@geneListFile)>0) {
   genes=c(pars@gene)
 }
 
+if (length(pars@locusWeightNameFile)>0) {
+	weightNames=read.table(pars@locusWeightNameFile,header=FALSE)
+}
+
 if (file.exists(pars@summaryOutputFile)) {
   summary=data.frame(read.table(pars@summaryOutputFile,header=TRUE,stringsAsFactors=FALSE))
 } else {
@@ -270,10 +274,6 @@ for (t in 1:nTests) {
     linTests.model1[t]=model1
   }
 }
-}
-
-if (length(pars@locusWeightNameFile)>0) {
-	weightNames=read.table(pars@locusWeightNameFile,header=FALSE)
 }
 
 for (gene in genes) {
