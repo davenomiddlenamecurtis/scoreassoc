@@ -284,16 +284,16 @@ for (gene in genes) {
   if (gene %in% summary$Gene) {
     next
   }
-  if (length(pars@outputFileSpec)>0) {
-    outFileName=sprintf(outputFileSpec,gene)
-	sink(outFileName)
-	cat(sprintf("Output for scoreassoc.R, %s\n",outFileName))
-  }
   scoresFileName=sprintf(inputScoreFileSpec,gene)
   if (!file.exists(scoresFileName)) {
     cat(sprintf("Scores file %s does not exist\n",scoresFileName))
 	sink()
 	next
+  }
+  if (length(pars@outputFileSpec)>0) {
+    outFileName=sprintf(outputFileSpec,gene)
+	sink(outFileName)
+	cat(sprintf("Output for scoreassoc.R, %s\n",outFileName))
   }
   summary[summaryRow,1]=gene
   summaryCol=2
