@@ -43,10 +43,15 @@ numVarFiles="numeric",varFiles="vector",
 numTestFiles="numeric",testFiles="vector",
 numLinTestFiles="numeric",linTestFiles="vector",
 locusWeightNameFile="character"
+numSplits="numeric"
+thisSplitNum="numeric"
 ))
 
 pars=new("parInfo",numVarFiles=0,numTestFiles=0,numLinTestFiles=0,
 doTTest=0,doLRTest=0,doLinRTest=0,isquantitative=0)
+
+pars@thisSplitNum=-1
+pars@numSplits=0
 
 a=0
 while (TRUE) {
@@ -98,11 +103,20 @@ while (TRUE) {
     pars@doLRTest=as.numeric(args[a*2+2])
   } else if (arg=="--dolinrtest") {
     pars@doLinRTest=as.numeric(args[a*2+2])
+  } else if (arg=="--numsplits") {
+    pars@numSplits=as.numeric(args[a*2+2])
+  } else if (arg=="--thissplitnum") {
+    pars@thisSplitNum=as.numeric(args[a*2+2])
   }  else {
     print(sprintf("Error: Unrecognised command line argument: %s\n",arg))
 	q()
   }
   a=a+1
+}
+
+if ((pars@numSplits==0) != (pars@thisSplitNum==-1)) {
+	print(sprintf("Error: Must set both of --numsplits and --thissplitnum or neither"))
+	q()
 }
 
 phenoTypes=data.frame(read.table(pars@IDphenotypefile,header=FALSE,stringsAsFactors=FALSE,sep="",fill=TRUE))
@@ -279,8 +293,15 @@ for (t in 1:nTests) {
   }
 }
 }
-
+g=-1
 for (gene in genes) {
+	if (pars@numSplits>0) {
+		g=g+1
+		if ((g %% pars@thisSplitNum) !=0) {
+			next
+		}
+	}
+	
   if (gene %in% summary$Gene) {
     next
   }
