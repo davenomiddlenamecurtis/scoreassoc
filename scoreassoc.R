@@ -42,8 +42,8 @@ numVars="numeric",
 numVarFiles="numeric",varFiles="vector",
 numTestFiles="numeric",testFiles="vector",
 numLinTestFiles="numeric",linTestFiles="vector",
-locusWeightNameFile="character"
-numSplits="numeric"
+locusWeightNameFile="character",
+numSplits="numeric",
 thisSplitNum="numeric"
 ))
 
