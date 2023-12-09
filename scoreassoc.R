@@ -297,7 +297,7 @@ g=-1
 for (gene in genes) {
 	if (pars@numSplits>0) {
 		g=g+1
-		if ((g %% pars@thisSplitNum) !=0) {
+		if ((g %% pars@numSplits) != pars@thisSplitNum) {
 			next
 		}
 	}
