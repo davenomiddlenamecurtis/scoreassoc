@@ -420,11 +420,16 @@ for (gene in genes) {
 		}
      	cat(sprintf("chisq = %f, %d df, p=%f\ntSLP = %f (signed log10(p), positive if variant score is positively correlated with phenotype)\n\n",
 	      ch2,df,p,SLP)) 
-	    colnames(summary)[summaryCol]=sprintf("tSLP%d",t)
+	    # colnames(summary)[summaryCol]=sprintf("tSLP%d",t)
 	  } else {
      	cat(sprintf("chisq = %f, %d df, p=%f\ntMLP = %f (minus log10(p))\n\n",
 	      ch2,df,p,SLP)) 
-	    colnames(summary)[summaryCol]=sprintf("tMLP%d",t)
+	    # colnames(summary)[summaryCol]=sprintf("tMLP%d",t)
+	  }
+	  if (testTypes==1) {
+		colnames(summary)[summaryCol]=pars@testFiles[t]
+	  } else {
+		colnames(summary)[summaryCol]=pars@linTestFiles[t]
 	  }
 	  summary[summaryRow,summaryCol]=SLP
 	  summaryCol=summaryCol+1
