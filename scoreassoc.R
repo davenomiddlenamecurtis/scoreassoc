@@ -37,6 +37,7 @@ gene="character",
 geneListFile="character",
 outputFileSpec="character",
 summaryOutputFile="character",
+saveDataFileSpec="character",
 doTTest="numeric",doLRTest="numeric",doLinRTest="numeric",isquantitative="numeric",
 numVars="numeric",
 numVarFiles="numeric",varFiles="vector",
@@ -47,7 +48,7 @@ numSplits="numeric",
 thisSplitNum="numeric"
 ))
 
-pars=new("parInfo",numVarFiles=0,numTestFiles=0,numLinTestFiles=0,
+pars=new("parInfo",saveDataFileSpec="",numVarFiles=0,numTestFiles=0,numLinTestFiles=0,
 doTTest=0,doLRTest=0,doLinRTest=0,isquantitative=0)
 
 pars@thisSplitNum=-1
@@ -88,6 +89,8 @@ while (TRUE) {
     pars@outputFileSpec=args[a*2+2]
   } else if (arg=="--summaryoutputfile") {
     pars@summaryOutputFile=args[a*2+2]
+  } else if (arg=="--savedatafilespec") {
+    pars@saveDataFileSpec=args[a*2+2]
   } else if (arg=="--varfile") {
     pars@numVarFiles=pars@numVarFiles+1
     pars@varFiles[pars@numVarFiles]=args[a*2+2]
@@ -149,11 +152,12 @@ for (f in 1:pars@numVarFiles) {
 }
 }
 
-if (length(pars@geneListFile)>0) {
-  genes=data.frame(read.table(pars@geneListFile,header=FALSE))[,1]
-} else {
+if (length(pars@gene)>0) {
   genes=c(pars@gene)
+} else {
+  genes=data.frame(read.table(pars@geneListFile,header=FALSE))[,1]
 }
+# single gene will override list if provided
 
 if (length(pars@locusWeightNameFile)>0) {
 	weightNames=read.table(pars@locusWeightNameFile,header=FALSE,stringsAsFactors=FALSE)
@@ -170,6 +174,9 @@ summaryRow=nrow(summary)+1
 inputScoreFileSpec=sub("GENE","%s",pars@inputScoreFileSpec)
 if (length(pars@outputFileSpec)>0) {
   outputFileSpec=sub("GENE","%s",pars@outputFileSpec)
+}
+if (length(pars@saveDataFileSpec)>0) {
+  saveDataFileSpec=sub("GENE","%s",pars@saveDataFileSpec)
 }
 
 if (pars@numVarFiles>0) {
@@ -438,10 +445,13 @@ for (gene in genes) {
 
 
   
-  if (length(pars@outputFileSpec)>0) {
+  if (length(pars@saveDataFileSpec)>0) {
     sink()
   }
   write.table(summary,pars@summaryOutputFile,row.names=FALSE,quote=FALSE,sep="\t" )
+  if (length(pars@saveDataFileSpec)>0) {
+	write.table(testData,sprintf(saveDataFileSpec,gene),row.names=FALSE,quote=FALSE,sep="\t" )
+  }
   summaryRow=summaryRow+1
 print(summary)
 }

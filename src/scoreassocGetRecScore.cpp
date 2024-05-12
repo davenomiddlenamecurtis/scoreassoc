@@ -383,7 +383,7 @@ void write_rec_scores(FILE* fs, subject** sub, int nsub, double** score, recPair
 				if (ll != -1)
 					fprintf(fs, "%-" LOCUS_NAME_LENGTH_STR "s %8.4f ", names[ll], expandedWeights[ll][spi->numAddScores + sc]);
 				else
-					fprintf(fs, "%-" LOCUS_NAME_LENGTH_STR "s %8.4f ", "NOLOCUS",0);
+					fprintf(fs, "%-" LOCUS_NAME_LENGTH_STR "s %8.4f ", "NOLOCUS",0.0);
 			}
 		}
 		fprintf(fs, "\n");

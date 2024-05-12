@@ -354,7 +354,7 @@ void set_weights(FILE *f,double **weight,float **missing_score,int *rarer,subjec
 				"%6.0f : %6.0f : %6.0f  %8.6f  %8.3f : %8.3f : %8.3f  %d     ",
 				gencount[0][0], gencount[0][1], gencount[0][2],
 				ccfreq[0],
-				gencount[0][0]?qtot[0]/gencount[0][0]:0, 
+				gencount[0][0] ? qtot[0] / gencount[0][0]:0, 
 				gencount[0][1] ? qtot[1] / gencount[0][1]:0,
 				gencount[0][2] ? qtot[2] / gencount[0][2]:0,
 				rarer[l]);
