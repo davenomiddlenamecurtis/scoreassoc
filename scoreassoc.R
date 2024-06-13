@@ -175,7 +175,7 @@ inputScoreFileSpec=sub("GENE","%s",pars@inputScoreFileSpec)
 if (length(pars@outputFileSpec)>0) {
   outputFileSpec=sub("GENE","%s",pars@outputFileSpec)
 }
-if (length(pars@saveDataFileSpec)>0) {
+if (pars@saveDataFileSpec!="") {
   saveDataFileSpec=sub("GENE","%s",pars@saveDataFileSpec)
 }
 
@@ -445,11 +445,11 @@ for (gene in genes) {
 
 
   
-  if (length(pars@saveDataFileSpec)>0) {
+  if (pars@saveDataFileSpec!="") {
     sink()
   }
   write.table(summary,pars@summaryOutputFile,row.names=FALSE,quote=FALSE,sep="\t" )
-  if (length(pars@saveDataFileSpec)>0) {
+  if (pars@saveDataFileSpec!="") {
 	write.table(testData,sprintf(saveDataFileSpec,gene),row.names=FALSE,quote=FALSE,sep="\t" )
   }
   summaryRow=summaryRow+1
