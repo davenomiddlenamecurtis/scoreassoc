@@ -404,8 +404,8 @@ for (gene in genes) {
 	    m1=glm(as.formula(tests.model1[t]),data=testData,family="binomial")
 		df=tests.ndf1[t]-tests.ndf0[t]
 	  } else {
-	    m0=glm(as.formula(tests.model0[t]),data=testData)
-	    m1=glm(as.formula(tests.model1[t]),data=testData)
+	    m0=glm(as.formula(linTests.model0[t]),data=testData)
+	    m1=glm(as.formula(linTests.model1[t]),data=testData)
 		df=linTests.ndf1[t]-linTests.ndf0[t]
 	  }
 	  LL0=logLik(m0)
