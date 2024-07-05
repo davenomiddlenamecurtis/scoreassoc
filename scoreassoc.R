@@ -443,11 +443,7 @@ for (gene in genes) {
 	}
   }
 
-
-  
-  if (pars@saveDataFileSpec!="") {
-    sink()
-  }
+  sink()
   write.table(summary,pars@summaryOutputFile,row.names=FALSE,quote=FALSE,sep="\t" )
   if (pars@saveDataFileSpec!="") {
 	write.table(testData,sprintf(saveDataFileSpec,gene),row.names=FALSE,quote=FALSE,sep="\t" )
