@@ -135,7 +135,12 @@ if (spi.use_trios)
 else
 	non_mendelians=0;
 	// not used, compiler error otherwise
+
+#if 0
 fprintf(spi.df[OUTFILE].fp, "scoreassoc output\n");
+omit this line so first rows form a table
+#endif
+
 if (spi.df[INPUTSCOREFILE].fp==0)
 {
 	if (pi.is_quantitative)
