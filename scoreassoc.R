@@ -136,7 +136,9 @@ if (!pars@isquantitative) {
 if (pars@numVarFiles>0) {
 first=TRUE
 for (f in 1:pars@numVarFiles) {
-  newVars=data.frame(read.table(pars@varFiles[f],header=TRUE))
+  newVars=data.frame(read.table(pars@varFiles[f],header=TRUE,fill=TRUE))
+  newVars=newVars[complete.cases(newVars),]
+  # e.g. Sex has a few missing values
   for (c in 1:ncol(newVars)) {
     if (colnames(newVars)[c]=="IID") {
 	  break
