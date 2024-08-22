@@ -317,7 +317,6 @@ for (gene in genes) {
   scoresFileName=sprintf(inputScoreFileSpec,gene)
   if (!file.exists(scoresFileName)) {
     cat(sprintf("Scores file %s does not exist\n",scoresFileName))
-	sink()
 	next
   }
   if (length(pars@outputFileSpec)>0) {
