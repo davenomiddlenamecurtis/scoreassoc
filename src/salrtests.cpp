@@ -44,13 +44,11 @@ float runTestFile(FILE* fo, char* fn, glModel* m, lr_test_par_info* spi)
 	float startBetas[MAXLRVARIABLES + 1],chisq,df,p,sB,SLP,L0,L1;
 	char varName[MAXLRVARIABLENAMELENGTH];
 	ft = fopen(fn, "r");
-	hereOK();
 	if (ft == 0)
 	{
 		dcerror(1, "Could not open test file %s\n", fn);
 		return 0;
 	}
-	hereOK();
 	for (b = 0; b < m->nCol; ++b)
 		toUse[b] = toFit0[b] = toFit1[b] = 0;
 	toUse[b] = toFit0[b] = toFit1[b] = 1;
@@ -81,9 +79,7 @@ float runTestFile(FILE* fo, char* fn, glModel* m, lr_test_par_info* spi)
 		df += t1 - t0;
 	}
 	fclose(ft);
-	hereOK();
 	L0 = evaluateModel(fo, m, toUse, startBetas, toFit0, "L0");
-	hereOK();
 	if (spi->start_from_fitted)
 		for (b = 0; b < m->nCol + 1; ++b)
 			startBetas[b] = m->beta[b];
