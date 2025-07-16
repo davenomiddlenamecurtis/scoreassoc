@@ -1,0 +1,108 @@
+﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(516,5): warning MSB8004: Intermediate Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Intermediate Directory.
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(517,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
+  dcdflib.c
+  fisher.c
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\dcdflib.c(456,10): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\dcdflib.c(471,10): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\dcdflib.c(483,10): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\dcdflib.c(709,11): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\dcdflib.c(914,9): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\dcdflib.c(1065,11): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\dcdflib.c(1205,11): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\dcdflib.c(1295,10): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\dcdflib.c(1296,9): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\dcdflib.c(1316,11): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\dcdflib.c(1317,19): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\dcdflib.c(5248,13): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\dcdflib.c(6597,10): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\dcdflib.c(6612,10): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\dcdflib.c(6624,10): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\dcdflib.c(6715,11): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\dcdflib.c(7888,11): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\dcdflib.c(8072,9): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+  ipmpar.c
+  Generating Code...
+  dcerror.cpp
+  dcexpr.cpp
+  glModel.cpp
+C:\Users\dave\OneDrive\msvc\dlib-19.4\dlib\serialize.h(527,17): warning C4834: discarding return value of function with [[nodiscard]] attribute
+  saFilterFuncs.cpp
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\saFilterFuncs.cpp(59,12): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\saFilterFuncs.cpp(70,10): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\saFilterFuncs.cpp(71,9): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\saFilterFuncs.cpp(83,12): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\saFilterFuncs.cpp(94,12): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+  sagcutils.cpp
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\sagcutils.cpp(361,12): warning C4244: '=': conversion from 'long' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\sagcutils.cpp(668,48): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\sagcutils.cpp(670,48): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\sagcutils.cpp(672,46): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\sagcutils.cpp(687,75): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+  saglobals.cpp
+  sainit.cpp
+  salrtests.cpp
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\salrtests.cpp(85,29): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\salrtests.cpp(88,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\salrtests.cpp(94,9): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\salrtests.cpp(102,52): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\salrtests.cpp(140,23): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\salrtests.cpp(232,9): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+  satriofuncs.cpp
+  scoreassoc.cpp
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassoc.cpp(191,30): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassoc.cpp(35,7): warning C4101: 'arg_string': unreferenced local variable
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassoc.cpp(96,25): warning C4101: 'ba': unreferenced local variable
+  scoreassocfuncs.cpp
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(51,36): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(56,30): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(57,33): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(83,28): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(115,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(122,22): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(42,79): warning C4101: 'z': unreferenced local variable
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(43,12): warning C4101: 'pz': unreferenced local variable
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(41,29): warning C4101: 'j': unreferenced local variable
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(149,15): warning C4101: 'p': unreferenced local variable
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(188,24): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(199,129): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(220,44): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(240,38): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(241,38): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(244,22): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(252,23): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(263,24): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(282,82): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(301,13): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(318,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(333,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(343,43): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(451,29): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(583,29): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(857,31): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(868,20): warning C4101: 'aline': unreferenced local variable
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(869,8): warning C4101: 'weight': unreferenced local variable
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(867,28): warning C4101: 'f': unreferenced local variable
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(868,115): warning C4101: 'ptr': unreferenced local variable
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(975,27): warning C4477: 'sscanf' : format string '%f' requires an argument of type 'float *', but variadic argument 1 has type 'double *'
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(1010,18): warning C4244: '=': conversion from 'const _Ty2' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(1010,18): warning C4244:         with
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(1010,18): warning C4244:         [
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(1010,18): warning C4244:             _Ty2=float
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(1010,18): warning C4244:         ]
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocfuncs.cpp(1076,18): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+  scoreassocGetRecScore.cpp
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocGetRecScore.cpp(73,26): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocGetRecScore.cpp(102,61): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocGetRecScore.cpp(83,25): warning C4101: 'i': unreferenced local variable
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocGetRecScore.cpp(84,38): warning C4101: 'd': unreferenced local variable
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocGetRecScore.cpp(204,32): warning C4101: 'j': unreferenced local variable
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocGetRecScore.cpp(300,78): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocGetRecScore.cpp(280,31): warning C4101: 's2': unreferenced local variable
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocGetRecScore.cpp(280,28): warning C4101: 's1': unreferenced local variable
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocGetRecScore.cpp(280,23): warning C4101: 'p': unreferenced local variable
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocGetRecScore.cpp(280,40): warning C4101: 't': unreferenced local variable
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocGetRecScore.cpp(281,8): warning C4101: 'recAlls': unreferenced local variable
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\scoreassocGetRecScore.cpp(369,78): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  Generating Code...
+C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\src\sainit.cpp(417,1): warning C4715: 'process_options': not all control paths return a value
+  scoreassoc.vcxproj -> C:\Users\dave\OneDrive\msvc\scoreassocGit\scoreassoc\exe\scoreassoc.exe
