@@ -1,5 +1,0 @@
---pathway-file ../reference/c5.all.v5.0.symbols.gmt
---score-file-spec ../results/SSS.ct08.rare.GENE.sco
---output-file-spec ../pathways/SSS.ct08.rare.PATHWAY.pao
---summary-file ../pathways/SSS.ct08.rare.summ.pao
---gene-level-output-threshold 1.7
