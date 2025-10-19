@@ -41,6 +41,8 @@ return wxMessageBox(s,"Error",wxOK,mainframeptr);
 }
 #endif
 
+int useHereOK = 0;
+
 extern "C" {
 int same_address(const void *a, const void *b)
 {

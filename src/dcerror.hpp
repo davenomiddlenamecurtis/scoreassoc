@@ -61,8 +61,10 @@ void kill();
 
 extern error_object dcerror;
 
+extern int useHereOK;
+
 #ifndef hereOK
-#define hereOK() fprintf(stderr,"Got to line %d in %s OK\n",__LINE__,__FILE__)
+#define hereOK() (useHereOK && fprintf(stderr,"Got to line %d in %s OK\n",__LINE__,__FILE__))
 #endif
 
 #endif

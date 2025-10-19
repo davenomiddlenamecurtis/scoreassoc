@@ -75,6 +75,8 @@ while (TRUE) {
 	a=-1
   } else if (arg=="--IDphenotypefile") {
     pars@IDphenotypefile=args[a*2+2]
+  } else if (arg=="--ID-phenotype-file") { # so compatible with geneVarAssoc files
+    pars@IDphenotypefile=args[a*2+2]
   } else if (arg=="--locusweightnamefile") {
     pars@locusWeightNameFile=args[a*2+2]
   } else if (arg=="--isquantitative") {
@@ -136,7 +138,7 @@ if (!pars@isquantitative) {
 if (pars@numVarFiles>0) {
 first=TRUE
 for (f in 1:pars@numVarFiles) {
-  newVars=data.frame(read.table(pars@varFiles[f],header=TRUE,fill=TRUE))
+  newVars=data.frame(read.table(pars@varFiles[f],header=TRUE,fill=TRUE,comment.char = ""))
   newVars=newVars[complete.cases(newVars),]
   # e.g. Sex has a few missing values
   for (c in 1:ncol(newVars)) {

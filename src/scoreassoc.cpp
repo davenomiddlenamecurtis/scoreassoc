@@ -52,10 +52,12 @@ int main(int argc, char *argv[])
 	// make_arg_string(arg_string,argc,argv);
 	// parse_arg_string(arg_string,&pi,&spi,&pspi);
 	process_options(&pi,&spi); // use this to get number of weight files and set numScore here
+	hereOK();
 	assert(score = (double**)calloc(spi.numScores, sizeof(double*)));
 	assert(weight = (double**)calloc(spi.numScores, sizeof(double*)));
 	assert(func_weight = (double**)calloc(spi.numScores, sizeof(double*)));
 	assert(missing_score = (float**)calloc(spi.numScores, sizeof(double*)));
+	hereOK();
 	for (sc = 0; sc < spi.numScores; ++sc)
 	{
 		assert(score[sc] = (double*)calloc(MAX_SUB, sizeof(double)));
@@ -63,6 +65,7 @@ int main(int argc, char *argv[])
 		assert(func_weight[sc] = (double*)calloc(pi.nloci ? pi.nloci : MAX_LOCI, sizeof(double)));
 		assert(missing_score[sc] = (float*)calloc(pi.nloci ? pi.nloci : MAX_LOCI, sizeof(double)));
 	}
+	hereOK();
 	if (spi.numRecScores > 0)
 	{
 		assert(rP = (recPair**)calloc(spi.numScores, sizeof(recPair*)));
@@ -99,9 +102,12 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
+	hereOK();
 	if (spi.df[FILTERFILE].fp)
 		initExclusions(spi.df[FILTERFILE].fp);
+	hereOK();
 	read_all_data(&pi,&spi,sub,&nsub,names,comments,func_weight,score,spi.numScores);
+	hereOK();
 	if (nsub == 0)
 	{
 		error("There were zero subjects to input","");
@@ -118,6 +124,7 @@ if (spi.use_trios)
 		return 1;
 	}
 }
+hereOK();
 
 if (spi.use_trios)
 	{
@@ -140,6 +147,7 @@ else
 fprintf(spi.df[OUTFILE].fp, "scoreassoc output\n");
 omit this line so first rows form a table
 #endif
+hereOK();
 
 if (spi.df[INPUTSCOREFILE].fp==0)
 {
@@ -162,6 +170,7 @@ if (spi.df[INPUTSCOREFILE].fp==0)
 	if (spi.numRecScores>0)
 		get_rec_scores(score, rP, weight, missing_score, rarer, sub, nsub, &pi, &spi);
 }
+hereOK();
 filledModel=0;
 spi.scoreCol = spi.numVars; // first of possibly more than one score
 for (sc = 0; sc < spi.numScores; ++sc)
@@ -171,6 +180,7 @@ for (sc = 0; sc < spi.numScores; ++sc)
 	varMap[allVars[spi.numVars].name] = &allVars[spi.numVars];
 	++spi.numVars;
 }
+hereOK();
 if (spi.do_lrtest || spi.do_linrtest || spi.numTestFiles > 0 || spi.numLinTestFiles > 0)
 {
 	if (!filledModel)
@@ -190,6 +200,7 @@ if (spi.do_lrtest || spi.do_linrtest || spi.numTestFiles > 0 || spi.numLinTestFi
 	}
 }
 // above is here because can fail to allocate memory and I want to exit before producing t test output
+hereOK();
 
 if (spi.do_ttest)
 {
@@ -201,6 +212,7 @@ if (spi.do_ttest)
 	SLP = do_score_onetailed_ttest(spi.df[OUTFILE].fp, score, sub, nsub, &pi, &spi, cc_freq, cc_count, max_cc, weight, missing_score, rarer);
 }
 
+hereOK();
 model.lamda = spi.lamda;
 
 if (spi.do_lrtest)
@@ -213,11 +225,13 @@ if (spi.do_lrtest)
 	SLP = do_onetailed_LRT(spi.df[OUTFILE].fp, &model, &spi, 0);
 }
 
+hereOK();
 if (spi.do_linrtest)
 {
 	SLP = do_onetailed_LRT(spi.df[OUTFILE].fp, &model, &spi, 1);
 }
 
+hereOK();
 if (spi.numTestFiles > 0)
 {
 	if (pi.is_quantitative)
@@ -229,14 +243,17 @@ if (spi.numTestFiles > 0)
 		p = runTestFile(spi.df[OUTFILE].fp, spi.testFiles[t].fn, &model, &spi);
 }
 
+hereOK();
 if (spi.numLinTestFiles > 0)
 {
 	for (t = 0; t < spi.numLinTestFiles; ++t)
 		p = runLinTestFile(spi.df[OUTFILE].fp, spi.linTestFiles[t].fn, &model, &spi);
 }
 
+hereOK();
 if (spi.use_trios)
 	output_nm_report(spi.df[OUTFILE].fp, &pi, n_non_mendelian, non_mendelians);
+hereOK();
 
 if (spi.df[SCOREFILE].fp)
 {
@@ -244,12 +261,14 @@ if (spi.df[SCOREFILE].fp)
 	fclose(spi.df[SCOREFILE].fp);
 	spi.df[SCOREFILE].fp = 0;
 }
+hereOK();
 if (spi.df[RECSCOREFILE].fp)
 {
 	write_rec_scores(spi.df[RECSCOREFILE].fp, sub, nsub, score,rP, spi.numRecScores,weight,names, &pi,&spi);
 	fclose(spi.df[RECSCOREFILE].fp);
 	spi.df[RECSCOREFILE].fp = 0;
 }
+hereOK();
 #if 0
 if (spi.do_recessive_test)
 {
@@ -265,11 +284,13 @@ else
 #endif
 
 stateExclusions(spi.df[OUTFILE].fp);
+hereOK();
 fclose(spi.df[OUTFILE].fp);
 spi.df[OUTFILE].fp=0; //  because otherwise the destructor will try to fclose it
 for (s = 0; s < MAX_SUB; ++s)
 	delete *(sub+s);
 free(sub);
+hereOK();
 printf("\nProgram run completed OK\n");
 return 0;
 

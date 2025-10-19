@@ -107,7 +107,7 @@ public:
 	FILE *fp;
 	char fn[200];
 	sa_data_file_type() { fp = 0; fn[0] = '\0'; }
-	~sa_data_file_type() { if (fp != 0 && fp != stdout) fclose(fp); }
+	~sa_data_file_type() { if (fp != 0 && fp != stdout && fp != stdin && fp != stderr) fclose(fp); }
 };
 
 class lr_test_par_info {

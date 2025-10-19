@@ -366,11 +366,19 @@ int process_options(par_info *pi, sa_par_info *spi)
 		{
 			dcerror(1, "Could not open %s %s\n", opt[a].str,spi->df[a].fn); exit(1);
 		}
-	for (a=OUTFILE;a< NUMDATAFILETYPES;++a)
-		if (spi->df[a].fn[0] && (spi->df[a].fp = fopen(spi->df[a].fn, "w")) == 0)
+	for (a = OUTFILE; a < NUMDATAFILETYPES; ++a)
+	{
+		if (a == DEBUGFILE)
+			useHereOK = 1;
+		if (!strcmp(spi->df[a].fn, "stdout"))
+			spi->df[a].fp = stdout;
+		else if (!strcmp(spi->df[a].fn, "stderr"))
+			spi->df[a].fp = stderr;
+		else if (spi->df[a].fn[0] && (spi->df[a].fp = fopen(spi->df[a].fn, "w")) == 0)
 		{
-			dcerror(1, "Could not open %s %s\n", opt[a].str,spi->df[a].fn); exit(1);
+			dcerror(1, "Could not open %s %s\n", opt[a].str, spi->df[a].fn); exit(1);
 		}
+	}
 	if (spi->df[WEIGHTFILE].fp && spi->df[ANNOTFILE].fp)
 		spi->use_func_weights=1;
 	else if (spi->df[WEIGHTFILE].fp && !spi->df[ANNOTFILE].fp)
