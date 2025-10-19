@@ -88,6 +88,7 @@ enum OPT {
 	ARGFILE,
 	NUMOPTS, 
 	MAXRECLOCI,
+	ADDHEADERFORSCOREFILE,
 	FLAGFILE
 };
 // must begin with datafiles followed by output files

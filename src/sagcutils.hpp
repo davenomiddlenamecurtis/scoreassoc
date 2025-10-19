@@ -68,6 +68,7 @@ int n_window;
 int which_gr,last_gr,*ngr;
 enum WINDOW_TYPE wt;
 enum TEST_TYPE tt;
+int writeScoreFileHeader;
 };
 
 typedef struct par_info_t par_info;

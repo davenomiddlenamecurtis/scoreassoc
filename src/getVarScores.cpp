@@ -188,6 +188,7 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 	spi->use_haplotypes=spi->use_trios=0;
 	spi->use_cc_freqs[0]=spi->use_cc_freqs[1]=0;
 	spi->use_probs=0;
+	pi->writeScoreFileHeader = 0;
 	while (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num))
 	{
 		if (strncmp(arg, "--", 2))
@@ -235,7 +236,12 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 				error=1;
 			break;
 		case USEHAPS:
-			spi->use_haplotypes=1;
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%f", &spi->use_haplotypes) != 1)
+				error = 1;
+			break;
+		case ADDHEADERFORSCOREFILE:
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%f", &pi->writeScoreFileHeader) != 1)
+				error = 1;
 			break;
 		case FLAGFILE:
 		case PSDATAFILE:

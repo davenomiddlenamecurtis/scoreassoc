@@ -257,6 +257,16 @@ hereOK();
 
 if (spi.df[SCOREFILE].fp)
 {
+	if (pi.writeScoreFileHeader)
+	{
+		fprintf(spi.df[SCOREFILE].fp, "IID Pheno ");
+		if (spi.numScores == 1)
+			fprintf(spi.df[OUTFILE].fp, "score   ");
+		else
+			for (sc = 0; sc < spi.numScores; ++sc)
+				fprintf(spi.df[SCOREFILE].fp, "%.8s ", weightNames[sc]);
+		fprintf(spi.df[SCOREFILE].fp, "\n");
+	}
 	write_scores(spi.df[SCOREFILE].fp, sub, nsub, score, spi.numScores, &pi);
 	fclose(spi.df[SCOREFILE].fp);
 	spi.df[SCOREFILE].fp = 0;

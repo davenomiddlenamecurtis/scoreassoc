@@ -513,7 +513,7 @@ int express::parse(char *s)
    head=NULL;
    }
  if ((s=vbin_op(s,&head,0))==NULL) return 0;
- if (token[0]!='\0') return dcerror(3,"Syntax error: %s",(char*)token);
+ if (token[0]!='\0') return dcerror(3,"Syntax error: \"%s\" in string \"%s\"",(char*)token,s);
  else for (ptr=s;*ptr;++ptr)
   if (!isspace(*ptr))
     return dcerror(3,"Syntax error: %s",s);

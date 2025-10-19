@@ -54,6 +54,7 @@ option opt[]=
 	{ "numloci", NUMLOCI },
 // need this if using gc files
 	{ "ldthreshold", LDTHRESHOLD },
+	{ "addheader", ADDHEADERFORSCOREFILE },
 	{ "propcomphet", PROPCOMPHET },
 //	{ "minweight", WEIGHTTHRESHOLD },
 	{ "isquantitative",ISQUANTITATIVE },
