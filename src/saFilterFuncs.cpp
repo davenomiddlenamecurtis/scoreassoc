@@ -112,18 +112,21 @@ int stateExclusions(FILE *fp)
 int initExclusions(FILE *fp,char *extras[])
 {
 	int e;
+	hereOK();
 	add_un_op("FREQ",freq_op); // frequency of this variant in controls or cases (0 or 1)
 	add_un_op("NSUB", nsub_op); // number of control or case subjects (0 or 1) typed for this variant 
 	add_un_op("NSAMPLE", nsample_op); // number of control or case subjects (0 or 1) in the sample
 	add_un_op("MAF", maf_op); // frequency of rarer allele in the whole sample, argument is ignored
 	add_un_op("WEIGHT",weight_op);	// weight of variant - this is the supplied functional weight because exclusions applied before frequency weights are calculated
 	add_bin_op_next("GENOCOUNT",geno_count_op); // number of case or control subjects who are have genototype - cc GENOCOUNT g AA (0 or 1, 0, 1 or 2)
+	hereOK();
 	for (nExc=0;fgets(long_line,LONG_LINE_LENGTH,fp) && sscanf(long_line,"%[^\n]",exclusionStr[nExc])==1;++nExc)
 	{
 		assert(nExc<MAXEXCLUSIONS);
 		if (exclusion[nExc].parse(exclusionStr[nExc])==0)
 			return 0;
 	}
+	hereOK();
 	if (extras!=0)
 		for (e=0;extras[e][0]!='\0';++e,nExc++)
 		{
@@ -132,6 +135,7 @@ int initExclusions(FILE *fp,char *extras[])
 			if (exclusion[nExc].parse(exclusionStr[nExc])==0)
 				return 0;
 		}
+	hereOK();
 	return 1;
 }
 
