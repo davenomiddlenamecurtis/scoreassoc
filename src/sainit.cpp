@@ -194,7 +194,7 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 		for (a=0;a<NUMOPTS;++a)
 			if (!strncmp(arg+2,opt[a].str,strlen(opt[a].str)))
 				break;
-		if (a >= NUMOPTS-1) // because the NUMOPTS entry is a zero-length string
+		if (a >= NUMOPTS)
 			{
 			printf("Unrecognised option: \n%s\n\n", arg);
 			usage();
