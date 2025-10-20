@@ -236,11 +236,11 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 				error=1;
 			break;
 		case USEHAPS:
-			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%f", &spi->use_haplotypes) != 1)
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &spi->use_haplotypes) != 1)
 				error = 1;
 			break;
 		case ADDHEADERFORSCOREFILE:
-			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%f", &pi->writeScoreFileHeader) != 1)
+			if (getNextArg(arg, argc, argv, fp, &arg_depth, &arg_num) == 0 || sscanf(arg, "%d", &pi->writeScoreFileHeader) != 1)
 				error = 1;
 			break;
 		case FLAGFILE:
