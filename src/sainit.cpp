@@ -89,6 +89,7 @@ void usage()
 "--maxmaf x (MAF threshold to weight variants, default 0.5)\n"
 "--outfile file\n"
 "--scorefile file (optionallly output scores for each subject)"
+"--addheader (0 or 1, add header to scorefile)"
 "--weightfile file (specify functional weights)\n"
 "--annotfile file (annotations from plink/seq)\n"
 "--filterfile file\n"
@@ -326,6 +327,10 @@ int read_all_args(char *argv[],int argc, par_info *pi, sa_par_info *spi)
 			if (getNextArg(arg, argc, argv, fp,&arg_depth, &arg_num) == 0 || arg[0]=='-' || sscanf(arg, "%s",spi->df[a].fn) != 1)
 				error=1;
 			break;
+		default:
+			dcerror(1, "Error: the option %s is not valid for this executable\n",arg);
+			usage();
+			exit(1);
 		}
 		if (error)
 			{
@@ -373,9 +378,9 @@ int process_options(par_info *pi, sa_par_info *spi)
 		}
 	for (a = OUTFILE; a < NUMDATAFILETYPES; ++a)
 	{
-		if (a == DEBUGFILE)
+		if (spi->df[a].fn[0] && a == DEBUGFILE) // any attempt at debugging activates hereOK()
 			useHereOK = 1;
-		if (!strcmp(spi->df[a].fn, "stdout"))
+		if (!strcmp(spi->df[a].fn, "stdout")) // in theory, any output file can go to stdout, I suppose
 			spi->df[a].fp = stdout;
 		else if (!strcmp(spi->df[a].fn, "stderr"))
 			spi->df[a].fp = stderr;
